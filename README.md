@@ -9,15 +9,32 @@
     </a>
 </p>
 
-tirreno is open security analytics.
+[tirreno](https://www.tirreno.com) is an open-source security framework.
 
-tirreno *[tir.ˈrɛ.no]* helps understand, monitor, and protect your applications from cyber threats, account takeovers, bots, and abuse. While classic cybersecurity focuses on infrastructure and network perimeter, most breaches occur through compromised accounts and application logic abuse that bypasses firewalls, SIEM, WAFs, and other defenses.
+tirreno *[tir.ˈrɛ.no]* helps understand, monitor, and protect your product from threats, fraud, and abuse. While classic cybersecurity focuses on infrastructure and network perimeter, most breaches occur through compromised accounts and application logic abuse that bypasses firewalls, SIEM, WAFs, and other defenses. tirreno detects threats where they actually happen: inside your product.
 
-tirreno detects threats where they actually happen: inside your product. It adds a security layer to internal or external applications to identify malicious activity by analyzing user behavior, account activity, field changes history, and business logic abuse that infrastructure tools are unable to detect.
+tirreno is a few-dependency, "low-tech" PHP/PostgreSQL application. After a straightforward five-minute installation, you can ingest events through API calls and immediately access a real-time threat dashboard.
 
-tirreno is a few-dependency, "low-tech" PHP/PostgreSQL software application that can be downloaded and installed on your own web server. After a straightforward five-minute installation process, you can ingest events from your application through API calls and immediately access a real-time threat dashboard.
+## Core components
+* **SDKs & API** Integrate tirreno into any product with SDKs.
+  Send events with full context in a few lines of code.
+* **Built-in dashboard** Monitor and understand your product's
+  security events from a single interface. Ready for use in minutes.
+* **Single user view** Analyze behaviour patterns, risk scores,
+  connected identities, and activity timelines for a specific user.
+* **Rule engine** Calculate risk scores automatically with preset
+  rules or create your own customized for your product.
+* **Review queue** Automatically suspend accounts with risky events
+  or flag them for manual review through threshold settings.
+* **Field audit trail** Track modifications to important fields,
+  including what changed and when to streamline audit and compliance.
 
-## Application types
+## Preset rules
+
+`Account takeover` `Credential stuffing` `Content spam` `Account registration` `Fraud prevention` `Insider threat`
+`Bot detection` `Dormant account` `Multi-accounting` `Promo abuse` `API protection` `High-risk regions`
+
+## Build for
 
 * **Self-hosted, internal and legacy apps**: Embed security layer
   to extend your security through audit trails, protect user accounts
@@ -35,27 +52,6 @@ tirreno is a few-dependency, "low-tech" PHP/PostgreSQL software application that
 * **API-first applications**: Protect against abuse, rate limiting
   bypasses, scraping, and unauthorized access.
 
-## Industries
-
-* **Government and public sector**: Protect citizen data, detect insider
-  threats, ensure compliance, and maintain data sovereignty.
-* **Banking and fintech**: Real-time transaction monitoring, anomalous
-  login detection, synthetic identity fraud protection, regulator
-  compliance.
-* **Energy and utilities**: Protect critical infrastructure, detect
-  unauthorized access to control systems, monitor insider threats,
-  and ensure compliance with energy sector regulations.
-* **Healthcare portals**: Protect patient data, monitor unauthorized
-  PHI/PII access, detect staff behaivour anomalies, ensure HIPAA compliance.
-* **Educational platforms**: Protect student data, detect account sharing
-  and cheating, ensure FERPA compliance.
-* **E-commerce and retail**: Detect payment fraud, bot attacks, credential
-  stuffing, and protect customer accounts.
-* **IoT and connected devices**: Monitor authentication, detect compromised
-  devices, prevent unauthorized access.
-* **Gaming platforms**: Detect account takeover, cheating, bot activity,
-  and protect in-game economies.
-
 ## Live demo
 
 Check out the live demo at [play.tirreno.com](https://play.tirreno.com) (*admin/tirreno*).
@@ -72,14 +68,6 @@ Check out the live demo at [play.tirreno.com](https://play.tirreno.com) (*admin/
   * **Application**: 128 MB RAM (1 GB recommended)
   * **Storage**: Approximately 3 GB PostgreSQL storage per 1 million events
 
-## Docker-based installation (optional)
-
-To run tirreno within docker container you may use image published on [dockerhub](https://hub.docker.com/r/tirreno/tirreno).
-
-```bash
-docker pull tirreno/tirreno:latest
-```
-
 ## Quickstart install
 
 1. [Download](https://www.tirreno.com/download.php) the latest version of tirreno (ZIP file).
@@ -93,20 +81,49 @@ docker pull tirreno/tirreno:latest
 */10 * * * * /usr/bin/php /absolute/path/to/tirreno/index.php /cron
 ```
 
+## Docker-based installation (optional)
+
+To run tirreno within docker container you may use image published on [dockerhub](https://hub.docker.com/r/tirreno/tirreno).
+
+```bash
+docker pull tirreno/tirreno:latest
+```
+
 ## Using Heroku (optional)
 
 Click [here](https://heroku.com/deploy?template=https://github.com/tirrenotechnologies/tirreno) to launch heroku deployment.
 
+## Via Composer and Packagist (optional)
+
+tirreno is published at Packagist and could be installed with Composer:
+
+```
+composer create-project tirreno/tirreno
+```
+
+or could be pulled into an existing project:
+
+```
+composer require tirreno/tirreno
+```
+
+## SDKs
+
+* [PHP](https://github.com/tirrenotechnologies/tirreno-php-tracker)
+* [Python](https://github.com/tirrenotechnologies/tirreno-python-tracker)
+* [NodeJS](https://github.com/tirrenotechnologies/tirreno-nodejs-tracker)
+
 ## Documentation
 
-See the [User Guide](https://docs.tirreno.com/) for details on how to use tirreno.
+See the [User guide](https://docs.tirreno.com/) for details on how to use tirreno, [Developers documentation](https://github.com/tirrenotechnologies/DEVELOPMENT.md) to customize your integration, [Admin documentation](https://github.com/tirrenotechnologies/ADMIN.md) for installation, maintenance and updates.
 
 ## About
 
-The tirreno project started as a proprietary system in 2021 and was open-sourced (AGPL) in December 2024.
+tirreno is an open-source security framework that embeds protection against threats, fraud, and abuse right into your product.
 
-Behind tirreno is a blend of extraordinary engineers and professionals, with over a decade of experience in cyberdefence. We solve real people's challenges through love in *ascétique* code and open technologies. tirreno is not VC-motivated. Our inspiration comes from the daily threats posed by organized cybercriminals, driving us to reimagine
-the place of security in modern applications.
+The project started as a proprietary system in 2021 and was open-sourced (AGPL) in December 2024.
+
+Behind tirreno is a blend of extraordinary engineers and professionals, with over a decade of experience in cyberdefence. We solve real people's challenges through love in *ascétique* code and open technologies. tirreno is not VC-motivated. Our inspiration comes from the daily threats posed by organized cybercriminals, driving us to reimagine the place of security in modern applications.
 
 ## Why the name tirreno?
 
@@ -120,7 +137,9 @@ While working on the logo, we conducted our own historical study and traced ment
 
 * [Website](https://www.tirreno.com)
 * [Live demo](https://play.tirreno.com)
-* [Documentation](https://docs.tirreno.com)
+* [Admin documentation](https://github.com/tirrenotechnologies/ADMIN.md)
+* [Developers documentation](https://github.com/tirrenotechnologies/DEVELOPMENT.md)
+* [User guide](https://docs.tirreno.com)
 * [Mattermost community](https://chat.tirreno.com)
 
 ## Reporting a security issue
@@ -147,4 +166,6 @@ You should have received a copy of the GNU Affero General Public License along w
 
 ## Authors
 
-tirreno Copyright (C) 2025 tirreno technologies sàrl, Vaud, Switzerland. (License AGPLv3)
+tirreno Copyright (C) 2026 tirreno technologies sàrl, Vaud, Switzerland. (License AGPLv3)
+
+'t'
