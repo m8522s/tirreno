@@ -1,4 +1,4 @@
-import {BasePage} from './Base.js';
+import {BasePage} from './Base.js?v=2';
 
 import {DatesFilter} from '../parts/DatesFilter.js?v=2';
 import {SearchFilter} from '../parts/SearchFilter.js?v=2';
@@ -8,7 +8,6 @@ import {ReviewQueueGrid} from '../parts/grid/ReviewQueue.js?v=2';
 import {ReviewQueueChart} from '../parts/chart/ReviewQueue.js?v=2';
 
 export class ReviewQueuePage extends BasePage {
-
     constructor() {
         super('review-queue');
         this.tableId = 'review-queue-table';

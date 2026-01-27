@@ -3,7 +3,6 @@ import {handleAjaxError} from './utils/ErrorHandler.js?v=2';
 import {fireEvent} from './utils/Event.js?v=2';
 
 export class DashboardTile {
-
     constructor(tilesParams) {
         const me = this;
         this.config = tilesParams;
@@ -66,12 +65,12 @@ export class DashboardTile {
             }
             period.textContent = data.total;
 
-            const total = document.createElement('p');
-            total.className = 'allTimeTotal';
-            total.textContent = data.allTimeTotal;
+            //const total = document.createElement('p');
+            //total.className = 'allTimeTotal';
+            //total.textContent = data.allTimeTotal;
 
             frag.appendChild(period);
-            frag.appendChild(total);
+            //frag.appendChild(total);
 
             const el = document.querySelector(`.${this.scope.config.mode} .title`);
             el.replaceChildren(frag);

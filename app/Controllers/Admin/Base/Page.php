@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\Base;
+namespace Tirreno\Controllers\Admin\Base;
 
-abstract class Page extends \Controllers\Pages\Base {
+abstract class Page extends \Tirreno\Controllers\Pages\Base {
     public $page = null;
 
     abstract public function getPageParams(): array;

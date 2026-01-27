@@ -1,8 +1,8 @@
 <?php
 
-namespace CoreRules;
+namespace Tirreno\Rules\Core;
 
-class E04 extends \Assets\Rule {
+class E04 extends \Tirreno\Assets\Rule {
     public const NAME = 'Numeric email name';
     public const DESCRIPTION = 'The email\'s username consists entirely of numbers, which is uncommon for typical email addresses.';
     public const ATTRIBUTES = [];

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Models;
+namespace Tirreno\Models;
 
-class Message extends \Models\BaseSql {
+class Message extends \Tirreno\Models\BaseSql {
     protected $DB_TABLE_NAME = 'dshb_message';
 
     public function addMessage(string $msg): int {
@@ -25,7 +25,7 @@ class Message extends \Models\BaseSql {
 
         $this->save();
 
-        return \Utils\Conversion::intVal($this->id, 0);
+        return \Tirreno\Utils\Conversion::intVal($this->id, 0);
     }
 
     public function getMessage(): self|null|false {

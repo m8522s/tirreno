@@ -1,8 +1,9 @@
-import {BasePage} from './Base.js';
+import {BasePage} from './Base.js?v=2';
 import {Tooltip} from '../parts/Tooltip.js?v=2';
 import {handleAjaxError} from '../parts/utils/ErrorHandler.js?v=2';
 import {getRuleClass} from '../parts/utils/String.js?v=2';
 import {ThresholdsForm} from '../parts/ThresholdsForm.js?v=2';
+import {ApplyRulesSetPopUp} from '../parts/popup/ApplyRulesSetPopUp.js?v=2';
 import {
     renderClickableUser,
     renderProportion,
@@ -10,7 +11,6 @@ import {
 } from '../parts/DataRenderers.js?v=2';
 
 export class RulesPage extends BasePage {
-
     constructor() {
         super('rules');
 
@@ -19,6 +19,8 @@ export class RulesPage extends BasePage {
 
     initUi() {
         new ThresholdsForm();
+
+        new ApplyRulesSetPopUp();
 
         const searchTable = this.searchTable.bind(this);
         this.searchInput.addEventListener('keyup', searchTable, false);
@@ -77,7 +79,7 @@ export class RulesPage extends BasePage {
             nextRow = row.parentNode.insertBefore(ex, row.nextSibling);
         }
 
-        nextRow.querySelector('td').replaceChildren(renderRulePlayResult(data.users, data.count, this.ruleUid));
+        nextRow.querySelector('td').replaceChildren(renderRulePlayResult(data.users, data.count, data.section, this.ruleUid));
 
         // 3 is index of proportion column
         row.children[3].replaceChildren(renderProportion(data.proportion, data.proportion_updated_at));
@@ -116,6 +118,7 @@ export class RulesPage extends BasePage {
     onSaveButtonClick(e) {
         e.preventDefault();
 
+        const currentSelector = e.target.closest('tr').querySelector('select');
         const currentSaveButton = e.target.closest('button');
         currentSaveButton.classList.add('is-loading');
 
@@ -132,7 +135,11 @@ export class RulesPage extends BasePage {
             url: `${window.app_base}/admin/saveRule`,
             type: 'post',
             data: params,
-            context: {currentSaveButton: currentSaveButton},
+            context: {
+                currentSaveButton:  currentSaveButton,
+                currentSelector:    currentSelector,
+                value:              select.value,
+            },
             error: handleAjaxError,
             success: this.onSaveLoaded,         // without binding to keep simultaneous calls scopes separate
         });
@@ -145,6 +152,7 @@ export class RulesPage extends BasePage {
             return;
         }
 
+        this.currentSelector.value = this.value;
         this.currentSaveButton.classList.remove('is-loading');
 
         const parentRow = this.currentSaveButton.closest('tr');

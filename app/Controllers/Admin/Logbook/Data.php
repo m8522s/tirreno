@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,16 +15,16 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\Logbook;
+namespace Tirreno\Controllers\Admin\Logbook;
 
-class Data extends \Controllers\Admin\Base\Data {
+class Data extends \Tirreno\Controllers\Admin\Base\Data {
     public function getList(int $apiKey): array {
-        $model = new \Models\Grid\Logbook\Grid($apiKey);
+        $model = new \Tirreno\Models\Grid\Logbook\Grid($apiKey);
 
-        return $model->getAllLogbookEvents();
+        return $model->getAll();
     }
 
     public function getLogbookDetails(int $id, int $apiKey): array {
-        return (new \Models\Logbook())->getLogbookDetails($id, $apiKey);
+        return (new \Tirreno\Models\Logbook())->getLogbookDetails($id, $apiKey);
     }
 }

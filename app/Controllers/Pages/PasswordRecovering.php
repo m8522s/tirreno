@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,7 +15,7 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Pages;
+namespace Tirreno\Controllers\Pages;
 
 class PasswordRecovering extends Base {
     public $page = 'PasswordRecovering';
@@ -25,30 +25,30 @@ class PasswordRecovering extends Base {
             'HTML_FILE' => 'passwordRecovering.html',
         ];
 
-        $errorCode = \Utils\Validators::validatePasswordRecovering($this->f3->get('PARAMS'));
+        $errorCode = \Tirreno\Utils\Validators::validatePasswordRecovering($this->f3->get('PARAMS'));
         $pageParams['SUCCESS_CODE'] = $errorCode;
 
         if ($this->isPostRequest()) {
             $params = $this->extractRequestParams(['token', 'new-password', 'password-confirmation']);
-            $errorCode = \Utils\Validators::validatePasswordRecoveringPost($params);
+            $errorCode = \Tirreno\Utils\Validators::validatePasswordRecoveringPost($params);
 
             $pageParams['SUCCESS_CODE'] = 0;
             $pageParams['ERROR_CODE'] = $errorCode;
 
             if (!$errorCode) {
-                $forgotPasswordModel = new \Models\ForgotPassword();
+                $forgotPasswordModel = new \Tirreno\Models\ForgotPassword();
                 $forgotPasswordModel->getUnusedByRenewKey($this->f3->get('PARAMS.renewKey'));
                 $operatorId = $forgotPasswordModel->operator_id;
 
                 $forgotPasswordModel->deactivate();
 
-                $password = \Utils\Conversion::getStringRequestParam('new-password');
+                $password = \Tirreno\Utils\Conversion::getStringRequestParam('new-password');
 
-                $operatorModel = new \Models\Operator();
+                $operatorModel = new \Tirreno\Models\Operator();
                 $operatorModel->updatePassword($password, $operatorId);
                 $operatorModel->activateByOperator($operatorId);
 
-                $pageParams['SUCCESS_CODE'] = \Utils\ErrorCodes::ACCOUNT_ACTIVATED;
+                $pageParams['SUCCESS_CODE'] = \Tirreno\Utils\ErrorCodes::ACCOUNT_ACTIVATED;
             }
         }
 

@@ -12,6 +12,8 @@ export class BlacklistGrid extends BaseGrid {
         return [[1, 'desc']];
     }
 
+    onDateFilterChanged() {}
+
     get columnDefs() {
         const columnDefs = [
             {

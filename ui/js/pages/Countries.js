@@ -1,4 +1,4 @@
-import {BasePage} from './Base.js';
+import {BasePage} from './Base.js?v=2';
 
 import {Map} from '../parts/Map.js?v=2';
 import {DatesFilter} from '../parts/DatesFilter.js?v=2';
@@ -6,7 +6,6 @@ import {SearchFilter} from '../parts/SearchFilter.js?v=2';
 import {CountriesGrid} from '../parts/grid/Countries.js?v=2';
 
 export class CountriesPage extends BasePage {
-
     constructor() {
         super('countries');
 

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,7 +15,7 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Pages;
+namespace Tirreno\Controllers\Pages;
 
 abstract class Base {
     protected $f3;
@@ -26,12 +26,12 @@ abstract class Base {
 
         if (!$this->f3->exists('SESSION.csrf')) {
             // Set anti-CSRF token.
-            $this->f3->set('SESSION.csrf', bin2hex(\openssl_random_pseudo_bytes(16)));
+            $this->f3->set('SESSION.csrf', bin2hex(openssl_random_pseudo_bytes(16)));
         }
 
         $this->f3->CSRF = $this->f3->get('SESSION.csrf');
 
-        \Utils\Routes::callExtra('PAGE_BASE');
+        \Tirreno\Utils\Routes::callExtra('PAGE_BASE');
     }
 
     public function isPostRequest(): bool {
@@ -46,9 +46,9 @@ abstract class Base {
     }
 
     public function getInternalPageTitleWithPostfix(string $title): string {
-        $title = $title ? $title : \Utils\Constants::get('UNAUTHORIZED_USERID');
+        $title = $title ? $title : \Tirreno\Utils\Constants::get('UNAUTHORIZED_USERID');
         $safeTitle = htmlspecialchars($title, ENT_QUOTES, 'UTF-8');
-        $title = sprintf('%s %s', $safeTitle, \Utils\Constants::get('PAGE_TITLE_POSTFIX'));
+        $title = sprintf('%s %s', $safeTitle, \Tirreno\Utils\Constants::get('PAGE_TITLE_POSTFIX'));
 
         return $title;
     }
@@ -62,7 +62,7 @@ abstract class Base {
 
     public function applyPageParams(array $params): array {
         $time = gmdate('Y-m-d H:i:s');
-        \Utils\TimeZones::localizeForActiveOperator($time);
+        \Tirreno\Utils\Timezones::localizeForActiveOperator($time);
 
         $errorCode = $params['ERROR_CODE'] ?? null;
         $successCode = $params['SUCCESS_CODE'] ?? null;
@@ -97,31 +97,22 @@ abstract class Base {
             $params['SUCCESS_MESSAGE_TIMESTAMP'] = $time;
         }
 
-        $currentOperator = \Utils\Routes::getCurrentRequestOperator();
+        $currentOperator = \Tirreno\Utils\Routes::getCurrentRequestOperator();
         if ($currentOperator) {
-            $cnt = $currentOperator->review_queue_cnt > 999 ? 999 : ($currentOperator->review_queue_cnt ?? 0);
-            $params['NUMBER_OF_NOT_REVIEWED_USERS'] = $cnt;
+            $cnt = $currentOperator->review_queue_cnt ?? 0;
+            $params['NUMBER_OF_NOT_REVIEWED_USERS'] = \Tirreno\Utils\Conversion::formatKiloValue($cnt);
 
             $cnt = $currentOperator->blacklist_users_cnt ?? 0;
-            $params['NUMBER_OF_BLACKLIST_USERS'] = \Utils\Conversion::formatKiloValue($cnt);
+            $params['NUMBER_OF_BLACKLIST_USERS'] = \Tirreno\Utils\Conversion::formatKiloValue($cnt);
 
-            $offset = \Utils\TimeZones::getCurrentOperatorOffset();
-            $now = time() + $offset;
-            $day = \Utils\Constants::get('SECONDS_IN_DAY');
-            $firstJan = mktime(0, 0, 0, 1, 1, intval(gmdate('Y')));
-
-            $day = \Utils\Conversion::intVal(ceil(($now - $firstJan) / $day), 0);
-
-            $params['OFFSET']   = $offset;
-            $params['DAY']      = ($day < 10 ? '00' : ($day < 100 ? '0' : '')) . strval($day);
-            $params['TIME_HIS'] = date('H:i:s', $now);
-            $params['TIMEZONE'] = 'UTC' . (($offset < 0) ? '-' . date('H:i', -$offset) : '+' . date('H:i', $offset));
+            $controller = new \Tirreno\Controllers\Admin\Home\Data();
+            $params += $controller->getCurrentTime($currentOperator);
         }
 
-        $params['ALLOW_EMAIL_PHONE'] = \Utils\Variables::getEmailPhoneAllowed();
+        $params['ALLOW_EMAIL_PHONE'] = \Tirreno\Utils\Variables::getEmailPhoneAllowed();
 
         $page = $this->page;
-        \Utils\DictManager::load($page);
+        \Tirreno\Utils\DictManager::load($page);
 
         $code = $this->f3->get('SESSION.extra_message_code');
         if ($code !== null) {
@@ -137,7 +128,7 @@ abstract class Base {
             ];
         }
 
-        $params = \Utils\Routes::callExtra('APPLY_PAGE_PARAMS', $params, $page) ?? $params;
+        $params = \Tirreno\Utils\Routes::callExtra('APPLY_PAGE_PARAMS', $params, $page) ?? $params;
 
         return $params;
     }

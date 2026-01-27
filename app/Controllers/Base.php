@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,7 +15,7 @@
 
 declare(strict_types=1);
 
-namespace Controllers;
+namespace Tirreno\Controllers;
 
 abstract class Base {
     protected $f3;
@@ -24,12 +24,12 @@ abstract class Base {
         $this->f3 = \Base::instance();
 
         $keepSessionInDb = $this->f3->get('KEEP_SESSION_IN_DB') ?? null;
-        if (!\Utils\Database::initConnect(boolval($keepSessionInDb))) {
+        if (!\Tirreno\Utils\Database::initConnect(boolval($keepSessionInDb))) {
             $this->f3->error(404);
         }
 
         //Determine current user
-        \Utils\Routes::setCurrentRequestOperator();
+        \Tirreno\Utils\Routes::setCurrentRequestOperator();
 
         //Set CSRF token
         //$rnd = mt_rand();
@@ -41,10 +41,10 @@ abstract class Base {
      */
     public function validateCsrfToken(): int|bool {
         $csrf = $this->f3->get('SESSION.csrf');
-        $token = \Utils\Conversion::getStringRequestParam('token');
+        $token = \Tirreno\Utils\Conversion::getStringRequestParam('token');
 
         if (!isset($token) || $token === '' || !isset($csrf) || $csrf === '' || $token !== $csrf) {
-            return \Utils\ErrorCodes::CSRF_ATTACK_DETECTED;
+            return \Tirreno\Utils\ErrorCodes::CSRF_ATTACK_DETECTED;
         }
 
         return false;

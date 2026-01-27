@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\Home;
+namespace Tirreno\Controllers\Admin\Home;
 
-class Navigation extends \Controllers\Admin\Base\Navigation {
+class Navigation extends \Tirreno\Controllers\Admin\Base\Navigation {
     public function __construct() {
         parent::__construct();
 
@@ -26,28 +26,32 @@ class Navigation extends \Controllers\Admin\Base\Navigation {
     }
 
     public function showIndexPage(): void {
-        \Utils\Routes::redirectIfUnlogged('/login');
+        \Tirreno\Utils\Routes::redirectIfUnlogged('/login');
 
         parent::showIndexPage();
     }
 
     public function getDashboardStat(): array {
-        $mode = \Utils\Conversion::getStringRequestParam('mode');
-        $dateRange = \Utils\DateRange::getDatesRangeFromRequest();
+        $mode = \Tirreno\Utils\Conversion::getStringRequestParam('mode');
+        $dateRange = \Tirreno\Utils\DateRange::getDatesRangeFromRequest();
 
         return $this->apiKey ? $this->controller->getStat($mode, $dateRange, $this->apiKey) : [];
     }
 
     public function getTopTen(): array {
-        $mode = \Utils\Conversion::getStringRequestParam('mode');
-        $dateRange = \Utils\DateRange::getDatesRangeFromRequest();
+        $mode = \Tirreno\Utils\Conversion::getStringRequestParam('mode');
+        $dateRange = \Tirreno\Utils\DateRange::getDatesRangeFromRequest();
 
         return $this->apiKey ? $this->controller->getTopTen($mode, $dateRange, $this->apiKey) : [];
     }
 
     public function getChart(): array {
-        $mode = \Utils\Conversion::getStringRequestParam('mode');
+        $mode = \Tirreno\Utils\Conversion::getStringRequestParam('mode');
 
         return $this->apiKey ? $this->controller->getChart($mode, $this->apiKey) : [];
+    }
+
+    public function getCurrentTime(): array {
+        return $this->operator ? $this->controller->getCurrentTime($this->operator) : [];
     }
 }

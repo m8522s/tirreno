@@ -1,4 +1,4 @@
-import {BasePage} from './Base.js';
+import {BasePage} from './Base.js?v=2';
 
 import {EventsChart} from '../parts/chart/Events.js?v=2';
 import {DatesFilter} from '../parts/DatesFilter.js?v=2';
@@ -10,7 +10,6 @@ import {EventPanel} from '../parts/panel/EventPanel.js?v=2';
 import {EventsGrid} from '../parts/grid/Events.js?v=2';
 
 export class EventsPage extends BasePage {
-
     constructor() {
         super('events');
 

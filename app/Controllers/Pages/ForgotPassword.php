@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,13 +15,13 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Pages;
+namespace Tirreno\Controllers\Pages;
 
 class ForgotPassword extends Base {
     public $page = 'ForgotPassword';
 
     public function getPageParams(): array {
-        if (!\Utils\Variables::getForgotPasswordAllowed()) {
+        if (!\Tirreno\Utils\Variables::getForgotPasswordAllowed()) {
             return [];
         }
 
@@ -31,16 +31,16 @@ class ForgotPassword extends Base {
 
         if ($this->isPostRequest()) {
             $params = $this->extractRequestParams(['token', 'email']);
-            $errorCode = \Utils\Validators::validateForgotPassword($params);
+            $errorCode = \Tirreno\Utils\Validators::validateForgotPassword($params);
 
             if (!$errorCode) {
-                $email = \Utils\Conversion::getStringRequestParam('email');
-                $operatorModel = new \Models\Operator();
+                $email = \Tirreno\Utils\Conversion::getStringRequestParam('email');
+                $operatorModel = new \Tirreno\Models\Operator();
                 $operatorModel->getActivatedByEmail($email);
 
                 if ($operatorModel->loaded()) {
                     // Create forgot password record.
-                    $forgotPasswordModel = new \Models\ForgotPassword();
+                    $forgotPasswordModel = new \Tirreno\Models\ForgotPassword();
                     $forgotPasswordModel->add($operatorModel->id);
 
                     // Send forgot password email.
@@ -51,7 +51,7 @@ class ForgotPassword extends Base {
                 usleep(rand(500000, 1000000));
 
                 // Always report back that the email was sent.
-                $pageParams['SUCCESS_CODE'] = \Utils\ErrorCodes::RENEW_KEY_CREATED;
+                $pageParams['SUCCESS_CODE'] = \Tirreno\Utils\ErrorCodes::RENEW_KEY_CREATED;
             }
 
             $pageParams['VALUES'] = $params;
@@ -61,8 +61,8 @@ class ForgotPassword extends Base {
         return parent::applyPageParams($pageParams);
     }
 
-    private function sendPasswordRenewEmail(\Models\Operator $operatorModel, \Models\ForgotPassword $forgotPasswordModel): void {
-        $url = \Utils\Variables::getHostWithProtocolAndBase();
+    private function sendPasswordRenewEmail(\Tirreno\Models\Operator $operatorModel, \Tirreno\Models\ForgotPassword $forgotPasswordModel): void {
+        $url = \Tirreno\Utils\Variables::getHostWithProtocolAndBase();
 
         $toName = $operatorModel->firstname;
         $toAddress = $operatorModel->email;
@@ -74,6 +74,6 @@ class ForgotPassword extends Base {
         $renewUrl = sprintf('%s/password-recovering/%s', $url, $renewKey);
         $message = sprintf($message, $renewUrl);
 
-        \Utils\Mailer::send($toName, $toAddress, $subject, $message);
+        \Tirreno\Utils\Mailer::send($toName, $toAddress, $subject, $message);
     }
 }

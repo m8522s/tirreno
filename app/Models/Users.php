@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,12 +15,12 @@
 
 declare(strict_types=1);
 
-namespace Models;
+namespace Tirreno\Models;
 
-class Users extends \Models\BaseSql {
+class Users extends \Tirreno\Models\BaseSql {
     protected $DB_TABLE_NAME = 'event_account';
 
-    public function getAllUsersIdsOrdered(int $apiKey): array {
+    public function getLastThousandUsers(int $apiKey): array {
         $params = [
             ':api_key' => $apiKey,
         ];
@@ -41,7 +41,8 @@ class Users extends \Models\BaseSql {
             WHERE
                 event_account.key = :api_key
 
-            ORDER BY event_account.id DESC'
+            ORDER BY event_account.lastseen DESC
+            LIMIT 1000'
         );
 
         return $this->execQuery($query, $params);

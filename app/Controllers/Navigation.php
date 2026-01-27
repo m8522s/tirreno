@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,23 +15,15 @@
 
 declare(strict_types=1);
 
-namespace Controllers;
+namespace Tirreno\Controllers;
 
 class Navigation extends Base {
     public $response;
 
     public function beforeroute(): void {
         // CSRF assignment in base page
-        $this->response = new \Views\Frontend();
+        $this->response = new \Tirreno\Views\Frontend();
     }
-
-    /**
-     * set a new view.
-     */
-    /* TODO: make sure that setView() is not needed
-    public function setView(BaseView $view) {
-        $this->response = $view;
-    }*/
 
     /**
      * kick start the View, which creates the response
@@ -48,46 +40,46 @@ class Navigation extends Base {
     }
 
     public function visitSignupPage(): void {
-        \Utils\Routes::redirectIfLogged();
+        \Tirreno\Utils\Routes::redirectIfLogged();
 
-        $pageController = new \Controllers\Pages\Signup();
+        $pageController = new \Tirreno\Controllers\Pages\Signup();
         $this->response->data = $pageController->getPageParams();
     }
 
     public function visitLoginPage(): void {
-        \Utils\Routes::redirectIfLogged();
+        \Tirreno\Utils\Routes::redirectIfLogged();
 
-        $pageController = new \Controllers\Pages\Login();
+        $pageController = new \Tirreno\Controllers\Pages\Login();
         $this->response->data = $pageController->getPageParams();
     }
 
     public function visitForgotPasswordPage(): void {
-        \Utils\Routes::redirectIfLogged();
+        \Tirreno\Utils\Routes::redirectIfLogged();
 
-        if (!\Utils\Variables::getForgotPasswordAllowed()) {
+        if (!\Tirreno\Utils\Variables::getForgotPasswordAllowed()) {
             $this->f3->reroute('/');
         }
 
-        $pageController = new \Controllers\Pages\ForgotPassword();
+        $pageController = new \Tirreno\Controllers\Pages\ForgotPassword();
         $this->response->data = $pageController->getPageParams();
     }
 
     public function visitPasswordRecoveringPage(): void {
-        \Utils\Routes::redirectIfLogged();
+        \Tirreno\Utils\Routes::redirectIfLogged();
 
-        $pageController = new \Controllers\Pages\PasswordRecovering();
+        $pageController = new \Tirreno\Controllers\Pages\PasswordRecovering();
         $this->response->data = $pageController->getPageParams();
     }
 
     public function visitLogoutPage(): void {
-        \Utils\Routes::redirectIfUnlogged();
+        \Tirreno\Utils\Routes::redirectIfUnlogged();
 
-        $pageController = new \Controllers\Pages\Logout();
+        $pageController = new \Tirreno\Controllers\Pages\Logout();
         $this->response->data = $pageController->getPageParams();
     }
 
     public function visitChangeEmailPage(): void {
-        $pageController = new \Controllers\Pages\ChangeEmail();
+        $pageController = new \Tirreno\Controllers\Pages\ChangeEmail();
         $this->response->data = $pageController->getPageParams();
     }
 }

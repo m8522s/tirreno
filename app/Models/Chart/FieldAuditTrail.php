@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,7 +15,7 @@
 
 declare(strict_types=1);
 
-namespace Models\Chart;
+namespace Tirreno\Models\Chart;
 
 class FieldAuditTrail extends BaseEventsCount {
     public function getCounts(int $apiKey): array {
@@ -44,15 +44,15 @@ class FieldAuditTrail extends BaseEventsCount {
 
     protected function executeOnRangeById(string $query, int $apiKey): array {
         // do not use offset because :start_time/:end_time compared with UTC event.time
-        $dateRange = \Utils\DateRange::getLatestNDatesRangeFromRequest(180);
-        $offset = \Utils\TimeZones::getCurrentOperatorOffset();
+        $dateRange = \Tirreno\Utils\DateRange::getLatestNDatesRangeFromRequest(180);
+        $offset = \Tirreno\Utils\Timezones::getCurrentOperatorOffset();
 
         $params = [
             ':api_key'      => $apiKey,
             ':end_time'     => $dateRange['endDate'],
             ':start_time'   => $dateRange['startDate'],
-            ':resolution'   => \Utils\DateRange::getResolutionFromRequest(),
-            ':id'           => \Utils\Conversion::getIntRequestParam('id'),
+            ':resolution'   => \Tirreno\Utils\DateRange::getResolutionFromRequest(),
+            ':id'           => \Tirreno\Utils\Conversion::getIntRequestParam('id'),
             ':offset'       => strval($offset),     // str for postgres
         ];
 

@@ -1,9 +1,8 @@
-import {BasePage} from './Base.js';
+import {BasePage} from './Base.js?v=2';
 
 import {ManualCheckItems} from '../parts/ManualCheckItems.js?v=2';
 
 export class ManualCheckPage extends BasePage {
-
     constructor() {
         super('manual-check');
 

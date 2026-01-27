@@ -4,7 +4,6 @@ import {handleAjaxError} from './utils/ErrorHandler.js?v=2';
 import {fireEvent} from './utils/Event.js?v=2';
 
 export class Map {
-
     constructor(mapParams) {
         this.config = mapParams;
 
@@ -29,7 +28,7 @@ export class Map {
                 regions: [
                     {
                         values: {},
-                        scale: ['#4e6964', '#01EE99'],
+                        scale: ['#4e6964', '#25EAB5'],
                         normalizeFunction: 'polynomial'
                     }
                 ]
@@ -40,7 +39,7 @@ export class Map {
                     fill: '#575675'
                 },
                 selected: {
-                    fill: '#01EE99'
+                    fill: '#25EAB5'
                 }
             },
 

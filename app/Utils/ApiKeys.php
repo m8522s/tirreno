@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,7 +15,7 @@
 
 declare(strict_types=1);
 
-namespace Utils;
+namespace Tirreno\Utils;
 
 class ApiKeys {
     public static function getCurrentOperatorApiKeyId(): ?int {
@@ -37,12 +37,12 @@ class ApiKeys {
     }
 
     public static function getOperatorApiKeys(int $operatorId): array {
-        $model = new \Models\ApiKeys();
+        $model = new \Tirreno\Models\ApiKeys();
         $apiKeys = $model->getKeys($operatorId);
 
         $isOwner = true;
         if (!$apiKeys) {
-            $coOwnerModel = new \Models\ApiKeyCoOwner();
+            $coOwnerModel = new \Tirreno\Models\ApiKeyCoOwner();
             $coOwnerModel->getCoOwnership($operatorId);
 
             if ($coOwnerModel->loaded()) {
@@ -54,15 +54,15 @@ class ApiKeys {
         return [$isOwner, $apiKeys];
     }
 
-    // returns \Models\ApiKeys; in test mode returns object
+    // returns \Tirreno\Models\ApiKeys; in test mode returns object
     public static function getCurrentOperatorApiKeyObject(): object|null {
-        $currentOperator = \Utils\Routes::getCurrentRequestOperator();
+        $currentOperator = \Tirreno\Utils\Routes::getCurrentRequestOperator();
 
         if (!$currentOperator) {
             return null;
         }
 
-        $model = new \Models\ApiKeys();
+        $model = new \Tirreno\Models\ApiKeys();
 
         //This key specified in the local configuration file and will not applied to the production environment
         $testId = \Base::instance()->get('TEST_API_KEY_ID');
@@ -79,7 +79,7 @@ class ApiKeys {
         $key = $model->getKey($operatorId);
 
         if (!$key) { // Check if operator is co-owner of another API key when it has no own API key.
-            $coOwnerModel = new \Models\ApiKeyCoOwner();
+            $coOwnerModel = new \Tirreno\Models\ApiKeyCoOwner();
             $coOwnerModel->getCoOwnership($operatorId);
 
             if ($coOwnerModel->loaded()) {

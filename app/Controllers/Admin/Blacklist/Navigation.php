@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\Blacklist;
+namespace Tirreno\Controllers\Admin\Blacklist;
 
-class Navigation extends \Controllers\Admin\Base\Navigation {
+class Navigation extends \Tirreno\Controllers\Admin\Base\Navigation {
     public function __construct() {
         parent::__construct();
 
@@ -38,9 +38,9 @@ class Navigation extends \Controllers\Admin\Base\Navigation {
             return [];
         }
 
-        $type   = \Utils\Conversion::getStringRequestParam('type');
+        $type   = \Tirreno\Utils\Conversion::getStringRequestParam('type');
         $this->controller->removeItemFromBlacklist($this->id, $type, $this->apiKey);
-        $successCode = \Utils\ErrorCodes::ITEM_REMOVED_FROM_BLACKLIST;
+        $successCode = \Tirreno\Utils\ErrorCodes::ITEM_REMOVED_FROM_BLACKLIST;
 
         return [
             'success'   => $successCode,

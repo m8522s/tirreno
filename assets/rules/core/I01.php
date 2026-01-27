@@ -1,8 +1,8 @@
 <?php
 
-namespace CoreRules;
+namespace Tirreno\Rules\Core;
 
-class I01 extends \Assets\Rule {
+class I01 extends \Tirreno\Assets\Rule {
     public const NAME = 'IP belongs to TOR';
     public const DESCRIPTION = 'IP address is assigned to The Onion Router network. Very few people use TOR, mainly used for anonymization and accessing censored resources.';
     public const ATTRIBUTES = ['ip'];

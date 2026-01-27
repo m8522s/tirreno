@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,7 +15,7 @@
 
 declare(strict_types=1);
 
-namespace Utils;
+namespace Tirreno\Utils;
 
 class ElapsedDate {
     //https://gist.github.com/fazlurr/473a46d6d2e967119e77b5339dd10bc2
@@ -34,12 +34,11 @@ class ElapsedDate {
         $secs = time() - $secs;
 
         $bit = [
-            ' year' => $secs / 31556926 % 12,
-            ' week' => $secs / 604800 % 52,
-            ' day' => $secs / 86400 % 7,
-            ' hour' => $secs / 3600 % 24,
-            ' minute' => $secs / 60 % 60,
-            ' second' => $secs % 60,
+            ' year' => intdiv($secs, 31556926) % 12,
+            ' week' => intdiv($secs, 604800) % 52,
+            ' day' => intdiv($secs, 86400) % 7,
+            ' hour' => intdiv($secs, 3600) % 24,
+            ' minute' => intdiv($secs, 60) % 60,
         ];
 
         foreach ($bit as $k => $v) {

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,15 +15,15 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\User;
+namespace Tirreno\Controllers\Admin\User;
 
-class Page extends \Controllers\Admin\Base\Page {
+class Page extends \Tirreno\Controllers\Admin\Base\Page {
     public $page = 'AdminUser';
 
     public function getPageParams(): array {
         $dataController = new Data();
-        $apiKey = \Utils\ApiKeys::getCurrentOperatorApiKeyId();
-        $userId = \Utils\Conversion::getIntUrlParam('userId');
+        $apiKey = \Tirreno\Utils\ApiKeys::getCurrentOperatorApiKeyId();
+        $userId = \Tirreno\Utils\Conversion::getIntUrlParam('userId');
         $hasAccess = $dataController->checkIfOperatorHasAccess($userId, $apiKey);
 
         if (!$hasAccess) {
@@ -62,7 +62,7 @@ class Page extends \Controllers\Admin\Base\Page {
 
         [$scheduledForBlacklist, $errorCode] = $dataController->getScheduledForBlacklist($userId, $apiKey);
         if ($scheduledForBlacklist) {
-            $this->f3->set('SESSION.extra_message_code', $errorCode ?? \Utils\ErrorCodes::USER_BLACKLISTING_QUEUED);
+            $this->f3->set('SESSION.extra_message_code', $errorCode ?? \Tirreno\Utils\ErrorCodes::USER_BLACKLISTING_QUEUED);
         }
 
         return parent::applyPageParams($pageParams);

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Models;
+namespace Tirreno\Models;
 
-class Map extends \Models\BaseSql {
+class Map extends \Tirreno\Models\BaseSql {
     protected $DB_TABLE_NAME = 'countries';
 
     public function getAllCountries(?string $dateFrom, ?string $dateTo, int $apiKey): array {
@@ -61,7 +61,7 @@ class Map extends \Models\BaseSql {
     }
 
     public function getAllCountriesByDateRange(int $apiKey): array {
-        $datesRange = \Utils\DateRange::getDatesRangeFromRequest();
+        $datesRange = \Tirreno\Utils\DateRange::getDatesRangeFromRequest();
 
         $dateTo = $datesRange ? ($datesRange['endDate'] ?? null) : null;
         $dateFrom = $datesRange ? ($datesRange['startDate'] ?? null) : null;
@@ -201,10 +201,10 @@ class Map extends \Models\BaseSql {
         return $this->execQuery($query, $params);
     }
 
-    public function getCountriesByBotId(int $botId, int $apiKey): array {
+    public function getCountriesByUserAgentId(int $userAgentId, int $apiKey): array {
         $params = [
             ':api_key'      => $apiKey,
-            ':id'           => $botId,
+            ':id'           => $userAgentId,
         ];
         $query = (
             'SELECT

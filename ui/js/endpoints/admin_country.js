@@ -1,3 +1,3 @@
-import {CountryPage} from '../pages/Country.js';
+import {CountryPage} from '../pages/Country.js?v=2';
 
 new CountryPage();

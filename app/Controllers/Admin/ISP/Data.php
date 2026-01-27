@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,24 +15,24 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\ISP;
+namespace Tirreno\Controllers\Admin\ISP;
 
-class Data extends \Controllers\Admin\Base\Data {
+class Data extends \Tirreno\Controllers\Admin\Base\Data {
     public function checkIfOperatorHasAccess(int $ispId, int $apiKey): bool {
-        return (new \Models\Isp())->checkAccess($ispId, $apiKey);
+        return (new \Tirreno\Models\Isp())->checkAccess($ispId, $apiKey);
     }
 
     public function getFullIspInfoById(int $ispId, int $apiKey): array {
-        $apiKey = \Utils\ApiKeys::getCurrentOperatorApiKeyId();
-        $model = new \Models\Isp();
+        $apiKey = \Tirreno\Utils\ApiKeys::getCurrentOperatorApiKeyId();
+        $model = new \Tirreno\Models\Isp();
         $result = $model->getFullIspInfoById($ispId, $apiKey);
-        $result['lastseen'] = \Utils\ElapsedDate::short($result['lastseen']);
+        $result['lastseen'] = \Tirreno\Utils\ElapsedDate::short($result['lastseen']);
 
         return $result;
     }
 
     private function getNumberOfIpsByIspId(int $ispId, int $apiKey): int {
-        return (new \Models\Isp())->getIpCountById($ispId, $apiKey);
+        return (new \Tirreno\Models\Isp())->getIpCountById($ispId, $apiKey);
     }
 
     public function getIspDetails(int $ispId, int $apiKey): array {

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Models;
+namespace Tirreno\Models;
 
-class ChangeEmail extends \Models\BaseSql {
+class ChangeEmail extends \Tirreno\Models\BaseSql {
     protected $DB_TABLE_NAME = 'dshb_operators_change_email';
 
     public function add(int $operatorId, string $email): void {

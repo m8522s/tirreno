@@ -2,7 +2,6 @@ import {fireEvent} from './utils/Event.js?v=2';
 import {handleAjaxError} from './utils/ErrorHandler.js?v=2';
 
 export class WatchlistTags {
-
     constructor() {
         this.onRemoveUserTagClick = this.onRemoveUserTagClick.bind(this);
         this.onUserTagRemoveCallback = this.onUserTagRemoveCallback.bind(this);

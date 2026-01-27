@@ -1,7 +1,6 @@
 import {Loader} from './Loader.js?v=2';
 
 export class StaticTiles {
-
     constructor(tilesParams) {
         const me = this;
         this.config = tilesParams;

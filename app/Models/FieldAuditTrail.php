@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Models;
+namespace Tirreno\Models;
 
-class FieldAuditTrail extends \Models\BaseSql {
+class FieldAuditTrail extends \Tirreno\Models\BaseSql {
     protected $DB_TABLE_NAME = 'event_field_audit_trail';
 
     public function getById(int $trailId, int $apiKey): array {
@@ -112,7 +112,7 @@ class FieldAuditTrail extends \Models\BaseSql {
         $params = [
             ':api_key'  => $apiKey,
             ':weeks'    => $weeks,
-            ':week_sec' => \Utils\Constants::get('SECONDS_IN_WEEK'),
+            ':week_sec' => \Tirreno\Utils\Constants::get('SECONDS_IN_WEEK'),
         ];
 
         $query = (

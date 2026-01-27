@@ -1,4 +1,4 @@
-import {SearchLine} from '../parts/SearchLine.js';
+import {SearchLine} from '../parts/SearchLine.js?v=2';
 import {Tooltip} from '../parts/Tooltip.js?v=2';
 
 export class BasePage {

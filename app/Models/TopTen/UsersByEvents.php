@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,7 +15,7 @@
 
 declare(strict_types=1);
 
-namespace Models\TopTen;
+namespace Tirreno\Models\TopTen;
 
 class UsersByEvents extends Base {
     protected $DB_TABLE_NAME = 'event';
@@ -63,7 +63,7 @@ class UsersByEvents extends Base {
 
         foreach ($results as $row) {
             $tsColumns = ['score_updated_at'];
-            \Utils\TimeZones::localizeTimestampsForActiveOperator($tsColumns, $row);
+            \Tirreno\Utils\Timezones::localizeTimestampsForActiveOperator($tsColumns, $row);
         }
 
         return $results;

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -52,7 +52,7 @@ class IpAddress extends Base {
         }
 
         $size = filter_var($this->value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ? 4 : 16;
-        $ip = inet_pton($this->value);
+        $ipAddr = inet_pton($this->value);
 
         foreach (self::LOCALHOST_NETS as $cidr) {
             [$net, $maskBits] = explode('/', $cidr);
@@ -70,7 +70,7 @@ class IpAddress extends Base {
             }
             $mask = str_pad($mask, $size, chr(0));
 
-            if (($ip & $mask) === ($net & $mask)) {
+            if (($ipAddr & $mask) === ($net & $mask)) {
                 return true;
             };
         }

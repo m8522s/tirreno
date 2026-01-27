@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Models;
+namespace Tirreno\Models;
 
-class Dashboard extends \Models\BaseSql {
+class Dashboard extends \Tirreno\Models\BaseSql {
     protected $DB_TABLE_NAME = 'event_account';
 
     public function getTotalBlockedUsers(?array $dateRange, int $apiKey): int {

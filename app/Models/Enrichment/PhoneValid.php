@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Models\Enrichment;
+namespace Tirreno\Models\Enrichment;
 
-class PhoneValid extends \Models\Enrichment\Base {
+class PhoneValid extends \Tirreno\Models\Enrichment\Base {
     protected string $phone_number;
     protected int $profiles;
     protected ?string $iso_country_code;
@@ -72,7 +72,7 @@ class PhoneValid extends \Models\Enrichment\Base {
         $this->country_code = 0;
 
         if ($this->iso_country_code !== null) {
-            $countryModel = new \Models\Country();
+            $countryModel = new \Tirreno\Models\Country();
             $this->country_code = $countryModel->getCountryIdByIso($this->iso_country_code);
         }
 
@@ -89,7 +89,7 @@ class PhoneValid extends \Models\Enrichment\Base {
                 event_phone.key = :key
         ");
 
-        $model = new \Models\Phone();
+        $model = new \Tirreno\Models\Phone();
         $model->execQuery($query, $params);
     }
 }

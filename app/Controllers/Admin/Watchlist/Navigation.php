@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\Watchlist;
+namespace Tirreno\Controllers\Admin\Watchlist;
 
-class Navigation extends \Controllers\Admin\Base\Navigation {
+class Navigation extends \Tirreno\Controllers\Admin\Base\Navigation {
     public function __construct() {
         parent::__construct();
 
@@ -26,10 +26,10 @@ class Navigation extends \Controllers\Admin\Base\Navigation {
     }
 
     public function removeUserFromList(): array {
-        $userId = \Utils\Conversion::getIntRequestParam('userId');
+        $userId = \Tirreno\Utils\Conversion::getIntRequestParam('userId');
 
         $this->controller->removeFromWatchlist($userId, $this->apiKey);
-        $successCode = \Utils\ErrorCodes::USER_REMOVED_FROM_WATCHLIST;
+        $successCode = \Tirreno\Utils\ErrorCodes::USER_REMOVED_FROM_WATCHLIST;
 
         return [
             'success' => $successCode,

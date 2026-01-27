@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,13 +15,15 @@
 
 declare(strict_types=1);
 
-namespace Models\Context;
+namespace Tirreno\Models\Context;
 
 class User extends Base {
+    protected $uniqueValues = false;
+
     public function getContext(array $accountIds, int $apiKey): array {
         $results = $this->getDetails($accountIds, $apiKey);
 
-        \Utils\Enrichment::calculateEmailReputationForContext($results);
+        \Tirreno\Utils\Enrichment::calculateEmailReputationForContext($results);
 
         $recordsByAccount = [];
         foreach ($results as $item) {
@@ -31,6 +33,7 @@ class User extends Base {
         return $recordsByAccount;
     }
 
+    // TODO: check multiple emails
     protected function getDetails(array $accountIds, int $apiKey): array {
         [$params, $placeHolders] = $this->getRequestParams($accountIds, $apiKey);
 

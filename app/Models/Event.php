@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Models;
+namespace Tirreno\Models;
 
-class Event extends \Models\BaseSql {
+class Event extends \Tirreno\Models\BaseSql {
     protected $DB_TABLE_NAME = 'event';
 
     public function getLastEvent(int $apiKey): array {
@@ -208,9 +208,9 @@ class Event extends \Models\BaseSql {
 
         $results = $this->execQuery($query, $params);
 
-        \Utils\Enrichment::calculateIpType($results);
-        \Utils\Enrichment::calculateEmailReputation($results);
-        //$this->translateTimeZones($results, ['event_time', 'domain_creation_date']);
+        \Tirreno\Utils\Enrichment::calculateIpType($results);
+        \Tirreno\Utils\Enrichment::calculateEmailReputation($results);
+        //$this->translateTimezones($results, ['event_time', 'domain_creation_date']);
 
         if (count($results)) {
             $results = $results[0];
@@ -218,7 +218,7 @@ class Event extends \Models\BaseSql {
             $spamlist = $results['ip_type'] === 'Spam list';
             $results['spamlist'] = $spamlist;
 
-            $model = new \Models\User();
+            $model = new \Tirreno\Models\User();
             $results['score_details'] = $model->getApplicableRulesByAccountId($results['accountid'], $apiKey, true);
             $results['score_calculated'] = $results['score'] !== null;
         }

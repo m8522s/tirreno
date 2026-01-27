@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,11 +15,11 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\Home;
+namespace Tirreno\Controllers\Admin\Home;
 
-class Data extends \Controllers\Admin\Base\Data {
+class Data extends \Tirreno\Controllers\Admin\Base\Data {
     public function getChart(string $mode, int $apiKey): array {
-        $modelMap = \Utils\Constants::get('CHART_MODEL_MAP');
+        $modelMap = \Tirreno\Utils\Constants::get('CHART_MODEL_MAP');
 
         $model = array_key_exists($mode, $modelMap) ? new $modelMap[$mode]() : null;
 
@@ -27,7 +27,7 @@ class Data extends \Controllers\Admin\Base\Data {
     }
 
     public function getStat(string $mode, ?array $dateRange, int $apiKey): array {
-        $model = new \Models\Dashboard();
+        $model = new \Tirreno\Models\Dashboard();
 
         $result = [
             'total'         => null,
@@ -37,31 +37,31 @@ class Data extends \Controllers\Admin\Base\Data {
         switch ($mode) {
             case 'totalEvents':
                 $result['total']        = $model->getTotalEvents($dateRange, $apiKey);
-                $result['allTimeTotal'] = $model->getTotalEvents(null, $apiKey);
+                //$result['allTimeTotal'] = $model->getTotalEvents(null, $apiKey);
                 break;
             case 'totalUsers':
                 $result['total']        = $model->getTotalUsers($dateRange, $apiKey);
-                $result['allTimeTotal'] = $model->getTotalUsers(null, $apiKey);
+                //$result['allTimeTotal'] = $model->getTotalUsers(null, $apiKey);
                 break;
             case 'totalIps':
                 $result['total']        = $model->getTotalIps($dateRange, $apiKey);
-                $result['allTimeTotal'] = $model->getTotalIps(null, $apiKey);
+                //$result['allTimeTotal'] = $model->getTotalIps(null, $apiKey);
                 break;
             case 'totalCountries':
                 $result['total']        = $model->getTotalCountries($dateRange, $apiKey);
-                $result['allTimeTotal'] = $model->getTotalCountries(null, $apiKey);
+                //$result['allTimeTotal'] = $model->getTotalCountries(null, $apiKey);
                 break;
             case 'totalUrls':
                 $result['total']        = $model->getTotalResources($dateRange, $apiKey);
-                $result['allTimeTotal'] = $model->getTotalResources(null, $apiKey);
+                //$result['allTimeTotal'] = $model->getTotalResources(null, $apiKey);
                 break;
             case 'totalUsersForReview':
                 $result['total']        = $model->getTotalUsersForReview($dateRange, $apiKey);
-                $result['allTimeTotal'] = $model->getTotalUsersForReview(null, $apiKey);
+                //$result['allTimeTotal'] = $model->getTotalUsersForReview(null, $apiKey);
                 break;
             case 'totalBlockedUsers':
                 $result['total']        = $model->getTotalBlockedUsers($dateRange, $apiKey);
-                $result['allTimeTotal'] = $model->getTotalBlockedUsers(null, $apiKey);
+                //$result['allTimeTotal'] = $model->getTotalBlockedUsers(null, $apiKey);
                 break;
         }
 
@@ -69,7 +69,7 @@ class Data extends \Controllers\Admin\Base\Data {
     }
 
     public function getTopTen(string $mode, ?array $dateRange, int $apiKey): array {
-        $modelMap = \Utils\Constants::get('TOP_TEN_MODELS_MAP');
+        $modelMap = \Tirreno\Utils\Constants::get('TOP_TEN_MODELS_MAP');
 
         $model = array_key_exists($mode, $modelMap) ? new $modelMap[$mode]() : null;
         $data = $model ? $model->getList($apiKey, $dateRange) : [];
@@ -80,6 +80,22 @@ class Data extends \Controllers\Admin\Base\Data {
             'recordsTotal'      => $total,
             'recordsFiltered'   => $total,
             'data'              => $data,
+        ];
+    }
+
+    public function getCurrentTime(\Tirreno\Models\Operator $operator): array {
+        $offset = \Tirreno\Utils\Timezones::getOperatorOffset($operator);
+        $now = time() + $offset;
+        $day = \Tirreno\Utils\Constants::get('SECONDS_IN_DAY');
+        $firstJan = mktime(0, 0, 0, 1, 1, intval(gmdate('Y')));
+
+        $day = \Tirreno\Utils\Conversion::intVal(ceil(($now - $firstJan) / $day), 0);
+
+        return [
+            'clock_offset'      => $offset,
+            'clock_day'         => ($day < 10 ? '00' : ($day < 100 ? '0' : '')) . strval($day),
+            'clock_time_his'    => date('H:i:s', $now),
+            'clock_timezone'    => 'UTC' . (($offset < 0) ? '-' . date('H:i', -$offset) : '+' . date('H:i', $offset)),
         ];
     }
 }

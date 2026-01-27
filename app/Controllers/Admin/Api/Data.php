@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,19 +15,19 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\Api;
+namespace Tirreno\Controllers\Admin\Api;
 
-class Data extends \Controllers\Admin\Base\Data {
+class Data extends \Tirreno\Controllers\Admin\Base\Data {
     protected $ENRICHED_ATTRIBUTES = [];
 
     public function __construct() {
         parent::__construct();
 
-        $this->ENRICHED_ATTRIBUTES = array_keys(\Utils\Constants::get('ENRICHING_ATTRIBUTES'));
+        $this->ENRICHED_ATTRIBUTES = array_keys(\Tirreno\Utils\Constants::get('ENRICHING_ATTRIBUTES'));
     }
 
     public function proceedPostRequest(): array {
-        return match (\Utils\Conversion::getStringRequestParam('cmd')) {
+        return match (\Tirreno\Utils\Conversion::getStringRequestParam('cmd')) {
             'resetKey'          => $this->resetApiKey(),
             'updateApiUsage'    => $this->updateApiUsage(),
             'enrichAll'         => $this->enrichAll(),
@@ -36,12 +36,12 @@ class Data extends \Controllers\Admin\Base\Data {
     }
 
     public function getUsageStats(int $operatorId): array {
-        $model = new \Models\ApiKeys();
+        $model = new \Tirreno\Models\ApiKeys();
         $apiKeys = $model->getKeys($operatorId);
 
         $isOwner = true;
         if (!$apiKeys) {
-            $coOwnerModel = new \Models\ApiKeyCoOwner();
+            $coOwnerModel = new \Tirreno\Models\ApiKeyCoOwner();
             $coOwnerModel->getCoOwnership($operatorId);
 
             if ($coOwnerModel->loaded()) {
@@ -87,7 +87,7 @@ class Data extends \Controllers\Admin\Base\Data {
     }
 
     public function getOperatorApiKeysDetails(int $operatorId): array {
-        [$isOwner, $apiKeys] = \Utils\ApiKeys::getOperatorApiKeys($operatorId);
+        [$isOwner, $apiKeys] = \Tirreno\Utils\ApiKeys::getOperatorApiKeys($operatorId);
 
         $resultKeys = [];
 
@@ -108,7 +108,7 @@ class Data extends \Controllers\Admin\Base\Data {
     }
 
     private function getSubscriptionStats(string $token): array {
-        $response = \Utils\Network::sendApiRequest(null, '/usage-stats', 'GET', $token);
+        $response = \Tirreno\Utils\Network::sendApiRequest(null, '/usage-stats', 'GET', $token);
         $code = $response['code'];
         $result = $response['data'];
 
@@ -123,14 +123,14 @@ class Data extends \Controllers\Admin\Base\Data {
     public function resetApiKey(): array {
         $pageParams = [];
         $params = $this->extractRequestParams(['token', 'keyId']);
-        $errorCode = \Utils\Validators::validateResetApiKey($params);
+        $errorCode = \Tirreno\Utils\Validators::validateResetApiKey($params);
 
         if ($errorCode) {
             $pageParams['ERROR_CODE'] = $errorCode;
         } else {
-            $keyId = \Utils\Conversion::getIntRequestParam('keyId');
+            $keyId = \Tirreno\Utils\Conversion::getIntRequestParam('keyId');
 
-            $model = new \Models\ApiKeys();
+            $model = new \Tirreno\Models\ApiKeys();
             $model->getKeyById($keyId);
             $model->resetKey($keyId, $model->creator);
 
@@ -143,17 +143,18 @@ class Data extends \Controllers\Admin\Base\Data {
     public function enrichAll(): array {
         $pageParams = [];
         $params = $this->extractRequestParams(['token']);
-        $errorCode = \Utils\Validators::validateEnrichAll($params);
+        $enrichmentKey = \Tirreno\Utils\ApiKeys::getCurrentOperatorEnrichmentKeyString();
+        $errorCode = \Tirreno\Utils\Validators::validateEnrichAll($params, $enrichmentKey);
 
         if ($errorCode) {
             $pageParams['ERROR_CODE'] = $errorCode;
         } else {
-            $apiKey = \Utils\ApiKeys::getCurrentOperatorApiKeyId();
+            $apiKey = \Tirreno\Utils\ApiKeys::getCurrentOperatorApiKeyId();
 
-            $model = new \Models\Users();
-            $accountsForEnrichment = $model->notCheckedUsers($apiKey);
+            $model = new \Tirreno\Models\Users();
+            $accountsToEnrich = $model->notCheckedUsers($apiKey);
 
-            (new \Models\Queue())->addBatchIds($accountsForEnrichment, \Utils\Constants::get('ENRICHMENT_QUEUE_ACTION_TYPE'), $apiKey);
+            (new \Tirreno\Models\Queue())->addBatchIds($accountsToEnrich, \Tirreno\Utils\Constants::get('ENRICHMENT_QUEUE_ACTION_TYPE'), $apiKey);
 
             $pageParams['SUCCESS_MESSAGE'] = $this->f3->get('AdminApi_manual_enrichment_success_message');
         }
@@ -161,11 +162,11 @@ class Data extends \Controllers\Admin\Base\Data {
         return $pageParams;
     }
 
-    public function getEnrichedAttributes(\Models\ApiKeys $key): array {
+    public function getEnrichedAttributes(\Tirreno\Models\ApiKeys $key): array {
         $enrichedAttributes = [];
-        $skipAttributes = \json_decode($key->skip_enriching_attributes);
+        $skipAttributes = json_decode($key->skip_enriching_attributes);
         foreach ($this->ENRICHED_ATTRIBUTES as $attribute) {
-            $enrichedAttributes[$attribute] = !\in_array($attribute, $skipAttributes);
+            $enrichedAttributes[$attribute] = !in_array($attribute, $skipAttributes);
         }
 
         return $enrichedAttributes;
@@ -175,33 +176,33 @@ class Data extends \Controllers\Admin\Base\Data {
         $pageParams = [];
         // apiToken, exchangeBlacklist optional
         $params = $this->extractRequestParams(['token', 'keyId', 'enrichedAttributes']);
-        $errorCode = \Utils\Validators::validateUpdateApiUsage($params, $this->ENRICHED_ATTRIBUTES);
+        $errorCode = \Tirreno\Utils\Validators::validateUpdateApiUsage($params, $this->ENRICHED_ATTRIBUTES);
 
         if ($errorCode) {
             $pageParams['ERROR_CODE'] = $errorCode;
         } else {
-            $keyId = \Utils\Conversion::getIntRequestParam('keyId');
+            $keyId = \Tirreno\Utils\Conversion::getIntRequestParam('keyId');
 
-            $model = new \Models\ApiKeys();
+            $model = new \Tirreno\Models\ApiKeys();
             $model->getKeyById($keyId);
 
-            $apiToken = \Utils\Conversion::getStringRequestParam('apiToken', true);
+            $apiToken = \Tirreno\Utils\Conversion::getStringRequestParam('apiToken', true);
 
             if ($apiToken !== null) {
                 $apiToken = trim($apiToken);
                 [$code, , $error] = $this->getSubscriptionStats($apiToken);
                 if (strlen($error) > 0 || $code > 201) {
-                    $pageParams['ERROR_CODE'] = \Utils\ErrorCodes::SUBSCRIPTION_KEY_INVALID_UPDATE;
+                    $pageParams['ERROR_CODE'] = \Tirreno\Utils\ErrorCodes::SUBSCRIPTION_KEY_INVALID_UPDATE;
                     return $pageParams;
                 }
                 $model->updateInternalToken($apiToken);
             }
 
-            $enrichedAttributes = \Utils\Conversion::getArrayRequestParam('enrichedAttributes');
-            $skipEnrichingAttributes = \array_diff($this->ENRICHED_ATTRIBUTES, \array_keys($enrichedAttributes));
-            $model->updateSkipEnrichingAttributes($skipEnrichingAttributes);
+            $enrichedAttributes = \Tirreno\Utils\Conversion::getArrayRequestParam('enrichedAttributes');
+            $skipEnrichingAttr = array_diff($this->ENRICHED_ATTRIBUTES, array_keys($enrichedAttributes));
+            $model->updateSkipEnrichingAttributes($skipEnrichingAttr);
 
-            $skipBlacklistSync = !\Utils\Conversion::getStringRequestParam('exchangeBlacklist');
+            $skipBlacklistSync = !\Tirreno\Utils\Conversion::getStringRequestParam('exchangeBlacklist');
             $model->updateSkipBlacklistSynchronisation($skipBlacklistSync);
 
             $pageParams['SUCCESS_MESSAGE'] = $this->f3->get('AdminApi_data_enrichment_success_message');
@@ -211,17 +212,17 @@ class Data extends \Controllers\Admin\Base\Data {
     }
 
     public function getNotCheckedEntitiesForLoggedUser(): bool {
-        $apiKey = \Utils\ApiKeys::getCurrentOperatorApiKeyId();
-        $controller = new \Controllers\Admin\Enrichment\Data();
+        $apiKey = \Tirreno\Utils\ApiKeys::getCurrentOperatorApiKeyId();
+        $controller = new \Tirreno\Controllers\Admin\Enrichment\Data();
 
         return $controller->getNotCheckedExists($apiKey);
     }
 
     public function getScheduledForEnrichment(): bool {
-        $apiKey = \Utils\ApiKeys::getCurrentOperatorApiKeyId();
-        $model = new \Models\Queue();
+        $apiKey = \Tirreno\Utils\ApiKeys::getCurrentOperatorApiKeyId();
+        $model = new \Tirreno\Models\Queue();
 
         // do not use isInQueue() to prevent true on failed state
-        return $model->actionIsInQueueProcessing(\Utils\Constants::get('ENRICHMENT_QUEUE_ACTION_TYPE'), $apiKey);
+        return $model->actionIsInQueueProcessing(\Tirreno\Utils\Constants::get('ENRICHMENT_QUEUE_ACTION_TYPE'), $apiKey);
     }
 }

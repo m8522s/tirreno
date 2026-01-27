@@ -1,5 +1,4 @@
 export class Loader {
-
     constructor() {
         this.symbols = [
             this.el('⣾'),

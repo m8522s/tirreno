@@ -6,7 +6,6 @@ import {
 } from './utils/Constants.js?v=2';
 
 export class TotalTile {
-
     constructor() {
         this.criticalValues = {
             totalIps:       USER_IPS_CRITICAL_VALUE,

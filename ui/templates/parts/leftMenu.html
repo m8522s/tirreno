@@ -95,10 +95,12 @@
                     <include href="images/icons/ios-ipados-devices.svg" />{{ @LeftMenu_devices_link }}
                 </a>
             </li>
+***}
+{***
             <li>
-                <set BOTS_ACTIVE_CLASS="{{ false !== strpos(@CURRENT_PATH, '/bot') ? 'is-active': 'is-normal'}}" />
-                <a class="{{ @BOTS_ACTIVE_CLASS }}" href="{{ @BASE }}/bot">
-                    <include href="images/icons/bot.svg" />{{ @LeftMenu_bots_link }}
+                <set USER_AGENTS_ACTIVE_CLASS="{{ false !== strpos(@CURRENT_PATH, '/user-agent') ? 'is-active': 'is-normal'}}" />
+                <a class="{{ @USER_AGENTS_ACTIVE_CLASS }}" href="{{ @BASE }}/user-agent">
+                    <include href="images/icons/bot.svg" />{{ @LeftMenu_user_agents_link }}
                 </a>
             </li>
 ***}
@@ -148,6 +150,14 @@
                 <a class="is-normal" href="{{ @BASE }}/logout">
                     <include href="images/icons/logout.svg" />{{ @LeftMenu_logout_link }}
                 </a>
+            </li>
+
+            <li>
+                <a class="is-docs" href="{{ @LeftMenu_dev_docs_link_url }}" target="_blank" rel="noopener noreferrer">{{ @LeftMenu_dev_docs_link }}</a>
+            </li>
+
+            <li>
+                <a class="is-docs" href="{{ @LeftMenu_admin_docs_link_url }}" target="_blank" rel="noopener noreferrer">{{ @LeftMenu_admin_docs_link }}</a>
             </li>
         </ul>
     </aside>

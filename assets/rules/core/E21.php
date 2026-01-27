@@ -1,8 +1,8 @@
 <?php
 
-namespace CoreRules;
+namespace Tirreno\Rules\Core;
 
-class E21 extends \Assets\Rule {
+class E21 extends \Tirreno\Assets\Rule {
     public const NAME = 'No vowels in email';
     public const DESCRIPTION = 'Email username does not contain any vowels.';
     public const ATTRIBUTES = [];

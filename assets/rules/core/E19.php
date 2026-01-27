@@ -1,8 +1,8 @@
 <?php
 
-namespace CoreRules;
+namespace Tirreno\Rules\Core;
 
-class E19 extends \Assets\Rule {
+class E19 extends \Tirreno\Assets\Rule {
     public const NAME = 'Multiple emails changed';
     public const DESCRIPTION = 'User has changed their email.';
     public const ATTRIBUTES = [];

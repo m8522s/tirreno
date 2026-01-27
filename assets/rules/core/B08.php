@@ -1,8 +1,8 @@
 <?php
 
-namespace CoreRules;
+namespace Tirreno\Rules\Core;
 
-class B08 extends \Assets\Rule {
+class B08 extends \Tirreno\Assets\Rule {
     public const NAME = 'Dormant account (30 days)';
     public const DESCRIPTION = 'The account has been inactive for 30 days.';
     public const ATTRIBUTES = [];

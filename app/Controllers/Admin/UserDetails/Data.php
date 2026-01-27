@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,38 +15,45 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\UserDetails;
+namespace Tirreno\Controllers\Admin\UserDetails;
 
-class Data extends \Controllers\Admin\Base\Data {
+class Data extends \Tirreno\Controllers\Admin\Base\Data {
     public function getUserDetails(int $userId, int $apiKey): array {
-        $model          = new \Models\UserDetails\Id();
+        (new \Tirreno\Models\User())->updateTotalsByAccountIds([$userId], $apiKey);
+
+        $model          = new \Tirreno\Models\UserDetails\Id();
         $userDetails    = $model->getDetails($userId, $apiKey);
 
-        $model          = new \Models\UserDetails\Ip();
+        $model          = new \Tirreno\Models\UserDetails\Ip();
         $ipDetails      = $model->getDetails($userId, $apiKey);
 
-        $model          = new \Models\UserDetails\Behaviour();
-        $offset         = \Utils\TimeZones::getCurrentOperatorOffset();
+        $model          = new \Tirreno\Models\UserDetails\Total();
+        $totalDetails   = $model->getDetails($userId, $apiKey);
 
-        $dateRange      = \Utils\TimeZones::getCurDayRange($offset);
+        $model          = new \Tirreno\Models\UserDetails\Behaviour();
+        $offset         = \Tirreno\Utils\Timezones::getCurrentOperatorOffset();
+
+        $dateRange      = \Tirreno\Utils\Timezones::getCurDayRange($offset);
         $dayDetails     = $model->getDayDetails($userId, $dateRange, $apiKey);
 
-        $dateRange      = \Utils\TimeZones::getLastNDaysRange(7, $offset);
-        $weekDetails    = $model->getWeekDetails($userId, $dateRange, $apiKey);
+        $dateRange      = \Tirreno\Utils\Timezones::getWeekAgoDayRange($offset);
+        $weekDetails    = $model->getDayDetails($userId, $dateRange, $apiKey);
 
-        $dayDetails['limits']   = \Utils\Constants::get('USER_DETAILS_DAY_LIMITS');
-        $weekDetails['limits']  = \Utils\Constants::get('USER_DETAILS_WEEK_LIMITS');
+        $limits = \Tirreno\Utils\Assets\Lists\Constants::getList();
+
+        $totalDetails['limits'] = $limits['user_details_total_limits'] ?? [];
 
         return [
             'userDetails'   => $userDetails,
             'ipDetails'     => $ipDetails,
+            'totalDetails'  => $totalDetails,
             'dayDetails'    => $dayDetails,
             'weekDetails'   => $weekDetails,
         ];
     }
 
     public function checkIfOperatorHasAccess(int $userId, int $apiKey): bool {
-        $model = new \Models\UserDetails\Id();
+        $model = new \Tirreno\Models\UserDetails\Id();
 
         return $model->checkAccess($userId, $apiKey);
     }

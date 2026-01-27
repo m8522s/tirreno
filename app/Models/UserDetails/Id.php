@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Models\UserDetails;
+namespace Tirreno\Models\UserDetails;
 
-class Id extends \Models\BaseSql implements \Interfaces\ApiKeyAccessAuthorizationInterface {
+class Id extends \Tirreno\Models\BaseSql implements \Tirreno\Interfaces\ApiKeyAccessAuthorizationInterface {
     protected $DB_TABLE_NAME = 'event_account';
 
     public function checkAccess(int $subjectId, int $apiKey): bool {
@@ -83,7 +83,7 @@ class Id extends \Models\BaseSql implements \Interfaces\ApiKeyAccessAuthorizatio
         $result = $results[0] ?? [];
 
         $tsColumns = ['created', 'lastseen', 'score_updated_at', 'latest_decision', 'updated', 'added_to_review'];
-        \Utils\TimeZones::localizeTimestampsForActiveOperator($tsColumns, $result);
+        \Tirreno\Utils\Timezones::localizeTimestampsForActiveOperator($tsColumns, $result);
 
         return $result;
     }

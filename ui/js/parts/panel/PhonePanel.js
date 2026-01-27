@@ -11,7 +11,6 @@ import {
 } from '../DataRenderers.js?v=2';
 
 export class PhonePanel extends BasePanel {
-
     constructor() {
         let eventParams = {
             enrichment: true,

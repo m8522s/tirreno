@@ -1,4 +1,4 @@
-import {BasePage} from './Base.js';
+import {BasePage} from './Base.js?v=2';
 import {SequentialLoad} from '../parts/SequentialLoad.js?v=2';
 import {UsersGrid} from '../parts/grid/Users.js?v=2';
 import {EventsGrid} from '../parts/grid/Events.js?v=2';
@@ -10,7 +10,6 @@ import {IpTiles} from '../parts/details/IpTiles.js?v=2';
 import {ReenrichmentButton} from '../parts/ReenrichmentButton.js?v=2';
 
 export class IpPage extends BasePage {
-
     constructor() {
         super('ip', true);
 

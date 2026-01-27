@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,22 +15,23 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Api;
+namespace Tirreno\Controllers\Api;
 
 abstract class Endpoint {
     public const API_KEY = 'Api-Key';
 
     protected $f3;
 
-    protected \Views\Json $response;
+    protected \Tirreno\Views\Json $response;
     protected string $responseType;
     protected int $error;
+    protected int $statusCode;
     protected array $validationErrors = [];
     protected \DateTime $startTime;
 
     private string $apiKeyString;
-    protected \Models\ApiKeys $apiKey;
-    protected \Interfaces\ApiKeyAccessAuthorizationInterface $authorizationModel;
+    protected \Tirreno\Models\ApiKeys $apiKey;
+    protected \Tirreno\Interfaces\ApiKeyAccessAuthorizationInterface $authorizationModel;
 
     protected array $body = [];
 
@@ -41,10 +42,10 @@ abstract class Endpoint {
         $this->f3->set('ONERROR', function (): void {
             $this->handleInternalServerError();
         });
-        \Utils\Database::initConnect(false);
+        \Tirreno\Utils\Database::initConnect(false);
 
-        $this->response = new \Views\Json();
-        $this->responseType = \Utils\Constants::get('SINGLE_RESPONSE_TYPE');
+        $this->response = new \Tirreno\Views\Json();
+        $this->responseType = \Tirreno\Utils\Constants::get('SINGLE_RESPONSE_TYPE');
     }
 
     public function beforeRoute(): void {
@@ -65,7 +66,7 @@ abstract class Endpoint {
             $this->data = null;
         }
 
-        if (!isset($this->error) || (!in_array($this->error, [400, 401, 403]))) {
+        if (!isset($this->error) || !isset($this->statusCode) || (!in_array($this->statusCode, [400, 401, 403]))) {
             $this->saveLogbook();
         }
 
@@ -85,11 +86,11 @@ abstract class Endpoint {
             return;
         }
 
-        $this->setError(400, \Utils\ErrorCodes::REST_API_KEY_DOES_NOT_EXIST);
+        $this->setError(400, \Tirreno\Utils\ErrorCodes::REST_API_KEY_DOES_NOT_EXIST);
     }
 
     protected function authenticate(): void {
-        $model = new \Models\ApiKeys();
+        $model = new \Tirreno\Models\ApiKeys();
         $apiKey = $model->getKeyIdByHash($this->apiKeyString);
 
         if ($apiKey) {
@@ -98,7 +99,7 @@ abstract class Endpoint {
             return;
         }
 
-        $this->setError(401, \Utils\ErrorCodes::REST_API_KEY_IS_NOT_CORRECT);
+        $this->setError(401, \Tirreno\Utils\ErrorCodes::REST_API_KEY_IS_NOT_CORRECT);
     }
 
     protected function authorize(string $subjectId): void {
@@ -113,7 +114,7 @@ abstract class Endpoint {
             return;
         }
 
-        $this->setError(403, \Utils\ErrorCodes::REST_API_NOT_AUTHORIZED);
+        $this->setError(403, \Tirreno\Utils\ErrorCodes::REST_API_NOT_AUTHORIZED);
     }
 
     protected function getBodyProp(string $key, string $paramType = 'string'): string|int|array|null {
@@ -127,12 +128,12 @@ abstract class Endpoint {
     }
 
     protected function saveLogbook(): void {
-        $model = new \Models\Logbook();
+        $model = new \Tirreno\Models\Logbook();
         $model->add(
             $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1',
             $this->f3->PATH,
             null,
-            !isset($this->error) ? \Utils\Constants::get('LOGBOOK_ERROR_TYPE_SUCCESS') : \Utils\Constants::get('LOGBOOK_ERROR_TYPE_CRITICAL_ERROR'),
+            !isset($this->error) ? \Tirreno\Utils\Constants::get('LOGBOOK_ERROR_TYPE_SUCCESS') : \Tirreno\Utils\Constants::get('LOGBOOK_ERROR_TYPE_CRITICAL_ERROR'),
             !isset($this->error) ? null : json_encode(['Undefined error']),
             json_encode($this->body),
             $this->formatStartTime(),
@@ -148,6 +149,7 @@ abstract class Endpoint {
 
     protected function setError(int $statusCode, int $errorCode): void {
         $this->f3->status($statusCode);
+        $this->statusCode = $statusCode;
         $this->error = $errorCode;
         $this->afterRoute();
         exit;
@@ -159,8 +161,8 @@ abstract class Endpoint {
     }
 
     private function handleInternalServerError(): void {
-        $errorData = \Utils\ErrorHandler::getErrorDetails($this->f3);
-        \Utils\ErrorHandler::saveErrorInformation($this->f3, $errorData);
+        $errorData = \Tirreno\Utils\ErrorHandler::getErrorDetails($this->f3);
+        \Tirreno\Utils\ErrorHandler::saveErrorInformation($this->f3, $errorData);
 
         $this->setError(500, 500);
     }

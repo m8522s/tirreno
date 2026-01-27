@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\Blacklist;
+namespace Tirreno\Controllers\Admin\Blacklist;
 
-class Page extends \Controllers\Admin\Base\Page {
+class Page extends \Tirreno\Controllers\Admin\Base\Page {
     public $page = 'AdminBlacklist';
 
     public function getPageParams(): array {
@@ -31,7 +31,7 @@ class Page extends \Controllers\Admin\Base\Page {
             'LOAD_AUTOCOMPLETE'     => true,
             'HTML_FILE'             => 'admin/blacklist.html',
             'JS'                    => 'admin_blacklist.js',
-            'ENTITY_TYPES'          => \Utils\Constants::get('ENTITY_TYPES'),
+            'ENTITY_TYPES'          => \Tirreno\Utils\Constants::get('ENTITY_TYPES'),
         ];
 
         return parent::applyPageParams($pageParams);

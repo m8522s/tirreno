@@ -29,7 +29,7 @@ export class IpsGrid extends BaseGrid {
                 targets: 2
             },
             {
-                className: 'ip-newtwork-col',
+                className: 'ip-network-col',
                 targets: 3
             },
             {

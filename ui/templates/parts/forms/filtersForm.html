@@ -1,4 +1,4 @@
-<nav class="filtersForm daterange">
+<nav class="filters-form daterange {{isset(@hidden) && @hidden ? 'is-hidden' : ''}}">
     {~
 
         $USE_RANGE    = false;
@@ -35,7 +35,7 @@
 
                 <input type="hidden" name="date_from" />
                 <input type="hidden" name="date_to" />
-                <input type="hidden" name="offset" value="{{ @OFFSET }}"/>
+                <input type="hidden" name="offset" value="{{ @clock_offset }}"/>
             </div>
 
     </check>
@@ -43,7 +43,7 @@
     <check if="{{ @USE_RANGE }}">
         <input type="hidden" name="date_from" />
         <input type="hidden" name="date_to" />
-        <input type="hidden" name="offset" value="{{ @OFFSET ?? 0 }}"/>
+        <input type="hidden" name="offset" value="{{ @clock_offset ?? 0 }}"/>
 
         <div class="field">
             <p class="control has-icons-left">

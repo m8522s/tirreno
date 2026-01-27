@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,22 +15,22 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\Domains;
+namespace Tirreno\Controllers\Admin\Domains;
 
-class Data extends \Controllers\Admin\Base\Data {
+class Data extends \Tirreno\Controllers\Admin\Base\Data {
     public function getList(int $apiKey): array {
         $result = [];
-        $model = new \Models\Grid\Domains\Grid($apiKey);
+        $model = new \Tirreno\Models\Grid\Domains\Grid($apiKey);
 
         $map = [
             'domainId' => 'getDomainsBySameIpDomainId',
         ];
 
-        $result = $this->idMapIterate($map, $model, 'getAllDomains');
+        $result = $this->idMapIterate($map, $model);
 
         $ids = array_column($result['data'], 'id');
         if ($ids) {
-            $model = new \Models\Domain();
+            $model = new \Tirreno\Models\Domain();
             $model->updateTotalsByEntityIds($ids, $apiKey);
             $result['data'] = $model->refreshTotals($result['data'], $apiKey);
         }

@@ -38,7 +38,6 @@ import {
 } from '../DataRenderers.js?v=2';
 
 export class EventPanel extends BasePanel {
-
     constructor(eventParams = null) {
         eventParams = eventParams !== null ? eventParams : {
             enrichment: false,

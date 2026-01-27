@@ -9,9 +9,7 @@ import {
     renderTime,
 } from '../DataRenderers.js?v=2';
 
-
 export class UsersGrid extends BaseGrid {
-
     get orderConfig() {
         return [[4, 'desc']];
     }

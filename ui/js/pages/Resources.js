@@ -1,4 +1,4 @@
-import {BasePage} from './Base.js';
+import {BasePage} from './Base.js?v=2';
 
 import {DatesFilter} from '../parts/DatesFilter.js?v=2';
 import {SearchFilter} from '../parts/SearchFilter.js?v=2';
@@ -7,7 +7,6 @@ import {ResourcesChart} from '../parts/chart/Resources.js?v=2';
 import {ResourcesGrid} from '../parts/grid/Resources.js?v=2';
 
 export class ResourcesPage extends BasePage {
-
     constructor() {
         super('resources');
 

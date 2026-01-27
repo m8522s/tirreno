@@ -2,9 +2,7 @@ import {renderScoreDetails} from './DataRenderers.js?v=2';
 import {handleAjaxError} from './utils/ErrorHandler.js?v=2';
 import {Tooltip} from './Tooltip.js?v=2';
 
-
 export class ScoreDetails {
-
     constructor(scoreParams) {
         this.config = scoreParams;
         this.loadData();

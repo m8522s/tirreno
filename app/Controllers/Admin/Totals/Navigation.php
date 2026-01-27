@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\Totals;
+namespace Tirreno\Controllers\Admin\Totals;
 
-class Navigation extends \Controllers\Admin\Base\Navigation {
+class Navigation extends \Tirreno\Controllers\Admin\Base\Navigation {
     public function __construct() {
         parent::__construct();
 
@@ -26,10 +26,10 @@ class Navigation extends \Controllers\Admin\Base\Navigation {
     }
 
     public function getTimeFrameTotal(): array {
-        $ids        = \Utils\Conversion::getArrayRequestParam('ids');
-        $type       = \Utils\Conversion::getStringRequestParam('type');
-        $startDate  = \Utils\Conversion::getStringRequestParam('startDate');
-        $endDate    = \Utils\Conversion::getStringRequestParam('endDate');
+        $ids        = \Tirreno\Utils\Conversion::getArrayRequestParam('ids');
+        $type       = \Tirreno\Utils\Conversion::getStringRequestParam('type');
+        $startDate  = \Tirreno\Utils\Conversion::getStringRequestParam('startDate');
+        $endDate    = \Tirreno\Utils\Conversion::getStringRequestParam('endDate');
 
         return $this->controller->getTimeFrameTotal($ids, $type, $startDate, $endDate, $this->apiKey);
     }

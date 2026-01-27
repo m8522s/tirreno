@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Models;
+namespace Tirreno\Models;
 
-class Email extends \Models\BaseSql implements \Interfaces\FraudFlagUpdaterInterface {
+class Email extends \Tirreno\Models\BaseSql implements \Tirreno\Interfaces\FraudFlagUpdaterInterface {
     protected $DB_TABLE_NAME = 'event';
 
     public function getEmailDetails(int $id, int $apiKey): array {
@@ -71,7 +71,7 @@ class Email extends \Models\BaseSql implements \Interfaces\FraudFlagUpdaterInter
 
         $results = $this->execQuery($query, $params);
 
-        \Utils\Enrichment::calculateEmailReputation($results);
+        \Tirreno\Utils\Enrichment::calculateEmailReputation($results);
 
         return $results[0] ?? [];
     }

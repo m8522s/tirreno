@@ -2,11 +2,10 @@
 <ruleset name="PHPCodingStandards">
     <description>PHP coding standards.</description>
 
-    <file>app/</file>
-    <file>sensor/</file>
-    <file>install/</file>
+    <file>./</file>
+    <exclude-pattern>ui/</exclude-pattern>
     <exclude-pattern>vendor/</exclude-pattern>
-    <exclude-pattern>sensor/vendor/</exclude-pattern>
+    <exclude-pattern>libs/</exclude-pattern>
 
     <!-- Extend a base coding standard, such as PSR12 -->
     <rule ref="PSR12"/>

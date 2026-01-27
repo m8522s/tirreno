@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -24,6 +24,6 @@ return [
     'Signup_form_create_account_question' => 'Already have an account?',
     'Signup_form_create_account_link' => 'Log in',
 
-    'Signup_activation_email_subject' => 'Activate your acount',
+    'Signup_activation_email_subject' => 'Activate your account',
     'Signup_activation_email_body' => 'Thanks for your registration. Please activate your account and start using the system. %s',
 ];

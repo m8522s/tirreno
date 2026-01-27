@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,13 +15,13 @@
 
 declare(strict_types=1);
 
-namespace Crons;
+namespace Tirreno\Crons;
 
 abstract class BaseQueue extends Base {
     abstract protected function processItem(array $item): void;
 
     protected function readyToProcess(string $action): bool {
-        $model = new \Models\Queue();
+        $model = new \Tirreno\Models\Queue();
 
         $result = $model->checkExecuting($action);
 
@@ -29,7 +29,7 @@ abstract class BaseQueue extends Base {
             return true;    // no executing action
         }
 
-        if (!\Utils\DateRange::isQueueTimeouted($result['updated'])) {
+        if (!\Tirreno\Utils\DateRange::isQueueTimeouted($result['updated'])) {
             return false;   // previous job still executing
         }
 
@@ -44,21 +44,21 @@ abstract class BaseQueue extends Base {
         $prefix = '';
 
         switch ($action) {
-            case \Utils\Constants::get('DELETE_USER_QUEUE_ACTION_TYPE'):
+            case \Tirreno\Utils\Constants::get('DELETE_USER_QUEUE_ACTION_TYPE'):
                 $prefix = 'Deletion';
                 break;
-            case \Utils\Constants::get('BLACKLIST_QUEUE_ACTION_TYPE'):
+            case \Tirreno\Utils\Constants::get('BLACKLIST_QUEUE_ACTION_TYPE'):
                 $prefix = 'Blacklist';
                 break;
-            case \Utils\Constants::get('ENRICHMENT_QUEUE_ACTION_TYPE'):
+            case \Tirreno\Utils\Constants::get('ENRICHMENT_QUEUE_ACTION_TYPE'):
                 $prefix = 'Enrichment';
                 break;
-            case \Utils\Constants::get('RISK_SCORE_QUEUE_ACTION_TYPE'):
+            case \Tirreno\Utils\Constants::get('RISK_SCORE_QUEUE_ACTION_TYPE'):
                 $prefix = 'Risk score';
                 break;
         }
 
-        $model = new \Models\Queue();
+        $model = new \Tirreno\Models\Queue();
 
         if (!$prefix || !$this->readyToProcess($action)) {
             $this->addLog($prefix . ' queue is already being executed by another cron job.');
@@ -75,10 +75,10 @@ abstract class BaseQueue extends Base {
         $batch = [];
         $bottom = false;
 
-        $model = new \Models\Queue();
+        $model = new \Tirreno\Models\Queue();
 
         while (!$bottom) {
-            $batchSize = \Utils\Variables::getAccountOperationQueueBatchSize();
+            $batchSize = \Tirreno\Utils\Variables::getAccountOperationQueueBatchSize();
             $this->addLog(sprintf('Fetching next batch (%s) in queue.', $batchSize));
 
             // status waiting action deletion, older first
@@ -106,13 +106,13 @@ abstract class BaseQueue extends Base {
                 }
 
                 // exit if took too long
-                $batchTimeout = (time() - $start) > \Utils\Constants::get('ACCOUNT_OPERATION_QUEUE_EXECUTE_TIME_SEC');
+                $batchTimeout = (time() - $start) > \Tirreno\Utils\Constants::get('ACCOUNT_OPERATION_QUEUE_EXECUTE_TIME_SEC');
                 if ($batchTimeout) {
                     break;
                 }
             }
             // exit if took too long
-            $bottom = (time() - $start) > \Utils\Constants::get('ACCOUNT_OPERATION_QUEUE_EXECUTE_TIME_SEC');
+            $bottom = (time() - $start) > \Tirreno\Utils\Constants::get('ACCOUNT_OPERATION_QUEUE_EXECUTE_TIME_SEC');
         }
 
         $model->setCompleted($success);
@@ -126,7 +126,7 @@ abstract class BaseQueue extends Base {
                 'trace'     => $errors[0],
                 'sql_log'   => '',
             ];
-            \Utils\ErrorHandler::saveErrorInformation(\Base::instance(), $errObj);
+            \Tirreno\Utils\ErrorHandler::saveErrorInformation(\Base::instance(), $errObj);
         }
 
         $this->addLog(sprintf(

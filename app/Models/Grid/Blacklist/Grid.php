@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Models\Grid\Blacklist;
+namespace Tirreno\Models\Grid\Blacklist;
 
-class Grid extends \Models\Grid\Base\Grid {
+class Grid extends \Tirreno\Models\Grid\Base\Grid {
     public function __construct(int $apiKey) {
         parent::__construct();
 
@@ -26,13 +26,13 @@ class Grid extends \Models\Grid\Base\Grid {
         $this->query = new Query($apiKey);
     }
 
-    public function getAllBlacklistedItems(): array {
+    public function getAll(): array {
         return $this->getGrid();
     }
 
     protected function convertTimeToUserTimezone(array &$result): void {
         $fields = ['created', 'score_updated_at'];
 
-        \Utils\TimeZones::translateTimeZones($result, $fields);
+        \Tirreno\Utils\Timezones::translateTimezones($result, $fields);
     }
 }

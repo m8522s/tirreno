@@ -1,3 +1,3 @@
-import {ResourcesPage} from '../pages/Resources.js';
+import {ResourcesPage} from '../pages/Resources.js?v=2';
 
 new ResourcesPage();

@@ -8,3 +8,4 @@ chmod -R 755 assets/rules/core
 chmod -R 755 assets/rules/custom
 chmod -R 755 assets/logs
 chmod -R 755 assets/lists
+chmod -R 755 assets/dashboard

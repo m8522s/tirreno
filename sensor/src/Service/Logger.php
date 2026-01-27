@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -33,13 +33,13 @@ class Logger {
         fclose($out);
     }
 
-    public function logWarning(string $description, \Throwable $e = null): void {
-        $info = $e !== null ? ': ' . $this->getDebugInfo($e) : '';
+    public function logWarning(string $description, \Throwable $err = null): void {
+        $info = $err !== null ? ': ' . $this->getDebugInfo($err) : '';
         $this->fflush(sprintf('Warning: %s %s', $description, $info), 'stdout');
     }
 
-    public function logError(\Throwable $e, string $description = null): void {
-        $this->fflush(sprintf('Error: %s', $description ?? $this->getDebugInfo($e)), 'stderr');
+    public function logError(\Throwable $err, string $description = null): void {
+        $this->fflush(sprintf('Error: %s', $description ?? $this->getDebugInfo($err)), 'stderr');
     }
 
     public function logUserError(int $httpCode, string $message): void {
@@ -79,11 +79,11 @@ class Logger {
         $this->queries[] = ['sql' => $query, 'params' => $params];
     }
 
-    private function getDebugInfo(\Throwable $e): string {
+    private function getDebugInfo(\Throwable $err): string {
         return json_encode([
-            'class' => $e::class,
-            'message' => $e->getMessage(),
-            'trace' => $e->getTraceAsString(),
+            'class'     => $err::class,
+            'message'   => $err->getMessage(),
+            'trace'     => $err->getTraceAsString(),
         ], \JSON_THROW_ON_ERROR);
     }
 }

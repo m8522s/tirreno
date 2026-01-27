@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,14 +15,14 @@
 
 declare(strict_types=1);
 
-namespace Updates;
+namespace Tirreno\Updates;
 
 abstract class Base {
     public static $version = '';
 
-    abstract public static function apply($database);
+    abstract public static function apply($database): void;
 
-    public static function isApplied($updatesModel) {
+    public static function isApplied(\Tirreno\Models\Updates $updatesModel): bool {
         return $updatesModel->isApplied(static::$version, 'core');
     }
 }

@@ -1,4 +1,4 @@
-import {BasePage} from './Base.js';
+import {BasePage} from './Base.js?v=2';
 
 import {DatesFilter} from '../parts/DatesFilter.js?v=2';
 import {SearchFilter} from '../parts/SearchFilter.js?v=2';
@@ -7,7 +7,6 @@ import {LogbookGrid} from '../parts/grid/Logbook.js?v=2';
 import {LogbookChart} from '../parts/chart/Logbook.js?v=2';
 
 export class LogbookPage extends BasePage {
-
     constructor() {
         super('logbook');
 

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Models\Grid\Blacklist;
+namespace Tirreno\Models\Grid\Blacklist;
 
-class Query extends \Models\Grid\Base\Query {
+class Query extends \Tirreno\Models\Grid\Base\Query {
     protected $defaultOrder = 'created DESC, type ASC, value ASC';
     protected $dateRangeField = 'blacklist.created';
 
@@ -189,11 +189,15 @@ class Query extends \Models\Grid\Base\Query {
         return [$query, $queryParams];
     }
 
+    protected function applyDateRange(string &$query, array &$queryParams): void {
+        // ignore daterange
+    }
+
     private function applySearch(string &$query, array &$queryParams): void {
         $this->applyDateRange($query, $queryParams);
 
         $searchConditions = '';
-        $search = \Utils\Conversion::getArrayRequestParam('search');
+        $search = \Tirreno\Utils\Conversion::getArrayRequestParam('search');
 
         if (is_array($search) && isset($search['value']) && is_string($search['value']) && $search['value'] !== '') {
             $searchConditions .= (
@@ -210,7 +214,7 @@ class Query extends \Models\Grid\Base\Query {
             );
 
             $queryParams[':search_value'] = '%' . $search['value'] . '%';
-            $queryParams[':offset'] = strval(\Utils\TimeZones::getCurrentOperatorOffset());
+            $queryParams[':offset'] = strval(\Tirreno\Utils\Timezones::getCurrentOperatorOffset());
         }
 
         //Add search into request
@@ -220,13 +224,13 @@ class Query extends \Models\Grid\Base\Query {
     private function applyEntityTypes(string &$query, array &$queryParams): void {
         $searchCondition = '';
 
-        $entityTypeIds = \Utils\Conversion::getArrayRequestParam('entityTypeIds');
+        $entityTypeIds = \Tirreno\Utils\Conversion::getArrayRequestParam('entityTypeIds');
         if ($entityTypeIds) {
             $clauses = [];
 
             foreach ($entityTypeIds as $key => $entityTypeId) {
                 $clauses[] = 'extra.type = :entity_type_' . $key;
-                $queryParams[':entity_type_' . $key] = strtolower(\Utils\Constants::get('ENTITY_TYPES')[$entityTypeId]);
+                $queryParams[':entity_type_' . $key] = strtolower(\Tirreno\Utils\Constants::get('ENTITY_TYPES')[$entityTypeId]);
             }
 
             $searchCondition = ' AND (' . implode(' OR ', $clauses) . ')';

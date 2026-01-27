@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -25,7 +25,7 @@ return array_merge(
     include 'Parts/TopTen.php',
     include 'Parts/DetailsPanel.php',
     include 'Parts/UserDetails.php',
-    include 'Parts/TimeZones.php',
+    include 'Parts/Timezones.php',
     include 'Pages/Logout.php',
     include 'Pages/Login.php',
     include 'Pages/Signup.php',
@@ -38,11 +38,10 @@ return array_merge(
     include 'Pages/Api.php',
     include 'Pages/BaseTable.php',
     include 'Pages/Blacklist.php',
-    include 'Pages/Bots.php',
     include 'Pages/Countries.php',
     include 'Pages/Country.php',
-    include 'Pages/Bot.php',
-    include 'Pages/Bots.php',
+    include 'Pages/UserAgent.php',
+    include 'Pages/UserAgents.php',
     include 'Pages/Domain.php',
     include 'Pages/Domains.php',
     include 'Pages/Email.php',
@@ -63,7 +62,7 @@ return array_merge(
     include 'Pages/RetentionPolicy.php',
     include 'Pages/ReviewQueue.php',
     include 'Pages/Rules.php',
-    include 'Pages/TimeZone.php',
+    include 'Pages/Timezone.php',
     include 'Pages/User.php',
     include 'Pages/Users.php',
     include 'Pages/Watchlist.php',

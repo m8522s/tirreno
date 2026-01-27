@@ -1,8 +1,8 @@
 <?php
 
-namespace CoreRules;
+namespace Tirreno\Rules\Core;
 
-class I08 extends \Assets\Rule {
+class I08 extends \Tirreno\Assets\Rule {
     public const NAME = 'IP belongs to Starlink';
     public const DESCRIPTION = 'IP address belongs to SpaceX satellite network.';
     public const ATTRIBUTES = ['ip'];

@@ -1,4 +1,4 @@
-import {BasePage} from './Base.js';
+import {BasePage} from './Base.js?v=2';
 
 import {DatesFilter} from '../parts/DatesFilter.js?v=2';
 import {SearchFilter} from '../parts/SearchFilter.js?v=2';
@@ -6,7 +6,6 @@ import {FieldAuditsChart} from '../parts/chart/FieldAudits.js?v=2';
 import {FieldAuditsGrid} from '../parts/grid/FieldAudits.js?v=2';
 
 export class FieldAuditsPage extends BasePage {
-
     constructor() {
         super('fields');
 

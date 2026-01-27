@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Models\Enrichment;
+namespace Tirreno\Models\Enrichment;
 
-class DomainNotFound extends \Models\Enrichment\Base {
+class DomainNotFound extends \Tirreno\Models\Enrichment\Base {
     protected string $domain;
     protected bool $blockdomains;
     protected bool $disposable_domains;
@@ -75,7 +75,7 @@ class DomainNotFound extends \Models\Enrichment\Base {
                 event_domain.key = :key
         ");
 
-        $model = new \Models\Domain();
+        $model = new \Tirreno\Models\Domain();
         $model->execQuery($query, $params);
     }
 }

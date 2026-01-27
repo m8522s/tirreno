@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,7 +15,7 @@
 
 declare(strict_types=1);
 
-namespace Utils;
+namespace Tirreno\Utils;
 
 class Variables {
     private static function getF3(): \Base {
@@ -62,32 +62,38 @@ class Variables {
     }
 
     public static function getLogbookLimit(): int {
-        $value = getenv('LOGBOOK_LIMIT') ?: self::getF3()->get('LOGBOOK_LIMIT') ?: \Utils\Constants::get('LOGBOOK_LIMIT');
+        $value = getenv('LOGBOOK_LIMIT') ?: self::getF3()->get('LOGBOOK_LIMIT') ?: \Tirreno\Utils\Constants::get('LOGBOOK_LIMIT');
 
-        return \Utils\Conversion::intValCheckEmpty($value, \Utils\Constants::get('LOGBOOK_LIMIT'));
+        return \Tirreno\Utils\Conversion::intValCheckEmpty($value, \Tirreno\Utils\Constants::get('LOGBOOK_LIMIT'));
     }
 
     public static function getForgotPasswordAllowed(): bool {
         $variable = getenv('ALLOW_FORGOT_PASSWORD') ?: self::getF3()->get('ALLOW_FORGOT_PASSWORD') ?? 'false';
 
-        return filter_var($variable, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? false;
+        return \Tirreno\Utils\Conversion::filterBool($variable) ?? false;
     }
 
     public static function getEmailPhoneAllowed(): bool {
         $variable = getenv('ALLOW_EMAIL_PHONE') ?: self::getF3()->get('ALLOW_EMAIL_PHONE') ?? 'false';
 
-        return filter_var($variable, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? false;
+        return \Tirreno\Utils\Conversion::filterBool($variable) ?? false;
     }
 
     public static function getForceHttps(): bool {
         // set 'false' string if FORCE_HTTPS wasn't set due to filter_var() issues
         $variable = getenv('FORCE_HTTPS') ?: self::getF3()->get('FORCE_HTTPS') ?? 'false';
 
-        return filter_var($variable, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? true;
+        return \Tirreno\Utils\Conversion::filterBool($variable) ?? true;
     }
 
     public static function getHostWithProtocol(): string {
-        return (self::getForceHttps() ? 'https://' : 'http://') . self::getHost();
+        $host = self::getHost();
+
+        if (!str_starts_with($host, '[') && \Tirreno\Utils\Conversion::filterIpGetType($host) === 6) {
+            $host = '[' . $host . ']';
+        }
+
+        return (self::getForceHttps() ? 'https://' : 'http://') . $host;
     }
 
     public static function getHostWithProtocolAndBase(): string {
@@ -95,15 +101,15 @@ class Variables {
     }
 
     public static function getAccountOperationQueueBatchSize(): int {
-        return \Utils\Conversion::intValCheckEmpty(getenv('ACCOUNT_OPERATION_QUEUE_BATCH_SIZE'), \Utils\Constants::get('ACCOUNT_OPERATION_QUEUE_BATCH_SIZE'));
+        return \Tirreno\Utils\Conversion::intValCheckEmpty(getenv('ACCOUNT_OPERATION_QUEUE_BATCH_SIZE'), \Tirreno\Utils\Constants::get('ACCOUNT_OPERATION_QUEUE_BATCH_SIZE'));
     }
 
     public static function getNewEventsBatchSize(): int {
-        return \Utils\Conversion::intValCheckEmpty(getenv('NEW_EVENTS_BATCH_SIZE'), \Utils\Constants::get('NEW_EVENTS_BATCH_SIZE'));
+        return \Tirreno\Utils\Conversion::intValCheckEmpty(getenv('NEW_EVENTS_BATCH_SIZE'), \Tirreno\Utils\Constants::get('NEW_EVENTS_BATCH_SIZE'));
     }
 
     public static function getRuleUsersBatchSize(): int {
-        return \Utils\Conversion::intValCheckEmpty(getenv('RULE_USERS_BATCH_SIZE'), \Utils\Constants::get('RULE_USERS_BATCH_SIZE'));
+        return \Tirreno\Utils\Conversion::intValCheckEmpty(getenv('RULE_USERS_BATCH_SIZE'), \Tirreno\Utils\Constants::get('RULE_USERS_BATCH_SIZE'));
     }
 
     public static function getAvailableTimezones(): array {

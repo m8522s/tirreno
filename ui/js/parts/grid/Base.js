@@ -3,6 +3,7 @@ import {Tooltip} from '../Tooltip.js?v=2';
 import {fireEvent} from '../utils/Event.js?v=2';
 import {getQueryParams} from '../utils/DataSource.js?v=2';
 import {handleAjaxError} from '../utils/ErrorHandler.js?v=2';
+import {formatKiloValue} from '../utils/String.js?v=2';
 import {TotalTile} from '../TotalTile.js?v=2';
 import {renderTotalFrame} from '../DataRenderers.js?v=2';
 import {
@@ -270,7 +271,7 @@ export class BaseGrid {
         if (wrapper) {
             const span = wrapper.querySelector('header span');
 
-            span.textContent = value;
+            span.textContent = formatKiloValue(value);
         }
     }
 

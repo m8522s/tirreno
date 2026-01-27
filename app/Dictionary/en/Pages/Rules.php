@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -30,7 +30,7 @@ return [
     'AdminRules_table_header_description' => 'Description',
     'AdminRules_table_header_description_tooltip' => 'Description of a rule.',
     'AdminRules_table_header_proportion' => 'Match rate',
-    'AdminRules_table_header_proportion_tooltip' => 'The proportion between users matching the rule and all users.',
+    'AdminRules_table_header_proportion_tooltip' => 'The percentage of users matching this rule among the last 1,000.',
     'AdminRules_table_header_weight' => 'Weight',
     'AdminRules_table_header_weight_tooltip' => 'To enable the processing of a rule by the rules engine, set the weight value. The higher the rule’s weight, the more it influences a calculated user trust score. To save an adjusted weight value, click the red button shown on the right side.',
     'AdminRules_table_header_users' => 'Action',
@@ -57,4 +57,16 @@ return [
 
     'AdminThresholdValues_form_review_queue_threshold_placeholder' => 'Review queue threshold',
     'AdminThresholdValues_form_blacklist_threshold_placeholder' => 'Off',
+
+    'AdminApplyRulesPresets_form_title' => 'Rules reset',
+    'AdminApplyRulesPresets_form_title_tooltip' => 'Apply ready to use set of rules weights suiting your purposes.',
+    'AdminApplyRulesPresets_form_field_warning' => 'Reset rules to the selected preset. This is an irreversible action that will override all current rules settings.',
+    'AdminApplyRulesPresets_form_field_label' => 'Rules preset',
+    'AdminApplyRulesPresets_form_button_save' => 'Reset',
+    'AdminApplyRulesPresets_success_message' => 'Rules preset applied successfully',
+    'AdminApplyRulesPresets_form_disabled_option' => 'Choose a preset',
+
+    'AdminRules_apply_rules_preset_warning_header' => 'Apply rules preset',
+    'AdminRules_apply_rules_preset_warning_message' => 'Applying this preset will permanently replace all current rule weights. This action cannot be undone.',
+    'AdminRules_submit_apply_rules_preset_button' => 'Reset rules',
 ];

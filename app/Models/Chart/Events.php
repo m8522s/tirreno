@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,7 +15,7 @@
 
 declare(strict_types=1);
 
-namespace Models\Chart;
+namespace Tirreno\Models\Chart;
 
 class Events extends Base {
     protected $DB_TABLE_NAME = 'event';
@@ -32,22 +32,22 @@ class Events extends Base {
     }
 
     private function getFirstLine(int $apiKey): array {
-        $dateRange = \Utils\DateRange::getDatesRangeFromRequest();
+        $dateRange = \Tirreno\Utils\DateRange::getDatesRangeFromRequest();
         if (!$dateRange) {
             $dateRange = [
                 'endDate' => date('Y-m-d H:i:s'),
                 'startDate' => date('Y-m-d H:i:s', 0),
             ];
         }
-        $offset = \Utils\TimeZones::getCurrentOperatorOffset();
-        [$alertTypesParams, $alertFlatIds]      = $this->getArrayPlaceholders(\Utils\Constants::get('ALERT_EVENT_TYPES'), 'alert');
-        [$editTypesParams, $editFlatIds]        = $this->getArrayPlaceholders(\Utils\Constants::get('EDITING_EVENT_TYPES'), 'edit');
-        [$normalTypesParams, $normalFlatIds]    = $this->getArrayPlaceholders(\Utils\Constants::get('NORMAL_EVENT_TYPES'), 'normal');
+        $offset = \Tirreno\Utils\Timezones::getCurrentOperatorOffset();
+        [$alertTypesParams, $alertFlatIds]      = $this->getArrayPlaceholders(\Tirreno\Utils\Constants::get('ALERT_EVENT_TYPES'), 'alert');
+        [$editTypesParams, $editFlatIds]        = $this->getArrayPlaceholders(\Tirreno\Utils\Constants::get('EDITING_EVENT_TYPES'), 'edit');
+        [$normalTypesParams, $normalFlatIds]    = $this->getArrayPlaceholders(\Tirreno\Utils\Constants::get('NORMAL_EVENT_TYPES'), 'normal');
         $params = [
             ':api_key'      => $apiKey,
             ':end_time'     => $dateRange['endDate'],
             ':start_time'   => $dateRange['startDate'],
-            ':resolution'   => \Utils\DateRange::getResolutionFromRequest(),
+            ':resolution'   => \Tirreno\Utils\DateRange::getResolutionFromRequest(),
             ':offset'       => strval($offset),
         ];
         $params = array_merge($params, $alertTypesParams);

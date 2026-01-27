@@ -1,6 +1,7 @@
 <?php
 
 const MIN_PHP_VERSION = '8.0.0';
+const MAX_PHP_VERSION = '8.4.0';
 const MIN_MEMORY_LIM = 128 * 1024 * 1024;
 
 $logo = (
@@ -37,8 +38,122 @@ $style = (
   }
 </style>');
 
-$installerHead = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Installer</title>' . $style . '<head>';
-$okTile = '[  <span style="color: #01ee99;">OK</span>  ]';
+$script = "<script>
+window.addEventListener('DOMContentLoaded', function() {
+    function parseUrl() {
+        let url = null;
+        try {
+            url = new URL(dbUrlField.value);
+        } catch (e) {
+        }
+
+        if (url) {
+            dbUserField.value = url.username;
+            dbPassField.value = url.password;
+            dbHostField.value = url.hostname;
+            dbPortField.value = url.port;
+            dbNameField.value = url.pathname.replace(/^\/|\/$/g, '');
+        }
+    }
+
+    function submit(e) {
+        e.preventDefault();
+        const formData = new FormData(form, e.submitter);
+        const obj = {};
+
+        for (const [key, value] of formData.entries()) {
+            obj[key] = value;
+        }
+        sessionStorage.setItem('connectionDetails', JSON.stringify(obj));
+
+        if (e.submitter && e.submitter.name) {
+            const hidden = document.createElement('input');
+            hidden.type = 'hidden';
+            hidden.name = e.submitter.name;
+            hidden.value = e.submitter.value;
+            form.appendChild(hidden);
+            e.submitter.disabled = true;
+        }
+
+        form.submit();
+    }
+
+    function toggleTestButton(e) {
+        const btn = document.getElementById('test-btn');
+        if (btn) {
+            btn.style.backgroundColor = '';
+        }
+    }
+
+    function substituteForm(e) {
+        const sessionDetails = sessionStorage.getItem('connectionDetails');
+        if (!form || !sessionDetails) {
+            return;
+        }
+        const data = JSON.parse(sessionDetails) || [];
+
+        if (typeof data !== 'object') {
+            return;
+        }
+
+        for (const [key, value] of Object.entries(data)) {
+            if (value && fieldNameMap[key] !== undefined) {
+                fieldNameMap[key].setAttribute('value', value);
+            }
+        }
+    }
+
+    const form = document.getElementById('db-form');
+
+    const dbUrlField = document.getElementById('db-url');
+    const dbUserField = document.getElementById('db-user');
+    const dbPassField = document.getElementById('db-pass');
+    const dbHostField = document.getElementById('db-host');
+    const dbPortField = document.getElementById('db-port');
+    const dbNameField = document.getElementById('db-name');
+
+
+    const fieldIdMap = {
+        'db-url': dbUrlField,
+        'db-user': dbUserField,
+        'db-pass': dbPassField,
+        'db-host': dbHostField,
+        'db-port': dbPortField,
+        'db-name': dbNameField,
+    };
+
+    const fieldNameMap = {
+        'db_url': dbUrlField,
+        'db_user': dbUserField,
+        'db_pass': dbPassField,
+        'db_host': dbHostField,
+        'db_port': dbPortField,
+        'db_name': dbNameField,
+    };
+
+
+    // parse db url on db_url input change
+    // parse db url if db_url was substituted and js doesnt contain sessionstorage
+    if (dbUrlField) {
+        dbUrlField.addEventListener('input', parseUrl);
+        if (dbUrlField.value && !sessionStorage.getItem('connectionDetails')) {
+            parseUrl();
+        }
+
+        Object.values(fieldIdMap).forEach(field => {
+            field.addEventListener('input', toggleTestButton);
+        });
+    }
+
+    if (form) {
+        form.addEventListener('submit', submit);
+        window.addEventListener('pageshow', substituteForm);
+    }
+});
+</script>";
+
+$installerHead = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Installer</title>' . $style . '</head>';
+$okTile = '[  <span style="color: #25EAB5;">OK</span>  ]';
 $failTile = '[ <span style="color: #fb6e88;">FAIL</span> ]';
 $warnTile = '[ <span style="color: #f5b944;">WARN</span> ]';
 $nullTile = '[  --  ]';
@@ -47,44 +162,52 @@ $backButton = '<input action="action" onclick="window.history.go(-1); return fal
 $formBody = (
 '<body>
 <h3>PostgreSQL connection details</h3>
-<form action="./index.php" method="post">
+<form action="./index.php" method="post" id="db-form">
   <table width="715" cellpadding="5" cellspacing="0" border="0">
     <tr>
+      <td><label for="db_url">Database URL</label></td>
+      <td><input type="text" id="db-url" name="db_url" autocomplete="off" autocapitalize="off" placeholder="postgresql://user:password@127.0.0.1:5432/dbname"></td>
+    </tr>
+    <tr>
+      <td><label>or</label></td>
+      <td></td>
+    </tr>
+    <tr>
       <td><label for="db_user">Database username</label></td>
-      <td><input type="text" id="db-user" name="db_user" autocomplete="off" autocapitalize="off" required></td>
+      <td><input type="text" id="db-user" name="db_user" autocomplete="off" autocapitalize="off" placeholder="user" required></td>
     </tr>
     <tr>
       <td><label for="db_pass">Database password</label></td>
-      <td><input type="text" id="db-pass" name="db_pass" autocomplete="off" autocapitalize="off" required></td>
+      <td><input type="text" id="db-pass" name="db_pass" autocomplete="off" autocapitalize="off" placeholder="password" required></td>
     </tr>
     <tr>
       <td><label for="db_host">Database host</label></td>
-      <td><input type="text" id="db-host" name="db_host" autocomplete="off" autocapitalize="off" required></td>
+      <td><input type="text" id="db-host" name="db_host" autocomplete="off" autocapitalize="off" placeholder="127.0.0.1" required></td>
     </tr>
     <tr>
       <td><label for="db_port">Database port</label></td>
-      <td><input type="text" id="db-port" name="db_port" autocomplete="off" autocapitalize="off" required></td>
+      <td><input type="text" id="db-port" name="db_port" autocomplete="off" autocapitalize="off" placeholder="5432" required></td>
     </tr>
     <tr>
       <td><label for="db_name">Database name</label></td>
-      <td><input type="text" id="db-name" name="db_name" autocomplete="off" autocapitalize="off" required></td>
+      <td><input type="text" id="db-name" name="db_name" autocomplete="off" autocapitalize="off" placeholder="dbname" required></td>
     </tr>
     <tr>
       <td><label for="admin_email">Admin email</label></td>
       <td><input type="email" id="admin-email" name="admin_email" autocomplete="off" autocapitalize="off"></td>
     </tr>
     <tr>
-    <td colspan="2">
-    <hr>
-    </td>
+        <td colspan="2"><hr></td>
     </tr>
     <tr>
-    <td>&nbsp;</td>
-    <td><input type="submit" value="Connect"></td>
+        <td><input type="submit" id="test-btn" name="test" value="Test"></td>
+        <td><input type="submit" name="connect" value="Connect"></td>
     </tr>
   </table>
 </form>
 </body>');
+
+$formBody .= $script;
 
 function resultHtmlStart() {
     global $installerHead, $logo;
@@ -179,12 +302,20 @@ function proceed() {
         echo $out;
         return;
     }
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!isset($_SERVER['REQUEST_METHOD'])) {
+        return;
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['connect'])) {
         $out .= resultHtmlStart();
         [$status, $result, $config] = execute($_POST);
         $out .= $result;
         $out .= $status ? finishOk() : finishError();
         $out .= resultHtmlEnd();
+    } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['test'])) {
+        $status = boolval(initDbConnection($_POST)[0]);
+        substituteConnectionStatus($status);
+        $out .= formHtml();
     } else {
         substituteFormWithEnv();
         $out .= formHtml();
@@ -193,13 +324,14 @@ function proceed() {
     echo $out;
 }
 
-function execute(array $values) {
+function execute(array $values): array {
     global $steps;
 
     $out = '';
+    $config = null;
 
     versionCheck(0, $steps);
-    $out .= printVersionCheck($steps[0]);
+    $out .= printTasks($steps[0]);
 
     compatibilityCheck(1, $steps);
     $out .= printTasks($steps[1]);
@@ -234,6 +366,21 @@ function configAlreadyExists(): bool {
     return (getenv('SITE') && getenv('DATABASE_URL')) || file_exists('../config/local/config.local.ini');
 }
 
+function substituteConnectionStatus(bool $status): void {
+    global $formBody;
+
+    $statusColour = $status ? '#25eab5' : '#fb6e88';
+
+    $pattern = '/(<td><input type="submit" id="test-btn" name="test" value="Test"><\/td>)/';
+    $replacement = "<td><input type=\"submit\" id=\"test-btn\" name=\"test\" value=\"Test\" style=\"background-color: $statusColour;\"></td>";
+
+    $formBody = preg_replace(
+        $pattern,
+        $replacement,
+        $formBody,
+    );
+}
+
 function substituteFormWithEnv(): void {
     global $formBody;
 
@@ -245,27 +392,20 @@ function substituteFormWithEnv(): void {
         );
     }
 
+    $values = [];
+
     $dbUrl = getenv('DATABASE_URL');
     if ($dbUrl) {
-        $parts = parse_url($dbUrl);
-        if ($parts) {
-            $values = [
-                'db_user' => $parts['user'] ?? '',
-                'db_pass' => $parts['pass'] ?? '',
-                'db_host' => $parts['host'] ?? '',
-                'db_port' => $parts['port'] ?? '',
-                'db_name' => trim(($parts['path'] ?? ''), '/'),
-            ];
+        $values['db_url'] = $dbUrl;
+    }
 
-            foreach ($values as $key => $value) {
-                $safe = htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-                $formBody = preg_replace(
-                    '/(<input\b[^>]*\bname="' . preg_quote($key, '/') . '"(?![^>]*\bvalue=)[^>]*)(>)/i',
-                    '$1 value="' . $safe . '"$2',
-                    $formBody,
-                );
-            }
-        }
+    foreach ($values as $key => $value) {
+        $safe = htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        $formBody = preg_replace(
+            '/(<input\b[^>]*\bname="' . preg_quote($key, '/') . '"(?![^>]*\bvalue=)[^>]*)(>)/i',
+            '$1 value="' . $safe . '"$2',
+            $formBody,
+        );
     }
 }
 
@@ -275,16 +415,32 @@ function versionCheck(int $step, array &$steps) {
 
     if ($versionStatus === false) {
         $steps[$step]['tasks'][0]['description'] = 'A newer version of tirreno is available';
+        $steps[$step]['tasks'][0]['warn'] = true;
     } elseif ($versionStatus === null) {
         $steps[$step]['tasks'][0]['description'] = 'Unable to connect to version server';
+        $steps[$step]['tasks'][0]['warn'] = true;
     } else {
         $steps[$step]['tasks'][0]['description'] = 'This is the latest version of tirreno';
     }
 }
 
 function compatibilityCheck(int $step, array &$steps) {
-    $steps[$step]['tasks'][0]['status'] = version_compare(PHP_VERSION, MIN_PHP_VERSION) >= 0;
-    $steps[$step]['tasks'][1]['status'] = function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_modules());
+    $versionSuits = version_compare(PHP_VERSION, MIN_PHP_VERSION) >= 0 && version_compare(PHP_VERSION, MAX_PHP_VERSION) < 0;
+    $steps[$step]['tasks'][0]['status'] = $versionSuits;
+    if (!$versionSuits) {
+        $steps[$step]['tasks'][0]['error'] = 'Current PHP version is ' . strval(PHP_VERSION) . '. Allowed PHP versions are greater than ' . strval(MIN_PHP_VERSION) . ' and lower than ' . strval(MAX_PHP_VERSION);
+    }
+
+    $steps[$step]['tasks'][1]['status'] = false;
+    if (function_exists('apache_get_modules')) {
+        if (in_array('mod_rewrite', apache_get_modules())) {
+            $steps[$step]['tasks'][1]['status'] = true;
+        }
+    } else {
+        $steps[$step]['tasks'][1]['warn'] = true;
+        $steps[$step]['tasks'][1]['error'] = 'Could not be autodetected. Please check manualy.';
+    }
+
     $steps[$step]['tasks'][2]['status'] = extension_loaded('pdo_pgsql') && extension_loaded('pgsql');
 
     try {
@@ -334,12 +490,6 @@ function saveConfig(int $step, array $values, array &$steps): ?array {
     $configData = null;
     try {
         $currentHttpHost = strtolower(filter_var($_SERVER['HTTP_HOST'], FILTER_SANITIZE_URL));
-        if (strpos($currentHttpHost, 'www.') === 0) {
-            $currentHttpHost = substr($currentHttpHost, 4);
-        } elseif (substr_count($currentHttpHost, '.') == 1) {
-            $currentHttpHost = 'www.' . $currentHttpHost;
-        }
-
         $hosts = [$currentHttpHost];
 
         $forceHttps = (!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on')
@@ -347,19 +497,26 @@ function saveConfig(int $step, array $values, array &$steps): ?array {
             || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) == 'https'); // loadbalancer
 
         $configData = [
-            'FORCE_HTTPS'   => $forceHttps,
+            'FORCE_HTTPS'   => $forceHttps ? 'true' : 'false',
             'SITE'          => implode(',', $hosts),
             'DATABASE_URL'  => "postgres://$values[db_user]:$values[db_pass]@$values[db_host]:$values[db_port]/$values[db_name]",
             'PEPPER'        => strval(bin2hex(random_bytes(32))),
         ];
+
         if ($values['admin_email'] !== '') {
             $configData['ADMIN_EMAIL'] = $values['admin_email'];
         }
 
         $config = "\n[globals]";
         foreach ($configData as $key => $value) {
+            $value = str_replace('\\', '\\\\', $value);
+            $value = str_replace('"', '\\"', $value);
+            $value = '"' . $value . '"';
+
             $config .= "\n$key=$value";
         }
+
+        $config .= "\n";
 
         $configPath = '../config/local/config.local.ini';
         $configFile = fopen($configPath, 'w');
@@ -367,6 +524,13 @@ function saveConfig(int $step, array $values, array &$steps): ?array {
             fwrite($configFile, $config);
             fclose($configFile);
             $steps[$step]['tasks'][0]['status'] = true;
+            $site = getenv('SITE');
+            if ($site !== false) {
+                $site = is_string($site) ? $site : json_encode($site);
+                $site = htmlspecialchars($site, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+                $steps[$step]['tasks'][0]['warn'] = true;
+                $steps[$step]['tasks'][0]['error'] = 'Environment variable SITE detected: ' . $site;
+            }
         } else {
             $steps[$step]['tasks'][0]['status'] = false;
         }
@@ -379,20 +543,14 @@ function saveConfig(int $step, array $values, array &$steps): ?array {
 }
 
 function dbSaveConfig(int $step, array $values, array &$steps) {
-    $database = null;
-
-    $dsn = "pgsql:dbname=$values[db_name];host=$values[db_host];port=$values[db_port]";
-    $driverOptions = array(
-        \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
-    );
-
-    try {
-        $database = new \PDO($dsn, $values['db_user'], $values['db_pass'], $driverOptions);
-    } catch (\Exception $e) {
+    $connection = initDbConnection($values);
+    if (!$connection[0]) {
         $steps[$step]['tasks'][0]['status'] = false;
-        $steps[$step]['tasks'][0]['error'] = $e->getMessage();
+        $steps[$step]['tasks'][0]['error'] = $connection[1];
         return;
     }
+
+    $database = $connection[0];
 
     $steps[$step]['tasks'][0]['status'] = true;
 
@@ -403,13 +561,19 @@ function dbSaveConfig(int $step, array $values, array &$steps) {
         return;
     }
     $steps[$step]['tasks'][1]['status'] = true;*/
-
     try {
         if (!lockDb($database)) {
             $steps[$step]['tasks'][1]['status'] = false;
             $steps[$step]['tasks'][1]['error'] = 'Database already locked by another installation process.';
             return;
         }
+
+        if (checkMigrationAppliedDb($database)) {
+            $steps[$step]['tasks'][1]['status'] = false;
+            $steps[$step]['tasks'][1]['error'] = 'Database already has app\'s migrations applied.';
+            return;
+        }
+
         $sql = safeFileGetContents('./install.sql', null)['content'];
         $database->exec($sql);
         unlockDb($database);
@@ -420,6 +584,40 @@ function dbSaveConfig(int $step, array $values, array &$steps) {
     }
 
     $steps[$step]['tasks'][1]['status'] = true;
+}
+
+function initDbConnection(array $values): array {
+    $database = false;
+    $msg = null;
+
+    $dsn = "pgsql:dbname=$values[db_name];host=$values[db_host];port=$values[db_port]";
+    $driverOptions = array(
+        \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
+    );
+
+    try {
+        $database = new \PDO($dsn, $values['db_user'], $values['db_pass'], $driverOptions);
+    } catch (\Exception $e) {
+        $msg = $e->getMessage();
+    }
+
+    return [$database, $msg];
+}
+
+function checkMigrationAppliedDb(\PDO $database): bool {
+    $query = (
+        'SELECT
+            COUNT(*) AS cnt
+        FROM information_schema.tables
+        WHERE table_name IN (\'dshb_api\', \'dshb_operators\', \'event_session\') LIMIT 1'
+    );
+
+    $stmt = $database->prepare($query);
+    $stmt->execute();
+    $result = $stmt->fetchColumn();
+    $cnt = $result === false ? 0  : intval($result);
+
+    return $cnt === 3;
 }
 
 function lockDb(\PDO $database): bool {
@@ -446,8 +644,8 @@ function unlockDb(\PDO $database): void {
     $database->exec($query);
 }
 
-function printTasks(array $tasks) {
-    global $okTile, $failTile, $nullTile;
+function printTasks(array $tasks): string {
+    global $okTile, $failTile, $warnTile, $nullTile;
 
     $out = '';
     $side = intdiv(64 - strlen($tasks['description']), 2);
@@ -459,34 +657,23 @@ function printTasks(array $tasks) {
     foreach ($tasks['tasks'] as $task) {
         $status = ($task['status'] === true) ? $okTile : (($task['status'] === false) ? $failTile : $nullTile);
         $err = array_key_exists('error', $task) ? ' (' . $task['error'] . ')' : '';
+        if (isset($task['warn'])) {
+            $status = $warnTile;
+        }
         $out .=  "\n" . $status . ' ' . $task['description'] . $err;
     }
 
     return $out;
 }
 
-function printVersionCheck(array $tasks) {
-    global $okTile, $warnTile, $failTile;
-
-    $out = '';
-    $side = intdiv(64 - strlen($tasks['description']), 2);
-    $header = str_repeat('=', $side) . ' ' . $tasks['description'] . ' ' . str_repeat('=', $side);
-    if ($side * 2 + strlen($tasks['description']) < 64) {
-        $header .= '=';
-    }
-    $out .= "\n\n" . $header;
+function tasksCompleted(array $tasks): bool {
     foreach ($tasks['tasks'] as $task) {
-        $status = ($task['status'] === true) ? $okTile : $warnTile;
-        $out .=  "\n" . $status . ' ' . $task['description'];
+        if (!$task['status'] && !($task['warn'] ?? false)) {
+            return false;
+        }
     }
 
-    return $out;
-}
-
-function tasksCompleted(array $tasks) {
-    $results = array_column($tasks['tasks'], 'status');
-
-    return count(array_filter($results)) === count($results);
+    return true;
 }
 
 function safeFileGetContents(string $path, ?array $options): array {
@@ -522,35 +709,7 @@ function safeFileGetContents(string $path, ?array $options): array {
     ];
 }
 
-function checkLatestVersion(): ?bool {
-    $path = __DIR__ . '/../app/Utils/VersionControl.php';
-
-    if (!file_exists($path) || !is_file($path) || !is_readable($path)) {
-        return null;
-    }
-
-    require_once $path;
-
-    $version = \Utils\VersionControl::versionString();
-
-    $useragent = 'tirreno-install';
-    $useragent = ($version && $useragent) ? $useragent . '/' . $version : $useragent;
-    $useragent = 'User-Agent: ' . $useragent;
-
-    $path = __DIR__ . '/../config/config.ini';
-    if (!file_exists($path) || !is_file($path) || !is_readable($path)) {
-        return null;
-    }
-    $config = parse_ini_file($path, false, INI_SCANNER_TYPED);
-
-    $url = $config['ENRICHMENT_API'] ?? null;
-
-    if (!$url) {
-        return null;
-    }
-
-    $url .= '/version';
-
+function performRequest(string $url, string $useragent): array {
     $code = null;
     $response = null;
     $error = null;
@@ -599,10 +758,49 @@ function checkLatestVersion(): ?bool {
         }
     }
 
-    $result = json_decode($response, true);
+    $resp = [
+        'code'  => $code,
+        'data'  => $response !== null ? json_decode($response, true) : [],
+        'error' => $error,
+    ];
+
+    return $resp;
+}
+
+function checkLatestVersion(): ?bool {
+    $path = __DIR__ . '/../app/Utils/VersionControl.php';
+
+    if (!file_exists($path) || !is_file($path) || !is_readable($path)) {
+        return null;
+    }
+
+    require_once $path;
+
+    $version = \Tirreno\Utils\VersionControl::versionString();
+
+    $useragent = 'tirreno-install';
+    $useragent = ($version && $useragent) ? $useragent . '/' . $version : $useragent;
+    $useragent = 'User-Agent: ' . $useragent;
+
+    $path = __DIR__ . '/../config/config.ini';
+    if (!file_exists($path) || !is_file($path) || !is_readable($path)) {
+        return null;
+    }
+    $config = parse_ini_file($path, false, INI_SCANNER_TYPED);
+
+    $url = $config['ENRICHMENT_API'] ?? null;
+
+    if (!$url) {
+        return null;
+    }
+
+    $url .= '/version';
+
+    $resp = performRequest($url, $useragent);
+    $result = $resp['data'];
     $jsonResponse = is_array($result) ? $result : [];
-    $statusCode = $code ?? 0;
-    $error = $error ?? '';
+    $statusCode = $resp['code'] ?? 0;
+    $error = $resp['error'] ?? '';
 
     if (strlen($error) > 0 || $statusCode !== 200 || !isset($jsonResponse['version'])) {
         return null;
@@ -612,6 +810,5 @@ function checkLatestVersion(): ?bool {
 
     return true;
 }
-
 
 proceed();

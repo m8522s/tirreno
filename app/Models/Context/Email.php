@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,29 +15,17 @@
 
 declare(strict_types=1);
 
-namespace Models\Context;
+namespace Tirreno\Models\Context;
 
 class Email extends Base {
-    public function getContext(array $accountIds, int $apiKey): array {
-        $records = $this->getDetails($accountIds, $apiKey);
-        $recordsByAccount = $this->groupRecordsByAccount($records);
-
-        foreach ($recordsByAccount as $key => $value) {
-            $recordsByAccount[$key] = [
-                'ee_email'              => $this->getUniqueArray(array_column($value, 'ee_email')),
-                'ee_earliest_breach'    => $this->getUniqueArray(array_column($value, 'ee_earliest_breach')),
-            ];
-        }
-
-        return $recordsByAccount;
-    }
+    protected $uniqueValues = true;
 
     protected function getDetails(array $accountIds, int $apiKey): array {
         [$params, $placeHolders] = $this->getRequestParams($accountIds, $apiKey);
 
         $query = (
             "SELECT
-                event_email.account_id         AS accountid,
+                event_email.account_id         AS id,
                 event_email.email              AS ee_email,
                 event_email.earliest_breach    AS ee_earliest_breach
             FROM

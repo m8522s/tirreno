@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,7 +15,7 @@
 
 declare(strict_types=1);
 
-namespace Models\Chart;
+namespace Tirreno\Models\Chart;
 
 class SessionStat extends Base {
     protected $DB_TABLE_NAME = 'event_session';
@@ -34,11 +34,11 @@ class SessionStat extends Base {
         }
 
         // use offset shift because $startTs/$endTs compared with shifted ['ts']
-        $offset = \Utils\TimeZones::getCurrentOperatorOffset();
-        $datesRange = \Utils\DateRange::getLatestNDatesRangeFromRequest(14, $offset);
+        $offset = \Tirreno\Utils\Timezones::getCurrentOperatorOffset();
+        $datesRange = \Tirreno\Utils\DateRange::getLatestNDatesRangeFromRequest(14, $offset);
         $endTs = strtotime($datesRange['endDate']);
         $startTs = strtotime($datesRange['startDate']);
-        $step = \Utils\Constants::get('CHART_RESOLUTION')[\Utils\DateRange::getResolutionFromRequest()];
+        $step = \Tirreno\Utils\Constants::get('CHART_RESOLUTION')[\Tirreno\Utils\DateRange::getResolutionFromRequest()];
 
         $endTs = $endTs - ($endTs % $step);
         $startTs = $startTs - ($startTs % $step);
@@ -94,16 +94,16 @@ class SessionStat extends Base {
 
     protected function executeOnRangeById(string $query, int $apiKey): array {
         // do not use offset because :start_time/:end_time compared with UTC event.time
-        $dateRange = \Utils\DateRange::getLatestNDatesRangeFromRequest(14);
-        $offset = \Utils\TimeZones::getCurrentOperatorOffset();
+        $dateRange = \Tirreno\Utils\DateRange::getLatestNDatesRangeFromRequest(14);
+        $offset = \Tirreno\Utils\Timezones::getCurrentOperatorOffset();
 
         $params = [
             ':api_key'      => $apiKey,
             ':end_time'     => $dateRange['endDate'],
             ':start_time'   => $dateRange['startDate'],
-            //':resolution'   => \Utils\DateRange::getResolutionFromRequest(),
-            ':resolution'   => \Utils\Constants::get('SECONDS_IN_DAY'),
-            ':id'           => \Utils\Conversion::getIntRequestParam('id'),
+            //':resolution'   => \Tirreno\Utils\DateRange::getResolutionFromRequest(),
+            ':resolution'   => \Tirreno\Utils\Constants::get('SECONDS_IN_DAY'),
+            ':id'           => \Tirreno\Utils\Conversion::getIntRequestParam('id'),
             ':offset'       => strval($offset),     // str for postgres
         ];
 

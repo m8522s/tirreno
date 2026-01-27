@@ -2,7 +2,7 @@
     <div class="main-graph separate-graph">
         <check if="false !== strpos(@CURRENT_PATH, 'review-queue')" >
             <true>
-                <include href="templates/parts/forms/filtersForm.html" />
+                <include href="templates/parts/forms/filtersForm.html" with="hidden=true"/>
             </true>
         </check>
         <div class="stat-chart"></div>

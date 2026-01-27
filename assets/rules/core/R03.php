@@ -1,8 +1,8 @@
 <?php
 
-namespace CoreRules;
+namespace Tirreno\Rules\Core;
 
-class R03 extends \Assets\Rule {
+class R03 extends \Tirreno\Assets\Rule {
     public const NAME = 'Phone in blacklist';
     public const DESCRIPTION = ' This phone number appears in the blacklist.';
     public const ATTRIBUTES = [];

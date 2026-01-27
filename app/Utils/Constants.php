@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,13 +15,16 @@
 
 declare(strict_types=1);
 
-namespace Utils;
+namespace Tirreno\Utils;
 
 class Constants {
     public static function get(string $key): array|string|int {
         $const = __CLASS__ . '::' . $key;
         if (!defined($const)) {
-            trigger_error('Undefined constant: ' . $key, E_USER_ERROR);
+            $message = 'Undefined constant: ' . $key;
+
+            $exception = new \RuntimeException($message);
+            throw $exception;
         }
 
         $value = constant($const);
@@ -73,26 +76,6 @@ class Constants {
         'unknown',
     ];
 
-    public const USER_DETAILS_DAY_LIMITS = [
-        'failed_login_cnt'      => 1,
-        'password_reset_cnt'    => 1,
-        'auth_error_cnt'        => 1,
-        'off_hours_login_cnt'   => 1,
-        'avg_event_cnt'         => 20,
-        'login_cnt'             => 3,
-        'session_cnt'           => 5,
-    ];
-
-    public const USER_DETAILS_WEEK_LIMITS = [
-        'failed_login_cnt'      => 1,
-        'password_reset_cnt'    => 1,
-        'auth_error_cnt'        => 1,
-        'off_hours_login_cnt'   => 1,
-        'avg_event_cnt'         => 20,
-        'login_cnt'             => 10,
-        'session_cnt'           => 25,
-    ];
-
     public const LOGBOOK_LIMIT  = 1000;
 
     public const SECONDS_IN_WEEK    = 60 * 60 * 24 * 7;
@@ -122,8 +105,6 @@ class Constants {
     public const COUNTRY_CODES_EUROPE           = [77, 2, 15, 22, 35, 57, 60, 61, 62, 71, 78, 85, 88, 102, 108, 111, 122, 128, 129, 136, 155, 177, 178, 182, 195, 196, 203, 215];
 
     public const EVENT_REQUEST_TYPE_HEAD    = 3;
-
-    public const REVIEW_QUEUE_TILE_LIMIT    = 999;
 
     public const ACCOUNT_OPERATION_QUEUE_CLEAR_COMPLETED_AFTER_DAYS = 7;
     public const ACCOUNT_OPERATION_QUEUE_AUTO_UNCLOG_AFTER_SEC      = 60 * 30;
@@ -162,107 +143,29 @@ class Constants {
     public const PAGE_ERROR_EVENT_TYPE_ID = 12;
     public const FIELD_EDIT_EVENT_TYPE_ID = 13;
 
-    public const DEFAULT_RULES = [
-        // Positive
-        'E23'  => -20,
-        'E24'  => -20,
-        'E25'  => -20,
-        'I07'  => -20,
-        'I08'  => -20,
-        'I10'  => -20,
-        // Medium
-        'B01'  => 10,
-        'B04'  => 10,
-        'B05'  => 10,
-        'B07'  => 10,
-        'C01'  => 10,
-        'C02'  => 10,
-        'C03'  => 10,
-        'C04'  => 10,
-        'C05'  => 10,
-        'C06'  => 10,
-        'C07'  => 10,
-        'C08'  => 10,
-        'C09'  => 10,
-        'C10'  => 10,
-        'C11'  => 10,
-        'D04'  => 10,
-        'D08'  => 10,
-        'E06'  => 10,
-        'E07'  => 10,
-        'E08'  => 10,
-        //'E18'  => 10,
-        'E21'  => 10,
-        'E22'  => 10,
-        'I05'  => 10,
-        'I06'  => 10,
-        'I09'  => 10,
-        // High
-        'D01'  => 20,
-        'D02'  => 20,
-        'D03'  => 20,
-        'D05'  => 20,
-        'D06'  => 20,
-        'D07'  => 20,
-        'E03'  => 20,
-        'E04'  => 20,
-        'E05'  => 20,
-        'I02'  => 20,
-        'I03'  => 20,
-        'I04'  => 20,
-        'P03'  => 20,
-        // Extreme
-        'B06'  => 70,
-        'E01'  => 70,
-        'E19'  => 70,
-        'I01'  => 70,
-        'R01'  => 70,
-        'R02'  => 70,
-        'R03'  => 70,
-    ];
-
-    public const DEFAULT_RULES_EXTENSION = [
-        // Positive
-        'E20'  => -20,
-        // Medium
-        'E09'  => 10,
-        'E10'  => 10,
-        'E12'  => 10,
-        'E15'  => 10,
-        'P01'  => 10,
-        // High
-        'E16'  => 20,
-        // Extreme
-        'E02'  => 70,
-        'E11'  => 70,
-        'E13'  => 70,
-        'E14'  => 70,
-        'E17'  => 70,
-    ];
-
     public const CHART_MODEL_MAP = [
-        'resources'         => \Models\Chart\Resources::class,
-        'resource'          => \Models\Chart\Resource::class,
-        'users'             => \Models\Chart\Users::class,
-        'user'              => \Models\Chart\User::class,
-        'isps'              => \Models\Chart\Isps::class,
-        'isp'               => \Models\Chart\Isp::class,
-        'ips'               => \Models\Chart\Ips::class,
-        'ip'                => \Models\Chart\Ip::class,
-        'domains'           => \Models\Chart\Domains::class,
-        'domain'            => \Models\Chart\Domain::class,
-        'bots'              => \Models\Chart\Bots::class,
-        'bot'               => \Models\Chart\Bot::class,
-        'events'            => \Models\Chart\Events::class,
-        'emails'            => \Models\Chart\Emails::class,
-        'phones'            => \Models\Chart\Phones::class,
-        'review-queue'      => \Models\Chart\ReviewQueue::class,
-        'country'           => \Models\Chart\Country::class,
-        'blacklist'         => \Models\Chart\Blacklist::class,
-        'logbook'           => \Models\Chart\Logbook::class,
-        'stats'             => \Models\Chart\SessionStat::class,
-        'fields'            => \Models\Chart\FieldAuditTrails::class,
-        'field'             => \Models\Chart\FieldAuditTrail::class,
+        'resources'         => \Tirreno\Models\Chart\Resources::class,
+        'resource'          => \Tirreno\Models\Chart\Resource::class,
+        'users'             => \Tirreno\Models\Chart\Users::class,
+        'user'              => \Tirreno\Models\Chart\User::class,
+        'isps'              => \Tirreno\Models\Chart\Isps::class,
+        'isp'               => \Tirreno\Models\Chart\Isp::class,
+        'ips'               => \Tirreno\Models\Chart\Ips::class,
+        'ip'                => \Tirreno\Models\Chart\Ip::class,
+        'domains'           => \Tirreno\Models\Chart\Domains::class,
+        'domain'            => \Tirreno\Models\Chart\Domain::class,
+        'userAgents'        => \Tirreno\Models\Chart\UserAgents::class,
+        'userAgent'         => \Tirreno\Models\Chart\UserAgent::class,
+        'events'            => \Tirreno\Models\Chart\Events::class,
+        'emails'            => \Tirreno\Models\Chart\Emails::class,
+        'phones'            => \Tirreno\Models\Chart\Phones::class,
+        'review-queue'      => \Tirreno\Models\Chart\ReviewQueue::class,
+        'country'           => \Tirreno\Models\Chart\Country::class,
+        'blacklist'         => \Tirreno\Models\Chart\Blacklist::class,
+        'logbook'           => \Tirreno\Models\Chart\Logbook::class,
+        'stats'             => \Tirreno\Models\Chart\SessionStat::class,
+        'fields'            => \Tirreno\Models\Chart\FieldAuditTrails::class,
+        'field'             => \Tirreno\Models\Chart\FieldAuditTrail::class,
     ];
 
     public const LINE_CHARTS = [
@@ -273,7 +176,7 @@ class Constants {
         'phones',
         'emails',
         'resources',
-        'bots',
+        'userAgents',
         'isps',
         'domains',
         'blacklist',
@@ -288,36 +191,36 @@ class Constants {
     ];
 
     public const TOP_TEN_MODELS_MAP = [
-        'mostActiveUsers'           => \Models\TopTen\UsersByEvents::class,
-        'mostActiveCountries'       => \Models\TopTen\CountriesByUsers::class,
-        'mostActiveUrls'            => \Models\TopTen\ResourcesByUsers::class,
-        'ipsWithTheMostUsers'       => \Models\TopTen\IpsByUsers::class,
-        'usersWithMostLoginFail'    => \Models\TopTen\UsersByLoginFail::class,
-        'usersWithMostIps'          => \Models\TopTen\UsersByIps::class,
+        'mostActiveUsers'           => \Tirreno\Models\TopTen\UsersByEvents::class,
+        'mostActiveCountries'       => \Tirreno\Models\TopTen\CountriesByUsers::class,
+        'mostActiveUrls'            => \Tirreno\Models\TopTen\ResourcesByUsers::class,
+        'ipsWithTheMostUsers'       => \Tirreno\Models\TopTen\IpsByUsers::class,
+        'usersWithMostLoginFail'    => \Tirreno\Models\TopTen\UsersByLoginFail::class,
+        'usersWithMostIps'          => \Tirreno\Models\TopTen\UsersByIps::class,
     ];
 
     public const RULES_TOTALS_MODELS = [
-        \Models\Phone::class,
-        \Models\Ip::class,
-        \Models\Session::class,
-        \Models\User::class,
+        \Tirreno\Models\Phone::class,
+        \Tirreno\Models\Ip::class,
+        \Tirreno\Models\Session::class,
+        \Tirreno\Models\User::class,
     ];
 
     public const REST_TOTALS_MODELS = [
-        'isp'       => \Models\Isp::class,
-        'resource'  => \Models\Resource::class,
-        'domain'    => \Models\Domain::class,
-        'device'    => \Models\Device::class,
-        'country'   => \Models\Country::class,
-        'field'     => \Models\FieldAudit::class,
+        'isp'       => \Tirreno\Models\Isp::class,
+        'resource'  => \Tirreno\Models\Resource::class,
+        'domain'    => \Tirreno\Models\Domain::class,
+        'device'    => \Tirreno\Models\Device::class,
+        'country'   => \Tirreno\Models\Country::class,
+        'field'     => \Tirreno\Models\FieldAudit::class,
     ];
 
     public const ENRICHING_ATTRIBUTES = [
-        'ip'        => \Models\Ip::class,
-        'email'     => \Models\Email::class,
-        'domain'    => \Models\Domain::class,
-        'phone'     => \Models\Phone::class,
-        //'ua'        => \Models\Device::class,
+        'ip'        => \Tirreno\Models\Ip::class,
+        'email'     => \Tirreno\Models\Email::class,
+        'domain'    => \Tirreno\Models\Domain::class,
+        'phone'     => \Tirreno\Models\Phone::class,
+        //'ua'        => \Tirreno\Models\Device::class,
     ];
 
     public const ADMIN_PAGES = [
@@ -331,8 +234,8 @@ class Constants {
         'AdminDomain',
         'AdminCountries',
         'AdminCountry',
-        'AdminBots',
-        'AdminBot',
+        'AdminUserAgents',
+        'AdminUserAgent',
         'AdminResources',
         'AdminResource',
         'AdminLogbook',
@@ -432,4 +335,307 @@ class Constants {
 
     public const SINGLE_RESPONSE_TYPE           = 'single';
     public const COLLECTION_RESPONSE_TYPE       = 'collection';
+
+    public const RULE_WEIGHT_POSITIVE   = -20;
+    public const RULE_WEIGHT_NONE       = 0;
+    public const RULE_WEIGHT_MEDIUM     = 10;
+    public const RULE_WEIGHT_HIGH       = 20;
+    public const RULE_WEIGHT_EXTREME    = 70;
+
+    public const RULES_PRESETS = [
+        'default' => [
+            'description'   => 'Default empty rules',
+            'main'          => [],
+            'additional'    => [],
+        ],
+        'account_takeover' => [
+            'description'   => 'Account takeover',
+            'main'          => self::DEFAULT_RULES_ACCOUNT_TAKEOVER,
+            'additional'    => [],
+        ],
+        'credential_stuffing' => [
+            'description'   => 'Credential stuffing',
+            'main'          => self::DEFAULT_RULES_CREDENTIAL_STUFFING,
+            'additional'    => [],
+        ],
+        'content_spam' => [
+            'description'   => 'Content spam',
+            'main'          => self::DEFAULT_RULES_CONTENT_SPAM,
+            'additional'    => [],
+        ],
+        'account_registration' => [
+            'description'   => 'Account registration',
+            'main'          => self::DEFAULT_RULES_ACCOUNT_REGISTRATION,
+            'additional'    => [],
+        ],
+        'fraud_prevention' => [
+            'description'   => 'Fraud prevention',
+            'main'          => self::DEFAULT_RULES_FRAUD_PREVENTION,
+            'additional'    => [],
+        ],
+        'insider_threat' => [
+            'description'   => 'Insider threat',
+            'main'          => self::DEFAULT_RULES_INSIDER_THREAT,
+            'additional'    => [],
+        ],
+        'bot_detection' => [
+            'description'   => 'Bot detection',
+            'main'          => self::DEFAULT_RULES_BOT_DETECTION,
+            'additional'    => [],
+        ],
+        'dormant_account' => [
+            'description'   => 'Dormant account',
+            'main'          => self::DEFAULT_RULES_DORMANT_ACCOUNT,
+            'additional'    => [],
+        ],
+        'multi_accounting' => [
+            'description'   => 'Multi-accounting',
+            'main'          => self::DEFAULT_RULES_MULTI_ACCOUNTING,
+            'additional'    => [],
+        ],
+        'promo_abuse' => [
+            'description'   => 'Promo abuse',
+            'main'          => self::DEFAULT_RULES_PROMO_ABUSE,
+            'additional'    => [],
+        ],
+        'api_protection' => [
+            'description'   => 'API protection',
+            'main'          => self::DEFAULT_RULES_API_PROTECTION,
+            'additional'    => [],
+        ],
+        'high_risk_regions' => [
+            'description'   => 'High-risk regions',
+            'main'          => self::DEFAULT_RULES_HIGH_RISK_REGIONS,
+            'additional'    => [],
+        ],
+    ];
+
+    public const DEFAULT_RULES_ACCOUNT_TAKEOVER = [
+        // Medium
+        'A03'   => self::RULE_WEIGHT_MEDIUM,    // New device and new country
+        'A04'   => self::RULE_WEIGHT_MEDIUM,    // New device and new subnet
+        'A08'   => self::RULE_WEIGHT_MEDIUM,    // Browser language changed
+        'B01'   => self::RULE_WEIGHT_MEDIUM,    // Multiple countries
+        'B02'   => self::RULE_WEIGHT_MEDIUM,    // User has changed a password
+        'B03'   => self::RULE_WEIGHT_MEDIUM,    // User has changed an email
+        'B21'   => self::RULE_WEIGHT_MEDIUM,    // Multiple devices in one session
+        'D04'   => self::RULE_WEIGHT_MEDIUM,    // Rare browser device
+        'D05'   => self::RULE_WEIGHT_MEDIUM,    // Rare OS device
+        'I03'   => self::RULE_WEIGHT_MEDIUM,    // IP appears in spam list
+        'I09'   => self::RULE_WEIGHT_MEDIUM,    // Numerous IPs
+        // High
+        'B04'   => self::RULE_WEIGHT_HIGH,      // Multiple 5xx errors
+        'B05'   => self::RULE_WEIGHT_HIGH,      // Multiple 4xx errors
+        'B19'   => self::RULE_WEIGHT_HIGH,      // Night time requests
+        'B20'   => self::RULE_WEIGHT_HIGH,      // Multiple countries in one session
+        'D01'   => self::RULE_WEIGHT_HIGH,      // Device is unknown
+        // Extreme
+        'A01'   => self::RULE_WEIGHT_EXTREME,   // Multiple login fail
+        'A02'   => self::RULE_WEIGHT_EXTREME,   // Login failed on new device
+        'A05'   => self::RULE_WEIGHT_EXTREME,   // Password change on new device
+        'A06'   => self::RULE_WEIGHT_EXTREME,   // Password change in new country
+        'B06'   => self::RULE_WEIGHT_EXTREME,   // Potentially vulnerable URL
+        'E19'   => self::RULE_WEIGHT_EXTREME,   // Multiple emails changed
+        'I01'   => self::RULE_WEIGHT_EXTREME,   // IP belongs to TOR
+        'I04'   => self::RULE_WEIGHT_EXTREME,   // Shared IP
+        'R01'   => self::RULE_WEIGHT_EXTREME,   // IP in blacklist
+    ];
+
+    public const DEFAULT_RULES_CREDENTIAL_STUFFING = [
+        // High
+        'A01'   => self::RULE_WEIGHT_HIGH,      // Multiple login fail
+        'A02'   => self::RULE_WEIGHT_HIGH,      // Login failed on new device
+        'B04'   => self::RULE_WEIGHT_HIGH,      // Multiple 5xx errors
+        'B05'   => self::RULE_WEIGHT_HIGH,      // Multiple 4xx errors
+        'B06'   => self::RULE_WEIGHT_HIGH,      // Potentially vulnerable URL
+        'I02'   => self::RULE_WEIGHT_HIGH,      // IP hosting domain
+        'I03'   => self::RULE_WEIGHT_HIGH,      // IP appears in spam list
+        'I06'   => self::RULE_WEIGHT_HIGH,      // IP belongs to datacenter
+        // Extreme
+        'R01'   => self::RULE_WEIGHT_EXTREME,   // IP in blacklist
+    ];
+
+    public const DEFAULT_RULES_CONTENT_SPAM = [
+        // High
+        'B11'   => self::RULE_WEIGHT_HIGH,      // New account (1 day)
+        'B26'   => self::RULE_WEIGHT_HIGH,      // Single event sessions
+        'E03'   => self::RULE_WEIGHT_HIGH,      // Suspicious words in email
+        'E04'   => self::RULE_WEIGHT_HIGH,      // Numeric email name
+        'E21'   => self::RULE_WEIGHT_HIGH,      // No vowels in email
+        'I02'   => self::RULE_WEIGHT_HIGH,      // IP hosting domain
+        'I03'   => self::RULE_WEIGHT_HIGH,      // IP appears in spam list
+        // Extreme
+        'R01'   => self::RULE_WEIGHT_EXTREME,   // IP in blacklist
+        'R02'   => self::RULE_WEIGHT_EXTREME,   // Email in blacklist
+    ];
+
+    public const DEFAULT_RULES_ACCOUNT_REGISTRATION = [
+        // Positive
+        'E23'   => self::RULE_WEIGHT_POSITIVE,  // Educational domain (.edu)
+        'E24'   => self::RULE_WEIGHT_POSITIVE,  // Government domain (.gov)
+        'E25'   => self::RULE_WEIGHT_POSITIVE,  // Military domain (.mil)
+        'E26'   => self::RULE_WEIGHT_POSITIVE,  // iCloud mailbox
+        'I08'   => self::RULE_WEIGHT_POSITIVE,  // IP belongs to Starlink
+        'I10'   => self::RULE_WEIGHT_POSITIVE,  // Only residential IPs
+        // Medium
+        'D08'   => self::RULE_WEIGHT_MEDIUM,    // Two or more phone devices
+        'D09'   => self::RULE_WEIGHT_MEDIUM,    // Old browser
+        'E07'   => self::RULE_WEIGHT_MEDIUM,    // Long email username
+        'E08'   => self::RULE_WEIGHT_MEDIUM,    // Long domain name
+        'E21'   => self::RULE_WEIGHT_MEDIUM,    // No vowels in email
+        'E22'   => self::RULE_WEIGHT_MEDIUM,    // No consonants in email
+        'I05'   => self::RULE_WEIGHT_MEDIUM,    // IP belongs to commercial VPN
+        'I06'   => self::RULE_WEIGHT_MEDIUM,    // IP belongs to datacenter
+        // High
+        'B19'   => self::RULE_WEIGHT_HIGH,      // Night time requests
+        'B21'   => self::RULE_WEIGHT_HIGH,      // Multiple devices in one session
+        'B22'   => self::RULE_WEIGHT_HIGH,      // Multiple IP addresses in one session
+        'B23'   => self::RULE_WEIGHT_HIGH,      // User's full name contains space or hyphen
+        'D01'   => self::RULE_WEIGHT_HIGH,      // Device is unknown
+        'D03'   => self::RULE_WEIGHT_HIGH,      // Device is bot
+        'D04'   => self::RULE_WEIGHT_HIGH,      // Rare browser device
+        'D07'   => self::RULE_WEIGHT_HIGH,      // Several desktop devices
+        'D10'   => self::RULE_WEIGHT_HIGH,      // Potentially vulnerable User-Agent
+        'E01'   => self::RULE_WEIGHT_HIGH,      // Invalid email format
+        'E03'   => self::RULE_WEIGHT_HIGH,      // Suspicious words in email
+        'E04'   => self::RULE_WEIGHT_HIGH,      // Numeric email name
+        'E06'   => self::RULE_WEIGHT_HIGH,      // Consecutive digits in email
+        'I02'   => self::RULE_WEIGHT_HIGH,      // IP hosting domain
+        'I03'   => self::RULE_WEIGHT_HIGH,      // IP appears in spam list
+        'I04'   => self::RULE_WEIGHT_HIGH,      // Shared IP
+        // Extreme
+        'B07'   => self::RULE_WEIGHT_EXTREME,   // User's full name contains digits
+        'B18'   => self::RULE_WEIGHT_EXTREME,   // HEAD request
+        'I01'   => self::RULE_WEIGHT_EXTREME,   // IP belongs to TOR
+        'R01'   => self::RULE_WEIGHT_EXTREME,   // IP in blacklist
+        'R03'   => self::RULE_WEIGHT_EXTREME,   // Phone in blacklist
+    ];
+
+    public const DEFAULT_RULES_FRAUD_PREVENTION = [
+        // Positive
+        'E23'   => self::RULE_WEIGHT_POSITIVE,  // Educational domain (.edu)
+        'E24'   => self::RULE_WEIGHT_POSITIVE,  // Government domain (.gov)
+        'E25'   => self::RULE_WEIGHT_POSITIVE,  // Military domain (.mil)
+        'E26'   => self::RULE_WEIGHT_POSITIVE,  // iCloud mailbox
+        // Medium
+        'D07'   => self::RULE_WEIGHT_MEDIUM,    // Several desktop devices
+        'D08'   => self::RULE_WEIGHT_MEDIUM,    // Two or more phone devices
+        // High
+        'B19'   => self::RULE_WEIGHT_HIGH,      // Night time requests
+        'B20'   => self::RULE_WEIGHT_HIGH,      // Multiple countries in one session
+        'B21'   => self::RULE_WEIGHT_HIGH,      // Multiple devices in one session
+        'B22'   => self::RULE_WEIGHT_HIGH,      // Multiple IP addresses in one session
+        'E03'   => self::RULE_WEIGHT_HIGH,      // Suspicious words in email
+        'E04'   => self::RULE_WEIGHT_HIGH,      // Numeric email name
+        'E06'   => self::RULE_WEIGHT_HIGH,      // Consecutive digits in email
+        'E07'   => self::RULE_WEIGHT_HIGH,      // Long email username
+        'E21'   => self::RULE_WEIGHT_HIGH,      // No vowels in email
+        'I02'   => self::RULE_WEIGHT_HIGH,      // IP hosting domain
+        'I03'   => self::RULE_WEIGHT_HIGH,      // IP appears in spam list
+        'I04'   => self::RULE_WEIGHT_HIGH,      // Shared IP
+        'I05'   => self::RULE_WEIGHT_HIGH,      // IP belongs to commercial VPN
+        'I06'   => self::RULE_WEIGHT_HIGH,      // IP belongs to datacenter
+        'I09'   => self::RULE_WEIGHT_HIGH,      // Numerous IPs
+        'P03'   => self::RULE_WEIGHT_HIGH,      // Shared phone number
+        // Extreme
+        'I01'   => self::RULE_WEIGHT_EXTREME,   // IP belongs to TOR
+        'R01'   => self::RULE_WEIGHT_EXTREME,   // IP in blacklist
+        'R03'   => self::RULE_WEIGHT_EXTREME,   // Phone in blacklist
+    ];
+
+    public const DEFAULT_RULES_INSIDER_THREAT = [
+        // Extreme
+        'B04'   => self::RULE_WEIGHT_EXTREME,   // Multiple 5xx errors
+        'B05'   => self::RULE_WEIGHT_EXTREME,   // Multiple 4xx errors
+        'B06'   => self::RULE_WEIGHT_EXTREME,   // Potentially vulnerable URL
+        'B19'   => self::RULE_WEIGHT_EXTREME,   // Night time requests
+        'D10'   => self::RULE_WEIGHT_EXTREME,   // Potentially vulnerable User-Agent
+        'I01'   => self::RULE_WEIGHT_EXTREME,   // IP belongs to TOR
+    ];
+
+    public const DEFAULT_RULES_BOT_DETECTION = [
+        // Positive
+        'I10'   => self::RULE_WEIGHT_POSITIVE,  // Only residential IPs
+        // Medium
+        'D02'   => self::RULE_WEIGHT_MEDIUM,    // Device is Linux
+        // High
+        'B19'   => self::RULE_WEIGHT_HIGH,      // Night time requests
+        'D01'   => self::RULE_WEIGHT_HIGH,      // Device is unknown
+        'D04'   => self::RULE_WEIGHT_HIGH,      // Rare browser device
+        'D05'   => self::RULE_WEIGHT_HIGH,      // Rare OS device
+        'D09'   => self::RULE_WEIGHT_HIGH,      // Old browser
+        'I01'   => self::RULE_WEIGHT_HIGH,      // IP belongs to TOR
+        'I02'   => self::RULE_WEIGHT_HIGH,      // IP hosting domain
+        'I06'   => self::RULE_WEIGHT_HIGH,      // IP belongs to datacenter
+        // Extreme
+        'B04'   => self::RULE_WEIGHT_EXTREME,   // Multiple 5xx errors
+        'B05'   => self::RULE_WEIGHT_EXTREME,   // Multiple 4xx errors
+        'B06'   => self::RULE_WEIGHT_EXTREME,   // Potentially vulnerable URL
+        'B18'   => self::RULE_WEIGHT_EXTREME,   // HEAD request
+        'D03'   => self::RULE_WEIGHT_EXTREME,   // Device is bot
+        'D10'   => self::RULE_WEIGHT_EXTREME,   // Potentially vulnerable User-Agent
+        'I03'   => self::RULE_WEIGHT_EXTREME,   // IP appears in spam list
+    ];
+
+    public const DEFAULT_RULES_DORMANT_ACCOUNT = [
+        // Extreme
+        'B09'   => self::RULE_WEIGHT_EXTREME,   // Dormant account (90 days)
+    ];
+
+    public const DEFAULT_RULES_MULTI_ACCOUNTING = [
+        // Medium
+        'D07'   => self::RULE_WEIGHT_MEDIUM,    // Several desktop devices
+        'D08'   => self::RULE_WEIGHT_MEDIUM,    // Two or more phone devices
+        'I09'   => self::RULE_WEIGHT_MEDIUM,    // Numerous IPs
+        // High
+        'D06'   => self::RULE_WEIGHT_HIGH,      // Multiple devices per user
+        'B22'   => self::RULE_WEIGHT_HIGH,      // Multiple IP addresses in one session
+        // Extreme
+        'I04'   => self::RULE_WEIGHT_EXTREME,   // Shared IP
+        'P03'   => self::RULE_WEIGHT_EXTREME,   // Shared phone number
+        'R01'   => self::RULE_WEIGHT_EXTREME,   // IP in blacklist
+        'R02'   => self::RULE_WEIGHT_EXTREME,   // Email in blacklist
+        'R03'   => self::RULE_WEIGHT_EXTREME,   // Phone in blacklist
+    ];
+
+    public const DEFAULT_RULES_PROMO_ABUSE = [
+        // Medium
+        'E06'   => self::RULE_WEIGHT_MEDIUM,    // Consecutive digits in email
+        // High
+        'B12'   => self::RULE_WEIGHT_HIGH,      // New account (1 week)
+        'D06'   => self::RULE_WEIGHT_HIGH,      // Multiple devices per user
+        'E03'   => self::RULE_WEIGHT_HIGH,      // Suspicious words in email
+        'E04'   => self::RULE_WEIGHT_HIGH,      // Numeric email name
+        'I02'   => self::RULE_WEIGHT_HIGH,      // IP hosting domain
+        'I05'   => self::RULE_WEIGHT_HIGH,      // IP belongs to commercial VPN
+        'I06'   => self::RULE_WEIGHT_HIGH,      // IP belongs to datacenter
+        // Extreme
+        'I04'   => self::RULE_WEIGHT_EXTREME,   // Shared IP
+        'P03'   => self::RULE_WEIGHT_EXTREME,   // Shared phone number
+        'R01'   => self::RULE_WEIGHT_EXTREME,   // IP in blacklist
+        'R02'   => self::RULE_WEIGHT_EXTREME,   // Email in blacklist
+    ];
+
+    public const DEFAULT_RULES_API_PROTECTION = [
+        // Medium
+        'B24'   => self::RULE_WEIGHT_MEDIUM,    // Empty referer
+        // High
+        'D01'   => self::RULE_WEIGHT_HIGH,      // Device is unknown
+        // Extreme
+        'B04'   => self::RULE_WEIGHT_EXTREME,   // Multiple 5xx errors
+        'B05'   => self::RULE_WEIGHT_EXTREME,   // Multiple 4xx errors
+        'B06'   => self::RULE_WEIGHT_EXTREME,   // Potentially vulnerable URL
+        'B18'   => self::RULE_WEIGHT_EXTREME,   // HEAD request
+        'D03'   => self::RULE_WEIGHT_EXTREME,   // Device is bot
+        'D10'   => self::RULE_WEIGHT_EXTREME,   // Potentially vulnerable User-Agent
+        'I01'   => self::RULE_WEIGHT_EXTREME,   // IP belongs to TOR
+        'R01'   => self::RULE_WEIGHT_EXTREME,   // IP in blacklist
+    ];
+
+    public const DEFAULT_RULES_HIGH_RISK_REGIONS = [
+        // High
+        'C01'   => self::RULE_WEIGHT_HIGH,      // Nigeria IP address
+        'C03'   => self::RULE_WEIGHT_HIGH,      // China IP address
+        'C11'   => self::RULE_WEIGHT_HIGH,      // Russia IP address
+    ];
 }

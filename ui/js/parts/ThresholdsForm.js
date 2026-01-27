@@ -1,48 +1,39 @@
 export class ThresholdsForm {
     constructor() {
+        this.blacklistMax = 98;
+        this.reviewQueueMax = 99;
+
         const updateReviewQueueOptions = this.updateReviewQueueOptions.bind(this);
-        this.blacklistOptions.forEach(radio => {
-            radio.addEventListener('change', updateReviewQueueOptions, false);
-        });
+        this.reviewQueueInput.addEventListener('input', updateReviewQueueOptions, false);
 
         const updateBlacklistOptions = this.updateBlacklistOptions.bind(this);
-        this.reviewQueueOptions.forEach(radio => {
-            radio.addEventListener('change', updateBlacklistOptions, false);
-        });
+        this.blacklistInput.addEventListener('input', updateBlacklistOptions, false);
     }
 
     updateReviewQueueOptions(e) {
-        const blacklistValue = this.blacklistVal;
-
-        this.reviewQueueOptions.forEach(radio => {
-            const value = parseInt(radio.value, 10);
-            radio.disabled = value <= blacklistValue;
-        });
+        const value = this.reviewQueueVal;
+        this.blacklistInput.max = (value <= this.blacklistMax + 1) ? value - 1 : this.blacklistMax;
     }
 
     updateBlacklistOptions(e) {
-        const reviewValue = this.reviewQueueVal;
-
-        this.blacklistOptions.forEach(radio => {
-            const value = parseInt(radio.value, 10);
-            radio.disabled = value >= reviewValue;
-        });
+        const value = this.blacklistVal;
+        this.reviewQueueInput.min = (value <= this.reviewQueueMax - 1) ? value + 1 : this.reviewQueueMax;
     }
 
 
-    get reviewQueueOptions() {
-        return document.querySelectorAll('input[name="review-queue-threshold"]');
+    get reviewQueueInput() {
+        return document.querySelector('input[name="review-queue-threshold"]');
     }
 
-    get blacklistOptions() {
-        return document.querySelectorAll('input[name="blacklist-threshold"]');
+    get blacklistInput() {
+        return document.querySelector('input[name="blacklist-threshold"]');
     }
 
     get reviewQueueVal() {
-        return parseInt(document.querySelector('input[name="review-queue-threshold"]:checked').value || 100, 10);
+        return parseInt(document.querySelector('input[name="review-queue-threshold"]').value || 99, 10);
     }
 
     get blacklistVal() {
-        return parseInt(document.querySelector('input[name="blacklist-threshold"]:checked').value || -1, 10);
+        return parseInt(document.querySelector('input[name="blacklist-threshold"]').value || -1, 10);
     }
 }

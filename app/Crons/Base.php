@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,7 +15,7 @@
 
 declare(strict_types=1);
 
-namespace Crons;
+namespace Tirreno\Crons;
 
 abstract class Base {
     protected $log = [];
@@ -27,7 +27,7 @@ abstract class Base {
     }
 
     protected function addLog(string $msg): void {
-        $this->log[] = \Utils\Logger::logCronLine($msg, $this->getName());
+        $this->log[] = \Tirreno\Utils\Logger::logCronLine($msg, $this->getName());
     }
 
     protected function getName(): string {

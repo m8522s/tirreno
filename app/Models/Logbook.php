@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,17 +15,17 @@
 
 declare(strict_types=1);
 
-namespace Models;
+namespace Tirreno\Models;
 
-class Logbook extends \Models\BaseSql {
+class Logbook extends \Tirreno\Models\BaseSql {
     protected $DB_TABLE_NAME = 'event_logbook';
 
     public function getLastSucceededEvent(int $apiKey): array {
         $params = [
             ':api_key'          => $apiKey,
             ':endpoint'         => '/sensor/',
-            ':success'          => \Utils\Constants::LOGBOOK_ERROR_TYPE_SUCCESS,
-            ':validation_error' => \Utils\Constants::LOGBOOK_ERROR_TYPE_VALIDATION_ERROR,
+            ':success'          => \Tirreno\Utils\Constants::LOGBOOK_ERROR_TYPE_SUCCESS,
+            ':validation_error' => \Tirreno\Utils\Constants::LOGBOOK_ERROR_TYPE_VALIDATION_ERROR,
         ];
 
         $query = (
@@ -121,7 +121,7 @@ class Logbook extends \Models\BaseSql {
     public function rotateRequests(?int $apiKey): int {
         $params = [
             ':key'      => $apiKey,
-            ':limit'    => \Utils\Variables::getLogbookLimit(),
+            ':limit'    => \Tirreno\Utils\Variables::getLogbookLimit(),
         ];
 
         $query = (

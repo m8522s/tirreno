@@ -13,3 +13,4 @@ assets/logs/*
 !/assets/logs/index.php
 tmp/*
 !/tmp/index.php
+/.phpunit.cache

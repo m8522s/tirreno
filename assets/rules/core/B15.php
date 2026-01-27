@@ -1,8 +1,8 @@
 <?php
 
-namespace CoreRules;
+namespace Tirreno\Rules\Core;
 
-class B15 extends \Assets\Rule {
+class B15 extends \Tirreno\Assets\Rule {
     public const NAME = 'Aged account (>90 days)';
     public const DESCRIPTION = 'The account has been created over 90 days ago.';
     public const ATTRIBUTES = [];

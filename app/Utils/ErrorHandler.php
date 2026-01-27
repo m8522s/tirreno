@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,7 +15,7 @@
 
 declare(strict_types=1);
 
-namespace Utils;
+namespace Tirreno\Utils;
 
 class ErrorHandler {
     public static function getErrorDetails(\Base $f3): array {
@@ -60,7 +60,7 @@ class ErrorHandler {
     }
 
     public static function saveErrorInformation(\Base $f3, array $errorData): void {
-        \Utils\Logger::log(null, $errorData['message']);
+        \Tirreno\Utils\Logger::log(null, $errorData['message']);
 
         $errorTraceArray = explode('<br>', $errorData['trace']);
         $printErrorTraceToLog = $f3->get('PRINT_ERROR_TRACE_TO_LOG');
@@ -68,24 +68,24 @@ class ErrorHandler {
             $iters = count($errorTraceArray);
 
             for ($i = 0; $i < $iters; ++$i) {
-                \Utils\Logger::log(null, $errorTraceArray[$i]);
+                \Tirreno\Utils\Logger::log(null, $errorTraceArray[$i]);
             }
         }
 
-        $database = \Utils\Database::getDb();
-        if ($database && \Utils\Routes::getCurrentRequestOperator()) {
+        $database = \Tirreno\Utils\Database::getDb();
+        if ($database && \Tirreno\Utils\Routes::getCurrentRequestOperator()) {
             $errorData['sql_log'] = $database->log();
-            $logModel = new \Models\Log();
+            $logModel = new \Tirreno\Models\Log();
             $logModel->add($errorData);
 
-            \Utils\Logger::log('SQL', $errorData['sql_log']);
+            \Tirreno\Utils\Logger::log('SQL', $errorData['sql_log']);
         }
 
         if ($errorData['code'] === 500) {
             $toName = 'Admin';
-            $toAddress = \Utils\Variables::getAdminEmail();
+            $toAddress = \Tirreno\Utils\Variables::getAdminEmail();
             if ($toAddress === null) {
-                \Utils\Logger::log('Log mail error', 'ADMIN_EMAIL is not set');
+                \Tirreno\Utils\Logger::log('Log mail error', 'ADMIN_EMAIL is not set');
 
                 return;
             }
@@ -97,12 +97,12 @@ class ErrorHandler {
             $errorMessage = $errorData['message'];
             $errorTrace = $errorData['trace'];
 
-            $hosts = json_encode(\Utils\Variables::getHosts());
+            $hosts = json_encode(\Tirreno\Utils\Variables::getHosts());
 
             $message = $f3->get('error_email_body_template');
             $message = sprintf($message, $currentTime, $hosts, $errorMessage, $errorTrace);
 
-            \Utils\Mailer::send($toName, $toAddress, $subject, $message);
+            \Tirreno\Utils\Mailer::send($toName, $toAddress, $subject, $message, true);
         }
     }
 
@@ -151,13 +151,30 @@ class ErrorHandler {
                 return;
             }
 
-            $response = new \Views\Frontend();
-            $pageController = new \Controllers\Pages\Error();
+            $response = new \Tirreno\Views\Frontend();
+            $pageController = new \Tirreno\Controllers\Pages\Error();
 
             $errorData['message'] = 'ERROR_' . $errorData['code'];
+
             if ($errorData['code'] !== 404) {
                 $errorData['extra_message'] = $f3->get('ErrorPage_extra_message');
             }
+
+            if ($errorData['code'] === 400) {
+                $errorData['message'] = 'Error code ' . \Tirreno\Utils\ErrorCodes::INVALID_HOSTNAME;
+                $errorData['extra_message'] = 'Visit page via correct hostname: ' . \Tirreno\Utils\Variables::getHostWithProtocol() . $f3->get('PATH');
+            }
+
+            if ($errorData['code'] === 503) {
+                $errorData['message'] = 'Error code ' . \Tirreno\Utils\ErrorCodes::FAILED_DB_CONNECT;
+                $errorData['extra_message'] = 'Database connection failed.';
+            }
+
+            if ($errorData['code'] === 422) {
+                $errorData['message'] = 'Error code ' . \Tirreno\Utils\ErrorCodes::INCOMPLETE_CONFIG;
+                $errorData['extra_message'] = 'App configuration is incomplete. Check config/local/config.local.ini and possible environment overrides.';
+            }
+
             unset($errorData['trace']);
             $pageParams = $pageController->getPageParams($errorData);
 

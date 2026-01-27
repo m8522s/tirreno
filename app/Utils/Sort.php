@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,7 +15,7 @@
 
 declare(strict_types=1);
 
-namespace Utils;
+namespace Tirreno\Utils;
 
 class Sort {
     public static function cmpTimestamp(array $left, array $right): int {
@@ -32,7 +32,7 @@ class Sort {
         }
 
         if (($left['missing'] === true) !== ($right['missing'] === true)) {
-            return (\Utils\Conversion::intVal($left['missing']) <=> \Utils\Conversion::intVal($right['missing']));
+            return (\Tirreno\Utils\Conversion::intVal($left['missing']) <=> \Tirreno\Utils\Conversion::intVal($right['missing']));
         }
 
         return $left['uid'] <=> $right['uid'];

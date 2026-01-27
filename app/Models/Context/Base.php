@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,12 +15,11 @@
 
 declare(strict_types=1);
 
-namespace Models\Context;
+namespace Tirreno\Models\Context;
 
-abstract class Base extends \Models\BaseSql {
+abstract class Base extends \Tirreno\Models\BaseSql {
     protected $DB_TABLE_NAME = 'event';
-
-    abstract public function getContext(array $accountIds, int $apiKey): array;
+    protected $uniqueValues = null;
 
     abstract protected function getDetails(array $accountIds, int $apiKey): array;
 
@@ -31,25 +30,35 @@ abstract class Base extends \Models\BaseSql {
         return [$params, $placeHolders];
     }
 
-    protected function groupRecordsByAccount(array $records): array {
-        $recordsByAccount = [];
-        $iters = count($records);
-
-        for ($i = 0; $i < $iters; ++$i) {
-            $item = $records[$i];
-            $accountId = $item['accountid'];
-
-            if (!isset($recordsByAccount[$accountId])) {
-                $recordsByAccount[$accountId] = [];
-            }
-
-            $recordsByAccount[$accountId][] = $item;
+    public function getContext(array $accountIds, int $apiKey): array {
+        $unique = $this->uniqueValues;
+        $records = $this->getDetails($accountIds, $apiKey);
+        $keys = array_keys($records[0] ?? []);
+        if (!$keys || !in_array('id', $keys)) {
+            return [];
         }
 
-        return $recordsByAccount;
-    }
+        $groupped = [];
 
-    protected function getUniqueArray(array $array): array {
-        return array_values(array_unique($array));
+        $userId = 0;
+
+        foreach ($records as $record) {
+            $userId = $record['id'];
+
+            if (!isset($groupped[$userId])) {
+                $groupped[$userId] = [];
+                foreach ($keys as $key) {
+                    $groupped[$userId][$key] = [];
+                }
+            }
+
+            foreach ($keys as $key) {
+                if (!$unique || !in_array($record[$key], $groupped[$userId][$key])) {
+                    $groupped[$userId][$key][] = $record[$key];
+                }
+            }
+        }
+
+        return $groupped;
     }
 }

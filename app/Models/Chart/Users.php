@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,63 +15,52 @@
 
 declare(strict_types=1);
 
-namespace Models\Chart;
+namespace Tirreno\Models\Chart;
 
 class Users extends Base {
     protected $DB_TABLE_NAME = 'event_account';
 
     public function getData(int $apiKey): array {
-        $data0 = [];
-        $data1 = $this->getFirstLine($apiKey);
-        $iters = count($data1);
+        $data = $this->getFirstLine($apiKey);
 
-        for ($i = 0; $i < $iters; ++$i) {
-            $item = $data1[$i];
-            $ts = $item['ts'];
-            $score = $item['score'];
-
-            if (!isset($data0[$ts])) {
-                $data0[$ts] = [
-                    'ts' => $ts,
-                    'ts_new_users_with_trust_score_high' => 0,
-                    'ts_new_users_with_trust_score_medium' => 0,
-                    'ts_new_users_with_trust_score_low' => 0,
-                ];
-            }
-
-            $inf = \Utils\Constants::get('USER_HIGH_SCORE_INF');
-            if ($score >= \Utils\Constants::get('USER_HIGH_SCORE_INF')) {
-                ++$data0[$ts]['ts_new_users_with_trust_score_high'];
-            }
-
-            $inf = \Utils\Constants::get('USER_MEDIUM_SCORE_INF');
-            $sup = \Utils\Constants::get('USER_MEDIUM_SCORE_SUP');
-            if ($score >= $inf && $score < $sup) {
-                ++$data0[$ts]['ts_new_users_with_trust_score_medium'];
-            }
-
-            $inf = \Utils\Constants::get('USER_LOW_SCORE_INF');
-            $sup = \Utils\Constants::get('USER_LOW_SCORE_SUP');
-            if ($score >= $inf && $score < $sup) {
-                ++$data0[$ts]['ts_new_users_with_trust_score_low'];
-            }
-        }
-
-        $indexedData    = array_values($data0);
-        $timestamps     = array_column($indexedData, 'ts');
-        $line1          = array_column($indexedData, 'ts_new_users_with_trust_score_high');
-        $line2          = array_column($indexedData, 'ts_new_users_with_trust_score_medium');
-        $line3          = array_column($indexedData, 'ts_new_users_with_trust_score_low');
+        $timestamps = array_column($data, 'ts');
+        $line1      = array_column($data, 'new_users_score_high');
+        $line2      = array_column($data, 'new_users_score_med');
+        $line3      = array_column($data, 'new_users_score_low');
 
         return $this->addEmptyDays([$timestamps, $line1, $line2, $line3]);
     }
 
-    private function getFirstLine(int $apiKey) {
+    private function getFirstLine(int $apiKey): array {
+        $dateRange = \Tirreno\Utils\DateRange::getDatesRangeFromRequest();
+        if (!$dateRange) {
+            $dateRange = [
+                'endDate' => date('Y-m-d H:i:s'),
+                'startDate' => date('Y-m-d H:i:s', 0),
+            ];
+        }
+        $offset = \Tirreno\Utils\Timezones::getCurrentOperatorOffset();
+        $params = [
+            ':api_key'      => $apiKey,
+            ':end_time'     => $dateRange['endDate'],
+            ':start_time'   => $dateRange['startDate'],
+            ':resolution'   => \Tirreno\Utils\DateRange::getResolutionFromRequest(),
+            ':offset'       => strval($offset),
+            ':high_inf'     => \Tirreno\Utils\Constants::get('USER_HIGH_SCORE_INF'),
+            //':high_sup'     => \Tirreno\Utils\Constants::get('USER_HIGH_SCORE_SUP'),
+            ':med_inf'      => \Tirreno\Utils\Constants::get('USER_MEDIUM_SCORE_INF'),
+            ':med_sup'      => \Tirreno\Utils\Constants::get('USER_MEDIUM_SCORE_SUP'),
+            ':low_inf'      => \Tirreno\Utils\Constants::get('USER_LOW_SCORE_INF'),
+            ':low_sup'      => \Tirreno\Utils\Constants::get('USER_LOW_SCORE_SUP'),
+        ];
+
         $query = (
             'SELECT
-                EXTRACT(EPOCH FROM date_trunc(:resolution, event_account.created + :offset))::bigint AS ts,
-                event_account.id,
-                event_account.score
+                EXTRACT(EPOCH FROM date_trunc(:resolution, event_account.created + :offset))::bigint              AS ts,
+                COUNT(CASE WHEN event_account.score >= :high_inf                                   THEN TRUE END) AS new_users_score_high,
+                COUNT(CASE WHEN event_account.score >= :med_inf AND event_account.score < :med_sup THEN TRUE END) AS new_users_score_med,
+                COUNT(CASE WHEN event_account.score >= :low_inf AND event_account.score < :low_sup THEN TRUE END) AS new_users_score_low
+
             FROM
                 event_account
 
@@ -80,10 +69,10 @@ class Users extends Base {
                 event_account.created >= :start_time AND
                 event_account.created <= :end_time
 
-            GROUP BY ts, event_account.id
+            GROUP BY ts
             ORDER BY ts'
         );
 
-        return $this->execute($query, $apiKey);
+        return $this->execQuery($query, $params);
     }
 }

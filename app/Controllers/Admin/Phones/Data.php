@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,22 +15,22 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\Phones;
+namespace Tirreno\Controllers\Admin\Phones;
 
-class Data extends \Controllers\Admin\Base\Data {
+class Data extends \Tirreno\Controllers\Admin\Base\Data {
     public function getList(int $apiKey): array {
         $result = [];
-        $model = new \Models\Grid\Phones\Grid($apiKey);
+        $model = new \Tirreno\Models\Grid\Phones\Grid($apiKey);
 
         $map = [
             'userId' => 'getPhonesByUserId',
         ];
 
-        $result = $this->idMapIterate($map, $model);
+        $result = $this->idMapIterate($map, $model, null);
 
         $ids = array_column($result['data'], 'id');
         if ($ids) {
-            $model = new \Models\Phone();
+            $model = new \Tirreno\Models\Phone();
             $model->updateTotalsByEntityIds($ids, $apiKey);
             $result['data'] = $model->refreshTotals($result['data'], $apiKey);
         }
@@ -39,16 +39,16 @@ class Data extends \Controllers\Admin\Base\Data {
     }
 
     public function getPhoneDetails(int $id, int $apiKey): array {
-        $details = (new \Models\Phone())->getPhoneDetails($id, $apiKey);
+        $details = (new \Tirreno\Models\Phone())->getPhoneDetails($id, $apiKey);
         $details['enrichable'] = $this->isEnrichable($apiKey);
 
         $tsColumns = ['created', 'lastseen'];
-        \Utils\TimeZones::localizeTimestampsForActiveOperator($tsColumns, $details);
+        \Tirreno\Utils\Timezones::localizeTimestampsForActiveOperator($tsColumns, $details);
 
         return $details;
     }
 
     private function isEnrichable(int $apiKey): bool {
-        return (new \Models\ApiKeys())->attributeIsEnrichable('phone', $apiKey);
+        return (new \Tirreno\Models\ApiKeys())->attributeIsEnrichable('phone', $apiKey);
     }
 }

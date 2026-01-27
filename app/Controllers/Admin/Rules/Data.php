@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,20 +15,21 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\Rules;
+namespace Tirreno\Controllers\Admin\Rules;
 
-class Data extends \Controllers\Admin\Base\Data {
-    private \Controllers\Admin\Context\Data $contextController;
-    private \Controllers\Admin\User\Data $userController;
-    private \Models\OperatorsRules $rulesModel;
+class Data extends \Tirreno\Controllers\Admin\Base\Data {
+    private \Tirreno\Controllers\Admin\Context\Data $contextController;
+    private \Tirreno\Controllers\Admin\User\Data $userController;
+    private \Tirreno\Models\OperatorsRules $rulesModel;
 
     private array $totalModels;
     private array $rulesMap;
 
     public function proceedPostRequest(): array {
-        return match (\Utils\Conversion::getStringRequestParam('cmd')) {
+        return match (\Tirreno\Utils\Conversion::getStringRequestParam('cmd')) {
             'changeThresholdValues' => $this->changeThresholdValues(),
             'refreshRules'          => $this->refreshRules(),
+            'applyRulesPreset'      => $this->applyRulesPreset(),
             default => []
         };
     }
@@ -36,7 +37,7 @@ class Data extends \Controllers\Admin\Base\Data {
     private function refreshRules(): array {
         $pageParams = [];
         $params = $this->extractRequestParams(['token']);
-        $errorCode = \Utils\Validators::validateRefreshRules($params);
+        $errorCode = \Tirreno\Utils\Validators::validateRefreshRules($params);
 
         if ($errorCode) {
             $pageParams['ERROR_CODE'] = $errorCode;
@@ -100,7 +101,7 @@ class Data extends \Controllers\Admin\Base\Data {
     }
 
     public function updateRules(bool $localRules = true): array {
-        $model = new \Models\Rules();
+        $model = new \Tirreno\Models\Rules();
 
         // get all rules from db by uid; will not return classes with filename mismatch or invalid classname
         $currentRules   = $model->getAll();
@@ -113,13 +114,13 @@ class Data extends \Controllers\Admin\Base\Data {
         $iterates       = [[], [], [], [], [], []];
         $metUids        = [];
 
-        //$parentClass = \Controllers\Admin\Rules\Set\BaseRule::class;
-        $parentClass = \Assets\Rule::class;
+        //$parentClass = \Tirreno\Controllers\Admin\Rules\Set\BaseRule::class;
+        $parentClass = \Tirreno\Assets\Rule::class;
         $mtd         = 'defineCondition';
 
-        $mainClasses    = \Utils\RulesClasses::getRulesClasses(true);
+        $mainClasses    = \Tirreno\Utils\Assets\RulesClasses::getRulesClasses(true);
         // local classes first to keep ability to override default classes
-        $allClassesFromFiles = $localRules ? \Utils\RulesClasses::getRulesClasses(false)['imported'] : [];
+        $allClassesFromFiles = $localRules ? \Tirreno\Utils\Assets\RulesClasses::getRulesClasses(false)['imported'] : [];
         $allClassesFromFiles += $mainClasses['imported'];
 
         foreach ($allClassesFromFiles as $uid => $cls) {
@@ -148,7 +149,7 @@ class Data extends \Controllers\Admin\Base\Data {
             }
 
             $status = $this->addRule($sortedRules, $obj, $valid, $model);
-            $iterates[($status === null ? 0 : 1 + \Utils\Conversion::intVal($status, 0)) * 2 + \Utils\Conversion::intVal($valid, 0)][] = $uid;
+            $iterates[($status === null ? 0 : 1 + \Tirreno\Utils\Conversion::intVal($status, 0)) * 2 + \Tirreno\Utils\Conversion::intVal($valid, 0)][] = $uid;
             $metUids[] = $uid;
         }
 
@@ -183,7 +184,7 @@ class Data extends \Controllers\Admin\Base\Data {
         return sprintf($template, strval($cnt), ($cnt > 1 ? 's' : ''), $str);
     }
 
-    private function addRule(array $existingArray, array $obj, bool $valid, \Models\Rules $model): ?bool {
+    private function addRule(array $existingArray, array $obj, bool $valid, \Tirreno\Models\Rules $model): ?bool {
         $data = $existingArray[$obj['uid']] ?? null;
         $result = null;
 
@@ -217,16 +218,16 @@ class Data extends \Controllers\Admin\Base\Data {
     public function changeThresholdValues(): array {
         $pageParams = [];
         $params = $this->extractRequestParams(['token', 'keyId', 'blacklist-threshold', 'review-queue-threshold']);
-        $errorCode = \Utils\Validators::validateThresholdValues($params);
+        $errorCode = \Tirreno\Utils\Validators::validateThresholdValues($params);
 
         if ($errorCode) {
             $pageParams['ERROR_CODE'] = $errorCode;
         } else {
-            $keyId                  = \Utils\Conversion::getIntRequestParam('keyId');
-            $blacklistThreshold     = \Utils\Conversion::getIntRequestParam('blacklist-threshold', true) ?? -1;
-            $reviewQueueThreshold   = \Utils\Conversion::getIntRequestParam('review-queue-threshold');
+            $keyId                  = \Tirreno\Utils\Conversion::getIntRequestParam('keyId');
+            $blacklistThreshold     = \Tirreno\Utils\Conversion::getIntRequestParam('blacklist-threshold', true) ?? -1;
+            $reviewQueueThreshold   = \Tirreno\Utils\Conversion::getIntRequestParam('review-queue-threshold');
 
-            $model = new \Models\ApiKeys();
+            $model = new \Tirreno\Models\ApiKeys();
             $model->getKeyById($keyId);
 
             $recalculateReviewQueueCnt = $model->review_queue_threshold !== $reviewQueueThreshold;
@@ -235,7 +236,7 @@ class Data extends \Controllers\Admin\Base\Data {
             $model->updateReviewQueueThreshold($reviewQueueThreshold);
 
             if ($recalculateReviewQueueCnt) {
-                $controller = new \Controllers\Admin\ReviewQueue\Data();
+                $controller = new \Tirreno\Controllers\Admin\ReviewQueue\Data();
                 $controller->setNotReviewedCount(false, $keyId);
             }
 
@@ -245,17 +246,63 @@ class Data extends \Controllers\Admin\Base\Data {
         return $pageParams;
     }
 
+    public function applyRulesPreset(): array {
+        $pageParams = [];
+        $params = $this->extractRequestParams(['token', 'keyId', 'rules-preset']);
+        $errorCode = \Tirreno\Utils\Validators::validateRulesPreset($params);
+
+        if ($errorCode) {
+            $pageParams['ERROR_CODE'] = $errorCode;
+        } else {
+            $keyId                  = \Tirreno\Utils\Conversion::getIntRequestParam('keyId');
+            $rulePresetName         = \Tirreno\Utils\Conversion::getStringRequestParam('rules-preset');
+
+            $this->applyRulesPresetById($rulePresetName, $keyId);
+
+            $pageParams['SUCCESS_MESSAGE'] = $this->f3->get('AdminApplyRulesPresets_success_message');
+        }
+
+        return $pageParams;
+    }
+
+    public function applyRulesPresetById(string $presetId, int $apiKey): void {
+        $model = new \Tirreno\Models\OperatorsRules();
+
+        $rules = \Tirreno\Utils\Constants::get('RULES_PRESETS');
+        if (!array_key_exists($presetId, $rules)) {
+            return;
+        }
+
+        $defaultRules = $rules[$presetId]['main'];
+
+        if (\Tirreno\Utils\Variables::getEmailPhoneAllowed()) {
+            $defaultRules = array_merge($defaultRules, $rules[$presetId]['additional']);
+        }
+
+        $currentRules = $model->getAllRulesByOperator($apiKey);
+        if ($currentRules) {
+            // remove old values!
+            foreach (array_keys($currentRules) as $uid) {
+                $model->updateRule($uid, 0, $apiKey);
+            }
+        }
+
+        foreach ($defaultRules as $key => $value) {
+            $model->updateRule($key, $value, $apiKey);
+        }
+    }
+
     public function getRulesForApiKey(int $apiKey): array {
         return $this->getAllAttrFilteredRulesByApiKey($apiKey);
     }
 
     public function saveUserRule(string $ruleUid, int $score, int $apiKey): void {
-        $model = new \Models\OperatorsRules();
+        $model = new \Tirreno\Models\OperatorsRules();
         $model->updateRule($ruleUid, $score, $apiKey);
     }
 
     public function saveRuleProportion(string $ruleUid, float $proportion, int $apiKey): void {
-        $model = new \Models\OperatorsRules();
+        $model = new \Tirreno\Models\OperatorsRules();
         $model->updateRuleProportion($ruleUid, $proportion, $apiKey);
     }
 
@@ -277,7 +324,7 @@ class Data extends \Controllers\Admin\Base\Data {
         $context = [];
         $record = [];
 
-        foreach (array_chunk($accountIds, \Utils\Variables::getRuleUsersBatchSize()) as $batch) {
+        foreach (array_chunk($accountIds, \Tirreno\Utils\Variables::getRuleUsersBatchSize()) as $batch) {
             $context = $this->contextController->getContextByAccountIds($batch, $apiKey);
             foreach ($batch as $user) {
                 $record = $context[$user] ?? null;
@@ -294,7 +341,7 @@ class Data extends \Controllers\Admin\Base\Data {
         return $result;
     }
 
-    private function executeRule(\Assets\Rule $rule, array $params): bool {
+    private function executeRule(\Tirreno\Assets\Rule $rule, array $params): bool {
         $executed = false;
 
         try {
@@ -302,7 +349,7 @@ class Data extends \Controllers\Admin\Base\Data {
             $executed = $rule->execute();
         } catch (\Throwable $e) {
             if (defined($rule->uid)) {
-                $model = new \Models\Rules();
+                $model = new \Tirreno\Models\Rules();
                 $model->setInvalidByUid($rule->uid);
             }
 
@@ -313,8 +360,8 @@ class Data extends \Controllers\Admin\Base\Data {
     }
 
     public function checkRule(string $ruleUid, int $apiKey): array {
-        $model = new \Models\Users();
-        $users = $model->getAllUsersIdsOrdered($apiKey);
+        $model = new \Tirreno\Models\Users();
+        $users = $model->getLastThousandUsers($apiKey);
         $accounts = [];
         foreach ($users as $user) {
             $accounts[$user['accountid']] = $user;
@@ -376,21 +423,21 @@ class Data extends \Controllers\Admin\Base\Data {
 
     public function buildEvaluationModels(?string $uid = null): void {
         $this->totalModels = [];
-        foreach (\Utils\Constants::get('RULES_TOTALS_MODELS') as $className) {
+        foreach (\Tirreno\Utils\Constants::get('RULES_TOTALS_MODELS') as $className) {
             $this->totalModels[] = new $className();
         }
 
-        $this->contextController    = new \Controllers\Admin\Context\Data();
-        $this->userController       = new \Controllers\Admin\User\Data();
-        $this->rulesModel           = new \Models\OperatorsRules();
+        $this->contextController    = new \Tirreno\Controllers\Admin\Context\Data();
+        $this->userController       = new \Tirreno\Controllers\Admin\User\Data();
+        $this->rulesModel           = new \Tirreno\Models\OperatorsRules();
 
         $ruleBuilder = new \Ruler\RuleBuilder();
 
         if ($uid) {
-            $ruleObj = \Utils\RulesClasses::getSingleRuleObject($uid, $ruleBuilder);
+            $ruleObj = \Tirreno\Utils\Assets\RulesClasses::getSingleRuleObject($uid, $ruleBuilder);
             $this->rulesMap = $ruleObj ? [$uid => $ruleObj] : [];
         } else {
-            $this->rulesMap = \Utils\RulesClasses::getAllRulesObjects($ruleBuilder);
+            $this->rulesMap = \Tirreno\Utils\Assets\RulesClasses::getAllRulesObjects($ruleBuilder);
         }
     }
 
@@ -404,12 +451,12 @@ class Data extends \Controllers\Admin\Base\Data {
 
         $matches = count($filterScores);
 
-        return max(\Utils\Conversion::intVal((99 - ($totalScore * (pow($matches, 1.1) - $matches + 1))), 0), 0);
+        return max(\Tirreno\Utils\Conversion::intVal((99 - ($totalScore * (pow($matches, 1.1) - $matches + 1))), 0), 0);
     }
 
     // only valid, not missing, with fitting attributes, returning associative array
-    private function getAllRulesWithOperatorValues(\Models\OperatorsRules $rulesModel, int $apiKey): array {
-        $model = new \Models\ApiKeys();
+    private function getAllRulesWithOperatorValues(\Tirreno\Models\OperatorsRules $rulesModel, int $apiKey): array {
+        $model = new \Tirreno\Models\ApiKeys();
         $skipAttributes = $model->getSkipEnrichingAttributes($apiKey);
 
         $rules = $rulesModel->getAllValidRulesByOperator($apiKey);
@@ -421,31 +468,31 @@ class Data extends \Controllers\Admin\Base\Data {
 
     // with fitting attributes and sorted, returning as regular array
     private function getAllAttrFilteredRulesByApiKey(int $apiKey): array {
-        $model = new \Models\ApiKeys();
+        $model = new \Tirreno\Models\ApiKeys();
         $skipAttributes = $model->getSkipEnrichingAttributes($apiKey);
 
-        $model = new \Models\OperatorsRules();
+        $model = new \Tirreno\Models\OperatorsRules();
         $rules = $model->getAllRulesByOperator($apiKey);
 
         $results = $this->filterRulesByAttributesAddTypes($rules, $skipAttributes);
 
-        usort($results, [\Utils\Sort::class, 'cmpRule']);
+        usort($results, [\Tirreno\Utils\Sort::class, 'cmpRule']);
 
         return $results;
     }
 
     // do not filter by attributes if data is needed only for rendering info
     public function getAllRulesByApiKey(int $apiKey): array {
-        $model = new \Models\OperatorsRules();
+        $model = new \Tirreno\Models\OperatorsRules();
         $rules = $model->getAllRulesByOperator($apiKey);
 
         $results = [];
         foreach ($rules as $rule) {
-            $rule['type'] = \Utils\RulesClasses::getRuleTypeByUid($rule['uid']);
+            $rule['type'] = \Tirreno\Utils\Assets\RulesClasses::getRuleTypeByUid($rule['uid']);
             $results[] = $rule;
         }
 
-        usort($results, [\Utils\Sort::class, 'cmpRule']);
+        usort($results, [\Tirreno\Utils\Sort::class, 'cmpRule']);
 
         return $results;
     }
@@ -455,7 +502,7 @@ class Data extends \Controllers\Admin\Base\Data {
 
         foreach ($rules as $id => $row) {
             if (!count(array_intersect(json_decode($row['attributes']), $skipAttributes))) {
-                $row['type'] = \Utils\RulesClasses::getRuleTypeByUid($row['uid']);
+                $row['type'] = \Tirreno\Utils\Assets\RulesClasses::getRuleTypeByUid($row['uid']);
                 $results[$id] = $row;
             }
         }

@@ -1,8 +1,8 @@
 <?php
 
-namespace CoreRules;
+namespace Tirreno\Rules\Core;
 
-class I11 extends \Assets\Rule {
+class I11 extends \Tirreno\Assets\Rule {
     public const NAME = 'Single network';
     public const DESCRIPTION = 'IP addresses belong to one network.';
     public const ATTRIBUTES = ['ip'];

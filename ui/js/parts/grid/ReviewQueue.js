@@ -15,6 +15,8 @@ export class ReviewQueueGrid extends BaseGrid {
 
     onTableRowClick(event) {}
 
+    onDateFilterChanged() {}
+
     get columnDefs() {
         const columnDefs = [
             {

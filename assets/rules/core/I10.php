@@ -1,8 +1,8 @@
 <?php
 
-namespace CoreRules;
+namespace Tirreno\Rules\Core;
 
-class I10 extends \Assets\Rule {
+class I10 extends \Tirreno\Assets\Rule {
     public const NAME = 'Only residential IPs';
     public const DESCRIPTION = 'User uses only residential IP addresses.';
     public const ATTRIBUTES = ['ip'];

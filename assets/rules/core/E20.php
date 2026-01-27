@@ -1,8 +1,8 @@
 <?php
 
-namespace CoreRules;
+namespace Tirreno\Rules\Core;
 
-class E20 extends \Assets\Rule {
+class E20 extends \Tirreno\Assets\Rule {
     public const NAME = 'Established domain (> 3 year old)';
     public const DESCRIPTION = 'Email belongs to long-established domain name registered at least 3 years ago.';
     public const ATTRIBUTES = ['domain'];

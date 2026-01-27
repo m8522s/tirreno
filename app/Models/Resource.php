@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Models;
+namespace Tirreno\Models;
 
-class Resource extends \Models\BaseSql implements \Interfaces\ApiKeyAccessAuthorizationInterface {
+class Resource extends \Tirreno\Models\BaseSql implements \Tirreno\Interfaces\ApiKeyAccessAuthorizationInterface {
     protected $DB_TABLE_NAME = 'event';
 
     public function getResourceById(int $resourceId): array {
@@ -117,7 +117,7 @@ class Resource extends \Models\BaseSql implements \Interfaces\ApiKeyAccessAuthor
 
         $totalIp = $this->execQuery($query, $params);
 
-        $params[':field_edit'] = \Utils\Constants::FIELD_EDIT_EVENT_TYPE_ID;
+        $params[':field_edit'] = \Tirreno\Utils\Constants::FIELD_EDIT_EVENT_TYPE_ID;
         $query = (
             "SELECT
                 event.url   AS id,
@@ -171,7 +171,7 @@ class Resource extends \Models\BaseSql implements \Interfaces\ApiKeyAccessAuthor
 
         [$params, $flatIds] = $this->getArrayPlaceholders($ids);
         $params[':key'] = $apiKey;
-        $params[':field_edit'] = \Utils\Constants::FIELD_EDIT_EVENT_TYPE_ID;
+        $params[':field_edit'] = \Tirreno\Utils\Constants::FIELD_EDIT_EVENT_TYPE_ID;
         $extraClause = $force ? '' : ' AND event_url.lastseen >= event_url.updated';
 
         $query = (
@@ -214,7 +214,7 @@ class Resource extends \Models\BaseSql implements \Interfaces\ApiKeyAccessAuthor
     public function updateAllTotals(int $apiKey): int {
         $params = [
             ':key'          => $apiKey,
-            ':field_edit'   => \Utils\Constants::FIELD_EDIT_EVENT_TYPE_ID,
+            ':field_edit'   => \Tirreno\Utils\Constants::FIELD_EDIT_EVENT_TYPE_ID,
         ];
 
         $query = (

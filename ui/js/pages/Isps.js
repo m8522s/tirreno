@@ -1,4 +1,4 @@
-import {BasePage} from './Base.js';
+import {BasePage} from './Base.js?v=2';
 
 import {DatesFilter} from '../parts/DatesFilter.js?v=2';
 import {SearchFilter} from '../parts/SearchFilter.js?v=2';
@@ -6,7 +6,6 @@ import {IspsChart} from '../parts/chart/Isps.js?v=2';
 import {IspsGrid} from '../parts/grid/Isps.js?v=2';
 
 export class IspsPage extends BasePage {
-
     constructor() {
         super('isps');
 

@@ -7,7 +7,6 @@ import {
 } from '../DataRenderers.js?v=2';
 
 export class EmailsGrid extends BaseGridWithPanel {
-
     get orderConfig() {
         return [];
     }

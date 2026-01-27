@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Models\Grid\Resources;
+namespace Tirreno\Models\Grid\Resources;
 
-class Grid extends \Models\Grid\Base\Grid {
+class Grid extends \Tirreno\Models\Grid\Base\Grid {
     public function __construct(int $apiKey) {
         parent::__construct();
 
@@ -37,7 +37,7 @@ class Grid extends \Models\Grid\Base\Grid {
         return $data;
     }
 
-    public function getAllResources(): array {
+    public function getAll(): array {
         $data = $this->getGrid();
         if (isset($data['data'])) {
             $data['data'] = $this->extendWithSuspiciousUrl($data['data']);
@@ -48,9 +48,9 @@ class Grid extends \Models\Grid\Base\Grid {
 
     private function extendWithSuspiciousUrl(array $result): array {
         if (is_array($result) && count($result)) {
-            $suspiciousUrlWords = \Utils\WordsLists\Url::getWords();
+            $suspiciousUrlList = \Tirreno\Utils\Assets\Lists\Url::getList();
             foreach ($result as &$record) {
-                $record['suspicious'] = $this->isUrlSuspicious($suspiciousUrlWords, $record['url']);
+                $record['suspicious'] = $this->isUrlSuspicious($suspiciousUrlList, $record['url']);
             }
             unset($record);
         }

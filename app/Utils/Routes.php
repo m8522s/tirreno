@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,14 +15,14 @@
 
 declare(strict_types=1);
 
-namespace Utils;
+namespace Tirreno\Utils;
 
 class Routes {
     private static function getF3(): \Base {
         return \Base::instance();
     }
 
-    public static function getCurrentRequestOperator(): \Models\Operator|false|null {
+    public static function getCurrentRequestOperator(): \Tirreno\Models\Operator|false|null {
         return self::getF3()->get('CURRENT_USER');
     }
 
@@ -30,9 +30,9 @@ class Routes {
         self::getF3()->set('CURRENT_USER', self::getCurrentSessionOperator());
     }
 
-    public static function getCurrentSessionOperator(): \Models\Operator|false|null {
-        $model = new \Models\Operator();
-        $loggedInOperatorId = \Utils\Conversion::intValCheckEmpty(self::getF3()->get('SESSION.active_user_id'));
+    public static function getCurrentSessionOperator(): \Tirreno\Models\Operator|false|null {
+        $model = new \Tirreno\Models\Operator();
+        $loggedInOperatorId = \Tirreno\Utils\Conversion::intValCheckEmpty(self::getF3()->get('SESSION.active_user_id'));
 
         return $loggedInOperatorId ? $model->getOperatorById($loggedInOperatorId) : null;
     }

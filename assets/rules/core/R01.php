@@ -1,8 +1,8 @@
 <?php
 
-namespace CoreRules;
+namespace Tirreno\Rules\Core;
 
-class R01 extends \Assets\Rule {
+class R01 extends \Tirreno\Assets\Rule {
     public const NAME = 'IP in blacklist';
     public const DESCRIPTION = 'This IP address appears in the blacklist.';
     public const ATTRIBUTES = [];

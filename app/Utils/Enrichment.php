@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,7 +15,7 @@
 
 declare(strict_types=1);
 
-namespace Utils;
+namespace Tirreno\Utils;
 
 class Enrichment {
     public static function calculateIpType(array &$records): void {
@@ -77,7 +77,7 @@ class Enrichment {
             $reputation = 'none';
 
             if ($record['data_breach'] !== null && $record['data_breach'] !== null) {
-                $reputationLevel = \Utils\Conversion::intVal($record['data_breach'], 0) + \Utils\Conversion::intVal(!$record['blockemails'], 0);
+                $reputationLevel = \Tirreno\Utils\Conversion::intVal($record['data_breach'], 0) + \Tirreno\Utils\Conversion::intVal(!$record['blockemails'], 0);
                 $reputation = match ($reputationLevel) {
                     2       => 'high',
                     1       => 'medium',
@@ -146,7 +146,7 @@ class Enrichment {
             $osVersion = $record['os_version'] ?? '';
 
             //Display 'Bot' label instead of his full name
-            $record['os_name'] = $device === 'bot' ? 'Bot' : $osName;
+            //$record['os_name'] = $device === 'bot' ? 'Bot' : $osName;
 
             $record['os'] = sprintf('%s %s', $osName, $osVersion);
             $record['browser'] = sprintf('%s %s', $browserName, $browserVersion);

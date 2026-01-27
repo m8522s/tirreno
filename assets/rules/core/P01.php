@@ -1,8 +1,8 @@
 <?php
 
-namespace CoreRules;
+namespace Tirreno\Rules\Core;
 
-class P01 extends \Assets\Rule {
+class P01 extends \Tirreno\Assets\Rule {
     public const NAME = 'Invalid phone format';
     public const DESCRIPTION = 'User provided incorrect phone number.';
     public const ATTRIBUTES = ['phone'];

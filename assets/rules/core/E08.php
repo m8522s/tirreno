@@ -1,8 +1,8 @@
 <?php
 
-namespace CoreRules;
+namespace Tirreno\Rules\Core;
 
-class E08 extends \Assets\Rule {
+class E08 extends \Tirreno\Assets\Rule {
     public const NAME = 'Long domain name';
     public const DESCRIPTION = 'Email\'s domain name is too long. Long domain names are cheaply registered and rarely used for email addresses by regular users.';
     public const ATTRIBUTES = [];

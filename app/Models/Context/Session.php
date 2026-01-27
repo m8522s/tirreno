@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,27 +15,22 @@
 
 declare(strict_types=1);
 
-namespace Models\Context;
+namespace Tirreno\Models\Context;
 
 class Session extends Base {
-    public function getContext(array $accountIds, int $apiKey, int $timezoneOffset = 0): array {
-        $records = $this->getDetails($accountIds, $apiKey, $timezoneOffset);
-        // one record per account
-        $recordsByAccount = $this->groupRecordsByAccount($records);
+    protected $uniqueValues = false;
 
-        return $recordsByAccount;
-    }
-
+    // one record per account
     protected function getDetails(array $accountIds, int $apiKey, int $timezoneOffset = 0): array {
         [$params, $placeHolders] = $this->getRequestParams($accountIds, $apiKey);
 
-        $params[':night_start'] = gmdate('H:i:s', \Utils\Constants::get('NIGHT_RANGE_SECONDS_START') - $timezoneOffset);
-        $params[':night_end'] = gmdate('H:i:s', \Utils\Constants::get('NIGHT_RANGE_SECONDS_END') - $timezoneOffset);
+        $params[':night_start'] = gmdate('H:i:s', \Tirreno\Utils\Constants::get('NIGHT_RANGE_SECONDS_START') - $timezoneOffset);
+        $params[':night_end'] = gmdate('H:i:s', \Tirreno\Utils\Constants::get('NIGHT_RANGE_SECONDS_END') - $timezoneOffset);
 
         // boolean logic for defining time ranges overlap
         $query = (
             "SELECT
-                event_session.account_id                        AS accountid,
+                event_session.account_id                        AS id,
                 BOOL_AND(event_session.total_visit = 1)         AS event_session_single_event,
                 BOOL_OR(event_session.total_country > 1)        AS event_session_multiple_country,
                 BOOL_OR(event_session.total_ip > 1)             AS event_session_multiple_ip,

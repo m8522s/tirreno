@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -19,7 +19,7 @@ return [
     'AdminSettings_page_title' => 'Settings',
     'AdminSettings_breadcrumb_title' => 'Settings',
 
-    'AdminSettings_changePassword_form_title' => 'Password',
+    'AdminSettings_changePassword_form_title' => 'Change password',
     'AdminSettings_changePassword_form_title_tooltip' => 'Change your account password here. Use a strong password to prevent unauthorized access.',
     'AdminSettings_changePassword_form_field_currentPassword_label' => 'Current password',
     'AdminSettings_changePassword_form_field_currentPassword_placeholder' => 'Enter current password',

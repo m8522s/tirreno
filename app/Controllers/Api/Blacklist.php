@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,13 +15,13 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Api;
+namespace Tirreno\Controllers\Api;
 
 class Blacklist extends Endpoint {
     public function search(): void {
         $value = $this->getBodyProp('value', 'string');
 
-        $model = new \Models\BlacklistItems();
+        $model = new \Tirreno\Models\BlacklistItems();
         $itemFound = $model->searchBlacklistedItem($value, $this->apiKey->id);
 
         $this->data = [

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,12 +15,12 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Pages;
+namespace Tirreno\Controllers\Pages;
 
 class Logout extends Base {
     public $page = 'Logout';
 
-    public function getPageParams() {
+    public function getPageParams(): array {
         $pageParams = [
             'HTML_FILE'     => 'logout.html',
             'JS'            => 'user_main.js',
@@ -29,7 +29,7 @@ class Logout extends Base {
         if ($this->isPostRequest()) {
             $params = $this->extractRequestParams(['token']);
 
-            $errorCode = \Utils\Access::CSRFTokenValid($params, $this->f3);
+            $errorCode = \Tirreno\Utils\Access::CSRFTokenValid($params, $this->f3);
 
             if (!$errorCode) {
                 $this->f3->clear('SESSION');

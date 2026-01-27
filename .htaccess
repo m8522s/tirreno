@@ -7,6 +7,8 @@ AddDefaultCharset UTF-8
 <IfModule mod_headers.c>
   Header always append X-Frame-Options SAMEORIGIN
   Header set X-XSS-Protection "1; mode=block"
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
 
 # Hard deny for config, hidden files and composer
@@ -57,7 +59,7 @@ DirectoryIndex index.php index.html index.htm
   RewriteRule (^|/)install/(|index\.php)$ - [L,QSA]
 
   # Deny rule for app directories
-  RewriteCond %{REQUEST_URI} (^|/)(assets|app|sensor|config|tmp|libs|install|vendor|ui|extension)($|/.*$) [NC,OR]
+  RewriteCond %{REQUEST_URI} (^|/)(assets|app|sensor|config|tmp|libs|install|vendor|ui|extension|tests|coverage|.github)($|/.*$) [NC,OR]
 
   # Deny rule for markdown and other software documents
   RewriteCond %{REQUEST_URI} (^|/)(README|CHANGELOG|LICENSE|AUTHORS|CODE_OF_CONDUCT|LEGALNOTICE|RELEASE_NOTES|SECURITY|FILE_ID)(|\.txt|\.md|\.diz|\.DIZ)$ [NC,OR]
@@ -69,7 +71,7 @@ DirectoryIndex index.php index.html index.htm
   RewriteCond %{REQUEST_URI} (^|/)(docker|Docker).*$ [NC,OR]
 
   # Deny rule for app specific files in root config files
-  RewriteCond %{REQUEST_URI} (^|/)(app\.json|composer\.json|composer\.lock|cron.json|eslint.config.js|phpcs.xml)$ [NC]
+  RewriteCond %{REQUEST_URI} (^|/)(app\.json|composer\.json|composer\.lock|cron.json|eslint.config.js|phpcs.xml|phpunit.xml|phpstan.neon)$ [NC]
 
   RewriteRule ^.*$ - [F,L]
 

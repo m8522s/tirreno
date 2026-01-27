@@ -1,4 +1,4 @@
-import {BasePage} from './Base.js';
+import {BasePage} from './Base.js?v=2';
 
 import {DatesFilter} from '../parts/DatesFilter.js?v=2';
 import {SearchFilter} from '../parts/SearchFilter.js?v=2';
@@ -8,7 +8,6 @@ import {UsersGrid} from '../parts/grid/Users.js?v=2';
 import {UsersChart} from '../parts/chart/Users.js?v=2';
 
 export class UsersPage extends BasePage {
-
     constructor() {
         super('users');
 

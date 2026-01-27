@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,15 +15,15 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\Api;
+namespace Tirreno\Controllers\Admin\Api;
 
-class Page extends \Controllers\Admin\Base\Page {
+class Page extends \Tirreno\Controllers\Admin\Base\Page {
     public $page = 'AdminApi';
 
     public function getPageParams(): array {
         $dataController = new Data();
 
-        $currentOperator = \Utils\Routes::getCurrentRequestOperator();
+        $currentOperator = \Tirreno\Utils\Routes::getCurrentRequestOperator();
         $operatorId = $currentOperator->id;
 
         $scheduledForEnrichment = $dataController->getScheduledForEnrichment();
@@ -33,7 +33,7 @@ class Page extends \Controllers\Admin\Base\Page {
             'LOAD_DATATABLE'            => true,
             'HTML_FILE'                 => 'admin/api.html',
             'JS'                        => 'admin_api.js',
-            'API_URL'                   => \Utils\Variables::getHostWithProtocolAndBase() . '/sensor/',
+            'API_URL'                   => \Tirreno\Utils\Variables::getHostWithProtocolAndBase() . '/sensor/',
         ];
 
         if ($this->isPostRequest()) {
@@ -42,7 +42,7 @@ class Page extends \Controllers\Admin\Base\Page {
             $pageParams = array_merge($pageParams, $operationResponse);
         }
 
-        // set these params after proccessing POST request
+        // set these params after processing POST request
         [$isOwner, $apiKeys] = $dataController->getOperatorApiKeysDetails($operatorId);
         $pageParams['IS_OWNER'] = $isOwner;
         $pageParams['API_KEYS'] = $apiKeys;

@@ -2,7 +2,6 @@ import {handleAjaxError} from './utils/ErrorHandler.js?v=2';
 import {Button} from './Button.js?v=2';
 
 export class BlacklistGridActionButtons extends Button {
-
     constructor(tableId) {
         super();
         this.tableId = tableId;
@@ -76,7 +75,6 @@ export class BlacklistGridActionButtons extends Button {
         if (tableRow) {
             const dataTable = $(`#${me.tableId}`).DataTable();
             dataTable.row(tableRow).remove().draw(false);
-            me.setBlacklistMenuCount();
         }
     }
 

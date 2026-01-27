@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,42 +15,42 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\Domain;
+namespace Tirreno\Controllers\Admin\Domain;
 
-class Data extends \Controllers\Admin\Base\Data {
+class Data extends \Tirreno\Controllers\Admin\Base\Data {
     public function proceedPostRequest(): array {
-        return match (\Utils\Conversion::getStringRequestParam('cmd')) {
+        return match (\Tirreno\Utils\Conversion::getStringRequestParam('cmd')) {
             'reenrichment' => $this->enrichEntity(),
             default => []
         };
     }
 
     public function enrichEntity(): array {
-        $dataController = new \Controllers\Admin\Enrichment\Data();
-        $apiKey = \Utils\ApiKeys::getCurrentOperatorApiKeyId();
-        $enrichmentKey = \Utils\ApiKeys::getCurrentOperatorEnrichmentKeyString();
+        $dataController = new \Tirreno\Controllers\Admin\Enrichment\Data();
+        $apiKey = \Tirreno\Utils\ApiKeys::getCurrentOperatorApiKeyId();
+        $enrichmentKey = \Tirreno\Utils\ApiKeys::getCurrentOperatorEnrichmentKeyString();
 
-        $type       = \Utils\Conversion::getStringRequestParam('type');
-        $search     = \Utils\Conversion::getStringRequestParam('search', true);
-        $entityId   = \Utils\Conversion::getIntRequestParam('entityId', true);
+        $type       = \Tirreno\Utils\Conversion::getStringRequestParam('type');
+        $search     = \Tirreno\Utils\Conversion::getStringRequestParam('search', true);
+        $entityId   = \Tirreno\Utils\Conversion::getIntRequestParam('entityId', true);
 
         return $dataController->enrichEntity($type, $search, $entityId, $apiKey, $enrichmentKey);
     }
 
     public function checkIfOperatorHasAccess(int $domainId, int $apiKey): bool {
-        return (new \Models\Domain())->checkAccess($domainId, $apiKey);
+        return (new \Tirreno\Models\Domain())->checkAccess($domainId, $apiKey);
     }
 
     public function getDomainDetails(int $domainId, int $apiKey): array {
-        $result = (new \Models\Domain())->getFullDomainInfoById($domainId, $apiKey);
+        $result = (new \Tirreno\Models\Domain())->getFullDomainInfoById($domainId, $apiKey);
 
         $tsColumns = ['lastseen'];
-        \Utils\TimeZones::localizeTimestampsForActiveOperator($tsColumns, $result);
+        \Tirreno\Utils\Timezones::localizeTimestampsForActiveOperator($tsColumns, $result);
 
         return $result;
     }
 
     public function isEnrichable(int $apiKey): bool {
-        return (new \Models\ApiKeys())->attributeIsEnrichable('domain', $apiKey);
+        return (new \Tirreno\Models\ApiKeys())->attributeIsEnrichable('domain', $apiKey);
     }
 }

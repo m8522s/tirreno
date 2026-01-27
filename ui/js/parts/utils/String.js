@@ -1,4 +1,3 @@
-
 const replaceAll = (str, search, replacement) => {
     return str.split(search).join(replacement);
 };
@@ -67,9 +66,21 @@ const openJson = (str) => {
     }
 };
 
+const formatKiloValue = (value) => {
+    if (value >= 1000000) {
+        return Math.floor(value / 1000000) + 'M';
+    }
+    if (value >= 1000) {
+        return Math.floor(value / 1000) + 'k';
+    }
+
+    return value;
+};
+
 export {
     replaceAll,
     getRuleClass,
     formatTime,
     openJson,
+    formatKiloValue,
 };

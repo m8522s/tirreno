@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Models\Grid\Logbook;
+namespace Tirreno\Models\Grid\Logbook;
 
-class Grid extends \Models\Grid\Base\Grid {
+class Grid extends \Tirreno\Models\Grid\Base\Grid {
     public function __construct(int $apiKey) {
         parent::__construct();
 
@@ -26,15 +26,15 @@ class Grid extends \Models\Grid\Base\Grid {
         $this->query = new Query($apiKey);
     }
 
-    public function getAllLogbookEvents() {
+    public function getAll(): array {
         return $this->getGrid();
     }
 
     protected function convertTimeToUserTimezone(array &$result): void {
         $field = 'created';
-        \Utils\TimeZones::translateTimeZones($result, [$field], true);
+        \Tirreno\Utils\Timezones::translateTimezones($result, [$field], true);
 
-        $serverOffset = \Utils\TimeZones::getServerOffset();
+        $serverOffset = \Tirreno\Utils\Timezones::getServerOffset();
 
         foreach ($result as $idx => $row) {
             if (!isset($row[$field]) || $row[$field] === null) {
@@ -42,7 +42,7 @@ class Grid extends \Models\Grid\Base\Grid {
             }
 
             // substract server time
-            $result[$idx][$field] = \Utils\TimeZones::addOffset($row[$field], -$serverOffset, true);
+            $result[$idx][$field] = \Tirreno\Utils\Timezones::addOffset($row[$field], -$serverOffset, true);
         }
     }
 }

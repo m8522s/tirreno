@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\ISP;
+namespace Tirreno\Controllers\Admin\ISP;
 
-class Navigation extends \Controllers\Admin\Base\Navigation {
+class Navigation extends \Tirreno\Controllers\Admin\Base\Navigation {
     public function __construct() {
         parent::__construct();
 
@@ -26,7 +26,7 @@ class Navigation extends \Controllers\Admin\Base\Navigation {
     }
 
     public function getIspDetails(): array {
-        $ispId = \Utils\Conversion::getIntRequestParam('ispId');
+        $ispId = \Tirreno\Utils\Conversion::getIntRequestParam('ispId');
         $hasAccess = $this->controller->checkIfOperatorHasAccess($ispId, $this->apiKey);
 
         if (!$hasAccess) {

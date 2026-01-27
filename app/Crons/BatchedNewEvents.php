@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,11 +15,11 @@
 
 declare(strict_types=1);
 
-namespace Crons;
+namespace Tirreno\Crons;
 
 class BatchedNewEvents extends Base {
     protected function readyToProcess(): bool {
-        $model = new \Models\Cursor();
+        $model = new \Tirreno\Models\Cursor();
 
         // was not locked; locking now
         if ($model->safeLock()) {
@@ -28,7 +28,7 @@ class BatchedNewEvents extends Base {
 
         $result = $model->getLock();
 
-        if (\Utils\DateRange::isQueueTimeouted($result['updated'])) {
+        if (\Tirreno\Utils\DateRange::isQueueTimeouted($result['updated'])) {
             return false;
         }
 
@@ -44,11 +44,11 @@ class BatchedNewEvents extends Base {
             return;
         }
 
-        $model = new \Models\Cursor();
+        $model = new \Tirreno\Models\Cursor();
 
         try {
             $cursor = $model->getCursor();
-            $next = $model->getNextCursor($cursor, \Utils\Variables::getNewEventsBatchSize());
+            $next = $model->getNextCursor($cursor, \Tirreno\Utils\Variables::getNewEventsBatchSize());
 
             if (!$next) {
                 $this->addLog('No new events.');
@@ -57,11 +57,11 @@ class BatchedNewEvents extends Base {
                 return;
             }
 
-            $accounts = (new \Models\Events())->getDistinctAccounts($cursor, $next);
+            $accounts = (new \Tirreno\Models\Events())->getDistinctAccounts($cursor, $next);
 
-            \Utils\Routes::callExtra('BATCHING_NEW_EVENTS', $cursor, $next);
+            \Tirreno\Utils\Routes::callExtra('BATCHING_NEW_EVENTS', $cursor, $next);
 
-            (new \Models\Queue())->addBatch($accounts, \Utils\Constants::get('RISK_SCORE_QUEUE_ACTION_TYPE'));
+            (new \Tirreno\Models\Queue())->addBatch($accounts, \Tirreno\Utils\Constants::get('RISK_SCORE_QUEUE_ACTION_TYPE'));
 
             $model->updateCursor($next);
 

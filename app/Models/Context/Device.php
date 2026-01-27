@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,36 +15,17 @@
 
 declare(strict_types=1);
 
-namespace Models\Context;
+namespace Tirreno\Models\Context;
 
 class Device extends Base {
-    public function getContext(array $accountIds, int $apiKey): array {
-        $record = $this->getDetails($accountIds, $apiKey);
-        $recordByAccount = $this->groupRecordsByAccount($record);
-
-        foreach ($recordByAccount as $key => $value) {
-            $recordByAccount[$key] = [
-                'eup_device'            => array_column($value, 'eup_device'),
-                'eup_device_id'         => array_column($value, 'eup_device_id'),
-                'eup_browser_name'      => array_column($value, 'eup_browser_name'),
-                'eup_browser_version'   => array_column($value, 'eup_browser_version'),
-                'eup_os_name'           => array_column($value, 'eup_os_name'),
-                'eup_lang'              => array_column($value, 'eup_lang'),
-                'eup_ua'                => array_column($value, 'eup_ua'),
-                // 'eup_lastseen'       => array_column($value, 'eup_lastseen'),
-                // 'eup_created'        => array_column($value, 'eup_created'),
-            ];
-        }
-
-        return $recordByAccount;
-    }
+    protected $uniqueValues = false;
 
     protected function getDetails(array $accountIds, int $apiKey): array {
         [$params, $placeHolders] = $this->getRequestParams($accountIds, $apiKey);
 
         $query = (
             "SELECT
-                event_device.account_id         AS accountid,
+                event_device.account_id         AS id,
                 event_device.id                 AS eup_device_id,
                 event_ua_parsed.device          AS eup_device,
                 event_ua_parsed.browser_name    AS eup_browser_name,

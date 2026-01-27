@@ -4,7 +4,6 @@ import {fireEvent, handleEscape} from '../utils/Event.js?v=2';
 import {handleAjaxError} from '../utils/ErrorHandler.js?v=2';
 
 export class BasePanel {
-
     constructor(eventParams) {
         this.enrichment = eventParams.enrichment;
         this.type = eventParams.type;

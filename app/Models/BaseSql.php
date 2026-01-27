@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,7 +15,7 @@
 
 declare(strict_types=1);
 
-namespace Models;
+namespace Tirreno\Models;
 
 abstract class BaseSql extends \DB\SQL\Mapper {
     protected $f3 = null;
@@ -33,7 +33,7 @@ abstract class BaseSql extends \DB\SQL\Mapper {
     }
 
     private function getDatabaseConnection(): ?\DB\SQL {
-        return \Utils\Database::getDb();
+        return \Tirreno\Utils\Database::getDb();
     }
 
     public function getHash(string $string): string {
@@ -44,13 +44,13 @@ abstract class BaseSql extends \DB\SQL\Mapper {
     }
 
     public function getPseudoRandomString(int $length = 32): string {
-        $bytes = \openssl_random_pseudo_bytes($length / 2);
+        $bytes = openssl_random_pseudo_bytes($length / 2);
 
-        return \bin2hex($bytes);
+        return bin2hex($bytes);
     }
 
     public function printLog(): void {
-        echo \Utils\Database::getDb()->log();
+        echo \Tirreno\Utils\Database::getDb()->log();
     }
 
     public function getArrayPlaceholders(array $ids, string $postfix = ''): array {

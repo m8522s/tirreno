@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,10 +15,10 @@
 
 declare(strict_types=1);
 
-namespace Utils;
+namespace Tirreno\Utils;
 
 class Mailer {
-    public static function send(?string $toName, string $toAddress, string $subject, string $message): array {
+    public static function send(?string $toName, string $toAddress, string $subj, string $msg, bool $html = false): array {
         $f3 = \Base::instance();
         $canSendEmail = $f3->get('SEND_EMAIL');
         if (!$canSendEmail) {
@@ -30,25 +30,25 @@ class Mailer {
 
         $toName = $toName ?? '';
         $data = null;
-        if (\Utils\Variables::getMailPassword()) {
-            $data = self::sendByMailgun($toAddress, $toName, $subject, $message);
+        if (\Tirreno\Utils\Variables::getMailPassword()) {
+            $data = self::sendByMailgun($toAddress, $toName, $subj, $msg, $html);
         }
 
         if ($data === null || !$data['success']) {
-            $data = self::sendByNativeMail($toAddress, $toName, $subject, $message);
+            $data = self::sendByNativeMail($toAddress, $toName, $subj, $msg);
         }
 
         return $data;
     }
 
-    private static function sendByMailgun(string $toAddress, string $toName, string $subject, string $message): array {
+    private static function sendByMailgun(string $toAddress, string $toName, string $subj, string $msg, bool $html): array {
         $f3 = \Base::instance();
 
-        $fromName = \Utils\Constants::get('MAIL_FROM_NAME');
+        $fromName = \Tirreno\Utils\Constants::get('MAIL_FROM_NAME');
         $smtpDebug = $f3->get('SMTP_DEBUG');
-        $fromAddress = \Utils\Variables::getMailLogin();
-        $mailLogin = \Utils\Variables::getMailLogin();
-        $mailPassword = \Utils\Variables::getMailPassword();
+        $fromAddress = \Tirreno\Utils\Variables::getMailLogin();
+        $mailLogin = \Tirreno\Utils\Variables::getMailLogin();
+        $mailPassword = \Tirreno\Utils\Variables::getMailPassword();
 
         if ($fromAddress === null) {
             return [
@@ -63,7 +63,7 @@ class Mailer {
             //Server settings
             $mail->SMTPDebug = $smtpDebug;                                              //Enable verbose debug output
             $mail->isSMTP();                                                            //Send using SMTP
-            $mail->Host = \Utils\Constants::get('MAIL_HOST');                                  //Set the SMTP server to send through
+            $mail->Host = \Tirreno\Utils\Constants::get('MAIL_HOST');                                  //Set the SMTP server to send through
             $mail->SMTPAuth = true;                                                     //Enable SMTP authentication
             $mail->Username = $mailLogin;                                               //SMTP username
             $mail->Password = $mailPassword;                                            //SMTP password
@@ -76,27 +76,27 @@ class Mailer {
             $mail->addReplyTo($fromAddress, $fromName);
 
             //Content
-            $mail->isHTML(false);                                                       //Set email format to HTML
-            $mail->Subject = $subject;
-            $mail->Body = $message;
+            $mail->isHTML($html);                                                       //Set email format to HTML
+            $mail->Subject = $subj;
+            $mail->Body = $msg;
 
             $mail->send();
 
             $success = true;
-            $message = 'Message has been sent';
+            $msg = 'Message has been sent';
         } catch (\Exception $e) {
             $success = false;
-            $message = "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+            $msg = "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
         }
 
         return [
             'success' => $success,
-            'message' => $message,
+            'message' => $msg,
         ];
     }
 
-    private static function sendByNativeMail(string $toAddress, string $toName, string $subject, string $message): array {
-        $sendMailPath = \Utils\Constants::get('MAIL_SEND_BIN');
+    private static function sendByNativeMail(string $toAddress, string $toName, string $subj, string $msg): array {
+        $sendMailPath = \Tirreno\Utils\Constants::get('MAIL_SEND_BIN');
 
         if (!file_exists($sendMailPath) || !is_executable($sendMailPath)) {
             return [
@@ -105,8 +105,8 @@ class Mailer {
             ];
         }
 
-        $fromName = \Utils\Constants::get('MAIL_FROM_NAME');
-        $fromAddress = \Utils\Variables::getMailLogin();
+        $fromName = \Tirreno\Utils\Constants::get('MAIL_FROM_NAME');
+        $fromAddress = \Tirreno\Utils\Variables::getMailLogin();
 
         if ($fromAddress === null) {
             return [
@@ -125,12 +125,12 @@ class Mailer {
 
         $headers = implode("\r\n", $headers);
 
-        $success = mail($toAddress, $subject, $message, $headers);
-        $message = $success ? 'Message sent' : 'Error occurred';
+        $success = mail($toAddress, $subj, $msg, $headers);
+        $msg = $success ? 'Message sent' : 'Error occurred';
 
         return [
             'success' => $success,
-            'message' => $message,
+            'message' => $msg,
         ];
     }
 }

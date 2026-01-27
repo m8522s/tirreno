@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,14 +15,14 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\Base;
+namespace Tirreno\Controllers\Admin\Base;
 
-abstract class Data extends \Controllers\Base {
-    protected function idMapIterate(array $map, object $model, ?string $default = null, mixed ...$extra): array {
+abstract class Data extends \Tirreno\Controllers\Base {
+    protected function idMapIterate(array $map, object $model, ?string $default = 'getAll', mixed ...$extra): array {
         $result = [];
 
         foreach ($map as $param => $method) {
-            $id = \Utils\Conversion::getIntRequestParam($param, true);
+            $id = \Tirreno\Utils\Conversion::getIntRequestParam($param, true);
             if ($id !== null) {
                 $result = $model->$method($id, ...$extra);
             }

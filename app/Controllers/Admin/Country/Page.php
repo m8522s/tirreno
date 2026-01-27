@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,14 +15,14 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\Country;
+namespace Tirreno\Controllers\Admin\Country;
 
-class Page extends \Controllers\Admin\Base\Page {
+class Page extends \Tirreno\Controllers\Admin\Base\Page {
     public $page = 'AdminCountry';
 
     public function getPageParams(): array {
         $dataController = new Data();
-        $countryId = \Utils\Conversion::getIntUrlParam('countryId');
+        $countryId = \Tirreno\Utils\Conversion::getIntUrlParam('countryId');
 
         $hasAccess = $dataController->checkIfOperatorHasAccess($countryId);
 

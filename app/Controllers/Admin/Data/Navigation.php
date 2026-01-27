@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\Data;
+namespace Tirreno\Controllers\Admin\Data;
 
-class Navigation extends \Controllers\Admin\Base\Navigation {
+class Navigation extends \Tirreno\Controllers\Admin\Base\Navigation {
     private $dataController;
 
     public function beforeroute(): void {
@@ -26,10 +26,10 @@ class Navigation extends \Controllers\Admin\Base\Navigation {
             $this->f3->error(403);
         }
 
-        \Utils\Routes::redirectIfUnlogged();
+        \Tirreno\Utils\Routes::redirectIfUnlogged();
 
         $this->dataController = new Data();
-        $this->response = new \Views\Json();
+        $this->response = new \Tirreno\Views\Json();
     }
 
     // POST requests
@@ -86,8 +86,8 @@ class Navigation extends \Controllers\Admin\Base\Navigation {
         $this->response->data = $this->dataController->getUsers();
     }
 
-    public function getBots(): void {
-        $this->response->data = $this->dataController->getBots();
+    public function getUserAgents(): void {
+        $this->response->data = $this->dataController->getUserAgents();
     }
 
     public function getDevices(): void {
@@ -182,8 +182,8 @@ class Navigation extends \Controllers\Admin\Base\Navigation {
         $this->response->data = $this->dataController->getDeviceDetails();
     }
 
-    public function getBotDetails(): void {
-        $this->response->data = $this->dataController->getBotDetails();
+    public function getUserAgentDetails(): void {
+        $this->response->data = $this->dataController->getUserAgentDetails();
     }
 
     public function getDomainDetails(): void {
@@ -212,5 +212,9 @@ class Navigation extends \Controllers\Admin\Base\Navigation {
 
     public function getUsageStats(): void {
         $this->response->data = $this->dataController->getUsageStats();
+    }
+
+    public function getCurrentTime(): void {
+        $this->response->data = $this->dataController->getCurrentTime();
     }
 }

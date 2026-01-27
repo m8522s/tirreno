@@ -1,6 +1,7 @@
 import {padZero} from './utils/Date.js?v=2';
 import {
     //truncateWithHellip,
+    formatKiloValue,
     getRuleClass,
     formatTime,
     openJson,
@@ -163,9 +164,9 @@ const wrapWithCountryLink = (span, record) => {
     return el;
 };
 
-const wrapWithBotLink = (span, record) => {
+const wrapWithUserAgentLink = (span, record) => {
     const el = document.createElement('a');
-    el.href = `${window.app_base}/bot/${record.id}`;
+    el.href = `${window.app_base}/user-agent/${record.id}`;
     el.appendChild(span);
 
     return el;
@@ -622,6 +623,22 @@ const renderHttpMethod = record => {
     return renderDefaultIfEmptySpan(span);
 };
 
+const renderTotalFrameCmp = (oldval, newval, hyphenOnEmptyOld = false, hyphenOnEmptyNew = false) => {
+    const frag = document.createDocumentFragment();
+
+    oldval = parseInt(oldval, 10) || (hyphenOnEmptyOld ? renderDefaultIfEmpty(oldval) : 0);
+    newval = parseInt(newval, 10) || (hyphenOnEmptyNew ? renderDefaultIfEmpty(newval) : 0);
+
+    const span = document.createElement('span');
+    span.className = 'addlight';
+    span.textContent = newval + '/';
+
+    frag.appendChild(span);
+    frag.appendChild(document.createTextNode(oldval));
+
+    return frag;
+};
+
 const renderTotalFrame = (base, val) => {
     const frag = document.createDocumentFragment();
 
@@ -640,7 +657,7 @@ const renderTotalFrame = (base, val) => {
     return frag;
 };
 
-const renderUserCounter = (data, critical = 1, hyphenOnEmpty = false) => {
+const renderUserCounter = (data, critical = 1, hyphenOnEmpty = false, highlight = true) => {
     let span = null;
 
     if (hyphenOnEmpty && !data) {
@@ -648,10 +665,10 @@ const renderUserCounter = (data, critical = 1, hyphenOnEmpty = false) => {
     }
 
     if (Number.isInteger(data) && data >= 0) {
-        let style = (data >= critical) ? 'highlight' : 'nolight';
+        let style = (data >= critical && highlight) ? 'highlight' : 'nolight';
         span = document.createElement('span');
         span.className = style;
-        span.textContent = data;
+        span.textContent = formatKiloValue(data);
     }
 
     return renderDefaultIfEmptySpan(span);
@@ -1542,10 +1559,26 @@ const renderClickableAuditFieldId = (record, length = 'medium') => {
 };
 
 //Device
-const renderClickableBotId = record => {
-    const device = document.createTextNode(record.id);
+const renderClickableUserAgentId = record => {
+    let device = '';
 
-    return wrapWithBotLink(device, record);
+    const elements = [record.device, record.os_name, record.browser_name, record.browser_version];
+
+    elements.forEach((el) => {
+        device += el && typeof el === 'string' ? el.charAt(0).toUpperCase() + el.slice(1, 3) : '';
+    });
+
+    let el = record.browser_version;
+    device += el && typeof el === 'string' ? el.charAt(0).toUpperCase() + el.slice(1, 3).replace(/\.$/, '') : '';
+
+    el = record.ua && typeof record.ua === 'string' ? record.ua : '';
+
+    device = device ? device : el.slice(0, 12).replace(/\.$/, '');
+    device = device ? device : 'empty';
+
+    device = document.createTextNode(device);
+
+    return wrapWithUserAgentLink(device, record);
 };
 
 const renderDevice = record => {
@@ -1640,7 +1673,7 @@ const renderOs = record => {
 
 const renderClickableOs = record => {
     const os   = renderOs(record);
-    const el   = wrapWithBotLink(os, record);
+    const el   = wrapWithUserAgentLink(os, record);
 
     return el;
 };
@@ -1919,13 +1952,15 @@ const renderEnrichmentCalculation = data => {
     return renderTextarea(text, 6);
 };
 
-const renderRulePlayResult = (users, count, uid) => {
+const renderRulePlayResult = (users, count, section, uid) => {
     if (!count) {
         return document.createTextNode(`There are no users that match ${uid} rule.`);
     }
 
+    section = section === 1000 ? '1k' : section;
+
     const result = document.createDocumentFragment();
-    const txt = (count === 1) ? `One user matching ${uid} rule: ` : `${count} users matching ${uid} rule: `;
+    const txt = (count === 1) ? `One user from last ${section} matching ${uid} rule: ` : `${count} users from last ${section} matching ${uid} rule: `;
     result.appendChild(document.createTextNode(txt));
 
     const list = document.createDocumentFragment();
@@ -2006,6 +2041,7 @@ export {
     renderBlacklistButtons,
     renderScoreDetails,
     renderUserCounter,
+    renderTotalFrameCmp,
 
     //Email
     renderEmail,
@@ -2056,7 +2092,7 @@ export {
     //Device
     renderDevice,
     renderDeviceWithOs,
-    renderClickableBotId,
+    renderClickableUserAgentId,
 
     //OS
     renderOs,

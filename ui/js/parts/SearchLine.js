@@ -39,7 +39,37 @@ export class SearchLine {
             onSearchError: handleAjaxError,
         });
 
-        //setInterval(this.updateTime.bind(this), 1000);
+        // clock setup
+        const restoreClock = this.restoreClock.bind(this);
+        document.addEventListener('visibilitychange', restoreClock, false);
+
+        setInterval(this.updateTime.bind(this), 1000);
+    }
+
+    restoreClock() {
+        if (document.visibilityState !== 'visible') {
+            return;
+        }
+
+        const onDetailsLoaded = this.onDetailsLoaded.bind(this);
+        const token = document.head.querySelector('[name=\'csrf-token\'][content]').content;
+
+        $.ajax({
+            url: `${window.app_base}/admin/currentTime`,
+            type: 'get',
+            data: {token: token},
+            success: onDetailsLoaded,
+            error: handleAjaxError,
+        });
+    }
+
+    onDetailsLoaded(data, status) {
+        if ('success' !== status || 0 === data.length) {
+            return;
+        }
+
+        this.dayInput.placeholder = data.clock_day;
+        this.timeInput.placeholder = `${data.clock_time_his} ${data.clock_timezone}`;
     }
 
     updateTime() {
@@ -115,6 +145,6 @@ export class SearchLine {
     }
 
     get queryTypeControl() {
-        return document.querySelector('nav.filtersForm.search');
+        return document.querySelector('nav.filters-form.search');
     }
 }

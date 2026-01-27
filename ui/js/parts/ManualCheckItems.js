@@ -10,7 +10,6 @@ import {
 } from '../parts/DataRenderers.js?v=2';
 
 export class ManualCheckItems {
-
     constructor() {
         const table = document.querySelector('.events-card.is-hidden');
 

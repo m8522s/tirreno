@@ -1,8 +1,8 @@
 <?php
 
-namespace CoreRules;
+namespace Tirreno\Rules\Core;
 
-class B24 extends \Assets\Rule {
+class B24 extends \Tirreno\Assets\Rule {
     public const NAME = 'Empty referer';
     public const DESCRIPTION = 'The user made a request without a referer.';
     public const ATTRIBUTES = [];

@@ -1,4 +1,4 @@
-import {BasePage} from './Base.js';
+import {BasePage} from './Base.js?v=2';
 import {SequentialLoad} from '../parts/SequentialLoad.js?v=2';
 import {Map} from '../parts/Map.js?v=2';
 import {EmailsGrid} from '../parts/grid/Emails.js?v=2';
@@ -22,7 +22,6 @@ import {DevicePanel} from '../parts/panel/DevicePanel.js?v=2';
 import {ReenrichmentButton} from '../parts/ReenrichmentButton.js?v=2';
 
 export class UserPage extends BasePage {
-
     constructor() {
         super('user', true);
 

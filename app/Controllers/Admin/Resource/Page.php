@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,14 +15,14 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\Resource;
+namespace Tirreno\Controllers\Admin\Resource;
 
-class Page extends \Controllers\Admin\Base\Page {
+class Page extends \Tirreno\Controllers\Admin\Base\Page {
     public $page = 'AdminResource';
 
     public function getPageParams(): array {
         $dataController = new Data();
-        $resourceId = \Utils\Conversion::getIntUrlParam('resourceId');
+        $resourceId = \Tirreno\Utils\Conversion::getIntUrlParam('resourceId');
         $hasAccess = $dataController->checkIfOperatorHasAccess($resourceId);
 
         if (!$hasAccess) {

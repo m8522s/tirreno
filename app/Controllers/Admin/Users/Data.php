@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,28 +15,28 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\Users;
+namespace Tirreno\Controllers\Admin\Users;
 
-class Data extends \Controllers\Admin\Base\Data {
+class Data extends \Tirreno\Controllers\Admin\Base\Data {
     public function getList(int $apiKey): array {
         $result = [];
-        $model = new \Models\Grid\Users\Grid($apiKey);
+        $model = new \Tirreno\Models\Grid\Users\Grid($apiKey);
 
         $map = [
             'ipId'          => 'getUsersByIpId',
             'ispId'         => 'getUsersByIspId',
-            'botId'         => 'getUsersByDeviceId',
+            'userAgentId'   => 'getUsersByDeviceId',
             'domainId'      => 'getUsersByDomainId',
             'countryId'     => 'getUsersByCountryId',
             'resourceId'    => 'getUsersByResourceId',
             'fieldId'       => 'getUsersByFieldId',
         ];
 
-        $result = $this->idMapIterate($map, $model, 'getAllUsers');
+        $result = $this->idMapIterate($map, $model);
 
         $ids = array_column($result['data'], 'id');
         if ($ids) {
-            $model = new \Models\User();
+            $model = new \Tirreno\Models\User();
             $model->updateTotalsByAccountIds($ids, $apiKey);
             $result['data'] = $model->refreshTotals($result['data'], $apiKey);
         }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Models\Grid\Phones;
+namespace Tirreno\Models\Grid\Phones;
 
-class Query extends \Models\Grid\Base\Query {
+class Query extends \Tirreno\Models\Grid\Base\Query {
     protected $defaultOrder = 'event_phone.lastseen DESC';
     protected $dateRangeField = 'event_phone.lastseen';
 
@@ -81,7 +81,7 @@ class Query extends \Models\Grid\Base\Query {
     }
 
     private function applySearch(string &$query, array &$queryParams): void {
-        $search = \Utils\Conversion::getArrayRequestParam('search');
+        $search = \Tirreno\Utils\Conversion::getArrayRequestParam('search');
         $searchConditions = $this->injectIdQuery('event_phone.id', $queryParams);
 
         if (is_array($search) && isset($search['value']) && is_string($search['value']) && $search['value'] !== '') {
@@ -94,7 +94,7 @@ class Query extends \Models\Grid\Base\Query {
             );
 
             $queryParams[':search_value'] = '%' . $search['value'] . '%';
-            $queryParams[':offset'] = strval(\Utils\TimeZones::getCurrentOperatorOffset());
+            $queryParams[':offset'] = strval(\Tirreno\Utils\Timezones::getCurrentOperatorOffset());
         }
 
         //Add search and ids into request

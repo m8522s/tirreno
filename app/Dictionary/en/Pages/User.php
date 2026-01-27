@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -23,6 +23,8 @@ return [
     'AdminUser_widgets_id_tooltip' => 'Basic user account information.',
     'AdminUser_widgets_ips_warning' => 'IP addresses',
     'AdminUser_widgets_ips_warning_tooltip' => 'A list of warning signals based on IP addresses linked to the user.',
+    'AdminUser_widgets_totals_warning' => 'Summary',
+    'AdminUser_widgets_totals_warning_tooltip' => 'Total counts of unique identifiers and actions associated with this user account.',
     'AdminUser_widgets_email' => 'Email',
     'AdminUser_widgets_email_tooltip' => 'A list of warning signals based on email addresses linked to the user.',
     'AdminUser_widgets_domain' => 'Domain',

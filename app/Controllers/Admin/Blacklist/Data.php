@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,13 +15,13 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\Blacklist;
+namespace Tirreno\Controllers\Admin\Blacklist;
 
-class Data extends \Controllers\Admin\Base\Data {
+class Data extends \Tirreno\Controllers\Admin\Base\Data {
     public function getList(int $apiKey): array {
-        $model = new \Models\Grid\Blacklist\Grid($apiKey);
+        $model = new \Tirreno\Models\Grid\Blacklist\Grid($apiKey);
 
-        return $model->getAllBlacklistedItems();
+        return $model->getAll();
     }
 
     public function removeItemFromBlacklist(int $itemId, string $type, int $apiKey): void {
@@ -29,13 +29,13 @@ class Data extends \Controllers\Admin\Base\Data {
 
         switch ($type) {
             case 'ip':
-                $model = new \Models\Ip();
+                $model = new \Tirreno\Models\Ip();
                 break;
             case 'email':
-                $model = new \Models\Email();
+                $model = new \Tirreno\Models\Email();
                 break;
             case 'phone':
-                $model = new \Models\Phone();
+                $model = new \Tirreno\Models\Phone();
                 break;
         }
 
@@ -45,13 +45,13 @@ class Data extends \Controllers\Admin\Base\Data {
     }
 
     public function setBlacklistUsersCount(bool $cache, int $apiKey): array {
-        $currentOperator = \Utils\Routes::getCurrentRequestOperator();
+        $currentOperator = \Tirreno\Utils\Routes::getCurrentRequestOperator();
 
         if (!$currentOperator) {
-            $model = new \Models\ApiKeys();
+            $model = new \Tirreno\Models\ApiKeys();
             $model = $model->getKeyById($apiKey);
             $creator = $model->creator;
-            $model = new \Models\Operator();
+            $model = new \Tirreno\Models\Operator();
             $currentOperator = $model->getOperatorById($creator);
         }
 
@@ -59,23 +59,23 @@ class Data extends \Controllers\Admin\Base\Data {
 
         $total = $currentOperator->blacklist_users_cnt;
         if (!$cache || !$takeFromCache) {
-            $total = (new \Models\Dashboard())->getTotalBlockedUsers(null, $apiKey);
+            $total = (new \Tirreno\Models\Dashboard())->getTotalBlockedUsers(null, $apiKey);
 
             $data = [
                 'id' => $currentOperator->id,
                 'blacklist_users_cnt' => $total,
             ];
 
-            $model = new \Models\Operator();
+            $model = new \Tirreno\Models\Operator();
             $model->updateBlacklistUsersCnt($data);
         }
 
         return ['total' => $total];
     }
 
-    private function canTakeNumberOfBlacklistUsersFromCache(\Models\Operator $currentOperator): bool {
+    private function canTakeNumberOfBlacklistUsersFromCache(\Tirreno\Models\Operator $currentOperator): bool {
         $interval = \Base::instance()->get('REVIEWED_QUEUE_CNT_CACHE_TIME');
 
-        return !!\Utils\DateRange::inIntervalTillNow($currentOperator->review_queue_updated_at, $interval);
+        return !!\Tirreno\Utils\DateRange::inIntervalTillNow($currentOperator->review_queue_updated_at, $interval);
     }
 }

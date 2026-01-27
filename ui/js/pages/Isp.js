@@ -1,4 +1,4 @@
-import {BasePage} from './Base.js';
+import {BasePage} from './Base.js?v=2';
 import {SequentialLoad} from '../parts/SequentialLoad.js?v=2';
 import {Map} from '../parts/Map.js?v=2';
 import {IpsGrid} from '../parts/grid/Ips.js?v=2';
@@ -9,7 +9,6 @@ import {EventPanel} from '../parts/panel/EventPanel.js?v=2';
 import {IspTiles} from '../parts/details/IspTiles.js?v=2';
 
 export class IspPage extends BasePage {
-
     constructor() {
         super('isp', true);
 

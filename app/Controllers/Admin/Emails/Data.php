@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,34 +15,34 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\Emails;
+namespace Tirreno\Controllers\Admin\Emails;
 
-class Data extends \Controllers\Admin\Base\Data {
+class Data extends \Tirreno\Controllers\Admin\Base\Data {
     public function getList(int $apiKey): array {
         $result = [];
-        $model = new \Models\Grid\Emails\Grid($apiKey);
+        $model = new \Tirreno\Models\Grid\Emails\Grid($apiKey);
 
         $map = [
             'userId' => 'getEmailsByUserId',
         ];
 
-        $result = $this->idMapIterate($map, $model);
+        $result = $this->idMapIterate($map, $model, null);
 
         return $result;
     }
 
     public function getEmailDetails(int $id, int $apiKey): array {
-        $details = (new \Models\Email())->getEmailDetails($id, $apiKey);
+        $details = (new \Tirreno\Models\Email())->getEmailDetails($id, $apiKey);
         $details['enrichable'] = $this->isEnrichable($apiKey);
 
         $tsColumns = ['email_created', 'email_lastseen', 'domain_lastseen', 'domain_created'];
-        \Utils\TimeZones::localizeTimestampsForActiveOperator($tsColumns, $details);
+        \Tirreno\Utils\Timezones::localizeTimestampsForActiveOperator($tsColumns, $details);
 
         return $details;
     }
 
     private function isEnrichable(int $apiKey): bool {
-        $model = new \Models\ApiKeys();
+        $model = new \Tirreno\Models\ApiKeys();
 
         return $model->attributeIsEnrichable('email', $apiKey);
     }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,39 +15,21 @@
 
 declare(strict_types=1);
 
-namespace Models\Context;
+namespace Tirreno\Models\Context;
 
 class Event extends Base {
-    public function getContext(array $accountIds, int $apiKey): array {
-        $records = $this->getDetails($accountIds, $apiKey);
-        $recordsByAccount = $this->groupRecordsByAccount($records);
-
-        foreach ($recordsByAccount as $key => $value) {
-            $recordsByAccount[$key] = [
-                'event_ip'              => array_column($value, 'event_ip'),
-                'event_url_string'      => array_column($value, 'event_url_string'),
-                'event_empty_referer'   => array_column($value, 'event_empty_referer'),
-                'event_device'          => array_column($value, 'event_device'),
-                'event_type'            => array_column($value, 'event_type'),
-                'event_http_code'       => array_column($value, 'event_http_code'),
-                'event_device_created'  => array_column($value, 'event_device_created'),
-                'event_device_lastseen' => array_column($value, 'event_device_lastseen'),
-                'event_http_method'     => array_column($value, 'event_http_method'),
-            ];
-        }
-
-        return $recordsByAccount;
-    }
+    protected $uniqueValues = false;
 
     protected function getDetails(array $accountIds, int $apiKey): array {
         [$params, $placeHolders] = $this->getRequestParams($accountIds, $apiKey);
-        $contextLimit = \Utils\Constants::get('RULE_EVENT_CONTEXT_LIMIT');
+
+        $params[':context_limit'] = \Tirreno\Utils\Constants::get('RULE_EVENT_CONTEXT_LIMIT');
 
         $query = (
             "WITH ranked_events AS (
                 SELECT
                     event.account           AS accountid,
-                    event.id                AS event_id,
+                    -- event.id                AS event_id,
                     event.ip                AS event_ip,
                     event_url.url           AS event_url_string,
                     event_referer.referer   AS event_referer_string,
@@ -70,7 +52,7 @@ class Event extends Base {
                     event.key = :api_key
             )
             SELECT
-                accountid,
+                accountid AS id,
                 event_ip,
                 event_url_string,
                 (event_referer_string IS NULL OR event_referer_string = '') AS event_empty_referer,
@@ -83,7 +65,7 @@ class Event extends Base {
             FROM ranked_events
             LEFT JOIN event_device AS ed
             ON ranked_events.event_device = ed.id
-            WHERE rn <= {$contextLimit}
+            WHERE rn <= :context_limit
             ORDER BY event_time DESC;"
         );
 

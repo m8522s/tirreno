@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,7 +15,7 @@
 
 declare(strict_types=1);
 
-namespace Utils;
+namespace Tirreno\Utils;
 
 class Database {
     private static function getF3(): \Base {
@@ -35,7 +35,7 @@ class Database {
             $database = self::getDb();
 
             if (!$database) {
-                $url = \Utils\Variables::getDB();
+                $url = \Tirreno\Utils\Variables::getDB();
 
                 if ($url === null) {
                     return false;

@@ -1,3 +1,3 @@
-import {FieldAuditsPage} from '../pages/FieldAudits.js';
+import {FieldAuditsPage} from '../pages/FieldAudits.js?v=2';
 
 new FieldAuditsPage();

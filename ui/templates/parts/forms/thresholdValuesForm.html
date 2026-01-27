@@ -1,4 +1,4 @@
-<div class="card events-card" data-item-id="threshhold-values-form">
+<div class="card events-card" data-item-id="threshold-values-form">
     <form method="POST" action="{{ @BASE }}{{ 'rules' | alias }}">
         <input type="hidden" name="token" value="{{ @CSRF }}">
         <input type="hidden" name="cmd" value="changeThresholdValues" />
@@ -15,13 +15,13 @@
                 <div class="field">
                     <label class="label">{{ @AdminThresholdValues_form_field_review_queue_threshold_label }}</label>
                     <div class="control">
-                        <input class="input" name="review-queue-threshold" type="number" value="{{ @reviewQueueThreshold }}" min="0" max="100" placeholder="{{ @AdminThresholdValues_form_review_queue_threshold_placeholder }}" required />
+                        <input class="input" name="review-queue-threshold" type="number" value="{{ @reviewQueueThreshold }}" min="0" max="99" placeholder="{{ @AdminThresholdValues_form_review_queue_threshold_placeholder }}" required />
                     </div>
                 </div>
                 <div class="field">
                     <label class="label">{{ @AdminThresholdValues_form_field_blacklist_threshold_label }}</label>
                     <div class="control">
-                        <input class="input" name="blacklist-threshold" type="number" value="{{ @blacklistThreshold !== -1 ? @blacklistThreshold : ''}}" min="0" max="100" placeholder="{{ @AdminThresholdValues_form_blacklist_threshold_placeholder }}" />
+                        <input class="input" name="blacklist-threshold" type="number" value="{{ @blacklistThreshold !== -1 ? @blacklistThreshold : ''}}" min="0" max="98" placeholder="{{ @AdminThresholdValues_form_blacklist_threshold_placeholder }}" />
                     </div>
                 </div>
             </div>

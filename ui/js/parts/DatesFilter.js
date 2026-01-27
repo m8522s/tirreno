@@ -236,7 +236,7 @@ export class DatesFilter {
     }
 
     get navbar() {
-        return document.querySelector('nav.filtersForm.daterange');
+        return document.querySelector('nav.filters-form.daterange');
     }
 
     get offsetField() {

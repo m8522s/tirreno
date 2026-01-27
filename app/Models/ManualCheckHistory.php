@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Models;
+namespace Tirreno\Models;
 
-class ManualCheckHistory extends \Models\BaseSql {
+class ManualCheckHistory extends \Tirreno\Models\BaseSql {
     protected $DB_TABLE_NAME = 'dshb_manual_check_history';
 
     public function getRecentByOperator(int $operatorId): array {

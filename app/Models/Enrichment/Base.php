@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,7 +15,7 @@
 
 declare(strict_types=1);
 
-namespace Models\Enrichment;
+namespace Tirreno\Models\Enrichment;
 
 class Base {
     public function queryParams(): array {
@@ -45,10 +45,6 @@ class Base {
         return implode(', ', $transformed);
     }
 
-    public function validateIP(string $ip): bool {
-        return filter_var($ip, FILTER_VALIDATE_IP) !== false;
-    }
-
     public function validateDate(string $date, string $format = 'Y-m-d'): bool {
         $datetime = \DateTime::createFromFormat($format, $date);
 
@@ -71,21 +67,15 @@ class Base {
             return false;
         }
 
-        $ip = $parts[0];
-        $netmask = \Utils\Conversion::intVal($parts[1], -1);
+        $ipAddr = $parts[0];
+        $netmask = \Tirreno\Utils\Conversion::intVal($parts[1], -1);
 
         if ($netmask < 0) {
             return false;
         }
 
-        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-            return $netmask <= 32;
-        }
+        $ipType = \Tirreno\Utils\Conversion::filterIpGetType($ipAddr);
 
-        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-            return $netmask <= 128;
-        }
-
-        return false;
+        return $ipType === 4 ? $netmask <= 32 : ($ipType === 6 ? $netmask <= 128 : false);
     }
 }

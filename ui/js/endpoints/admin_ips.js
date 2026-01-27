@@ -1,3 +1,3 @@
-import {IpsPage} from '../pages/Ips.js';
+import {IpsPage} from '../pages/Ips.js?v=2';
 
 new IpsPage();

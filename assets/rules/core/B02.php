@@ -1,8 +1,8 @@
 <?php
 
-namespace CoreRules;
+namespace Tirreno\Rules\Core;
 
-class B02 extends \Assets\Rule {
+class B02 extends \Tirreno\Assets\Rule {
     public const NAME = 'User has changed a password';
     public const DESCRIPTION = 'The user has changed their password.';
     public const ATTRIBUTES = [];

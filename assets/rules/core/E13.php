@@ -1,8 +1,8 @@
 <?php
 
-namespace CoreRules;
+namespace Tirreno\Rules\Core;
 
-class E13 extends \Assets\Rule {
+class E13 extends \Tirreno\Assets\Rule {
     public const NAME = 'New domain';
     public const DESCRIPTION = 'Domain name was registered recently, which is rare for average users.';
     public const ATTRIBUTES = ['domain'];

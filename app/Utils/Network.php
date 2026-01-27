@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,11 +15,11 @@
 
 declare(strict_types=1);
 
-namespace Utils;
+namespace Tirreno\Utils;
 
 class Network {
     public static function safeFileGetContents(string $path, ?array $options): array {
-        set_error_handler([\Utils\ErrorHandler::class, 'exceptionErrorHandler']);
+        set_error_handler([\Tirreno\Utils\ErrorHandler::class, 'exceptionErrorHandler']);
 
         $result = null;
 
@@ -46,18 +46,18 @@ class Network {
     }
 
     public static function sendApiRequest(?array $data, string $path, string $method, ?string $enrichmentKey): array {
-        $version = \Utils\VersionControl::versionString();
+        $version = \Tirreno\Utils\VersionControl::versionString();
         $userAgent = \Base::instance()->get('APP_USER_AGENT');
         $userAgent = ($version && $userAgent) ? $userAgent . '/' . $version : $userAgent;
 
-        $url = \Utils\Variables::getEnrichmentApi() . $path;
+        $url = \Tirreno\Utils\Variables::getEnrichmentApi() . $path;
 
         $headers = [
             'User-Agent: ' . $userAgent,
         ];
 
         if ($enrichmentKey !== null) {
-            //$enrichmentKey = \Utils\ApiKeys::getCurrentOperatorEnrichmentKeyString();
+            //$enrichmentKey = \Tirreno\Utils\ApiKeys::getCurrentOperatorEnrichmentKeyString();
             $headers[] = 'Authorization: Bearer ' . $enrichmentKey;
         }
 
@@ -145,7 +145,7 @@ class Network {
 
             if (isset($responseHeaders[0])) {
                 preg_match('{HTTP/\d\.\d\s+(\d+)}', $responseHeaders[0], $match);
-                $code = \Utils\Conversion::intValCheckEmpty($match[1], 0);
+                $code = \Tirreno\Utils\Conversion::intValCheckEmpty($match[1], 0);
             }
         }
 

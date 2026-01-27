@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,13 +15,13 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\Settings;
+namespace Tirreno\Controllers\Admin\Settings;
 
-class Data extends \Controllers\Admin\Base\Data {
+class Data extends \Tirreno\Controllers\Admin\Base\Data {
     public function proceedPostRequest(): array {
-        return match (\Utils\Conversion::getStringRequestParam('cmd')) {
+        return match (\Tirreno\Utils\Conversion::getStringRequestParam('cmd')) {
             'changeEmail'                   => $this->changeEmail(),
-            'changeTimeZone'                => $this->changeTimeZone(),
+            'changeTimezone'                => $this->changeTimezone(),
             'changePassword'                => $this->changePassword(),
             'closeAccount'                  => $this->closeAccount(),
             'updateNotificationPreferences' => $this->updateNotificationPreferences(),
@@ -34,7 +34,7 @@ class Data extends \Controllers\Admin\Base\Data {
     }
 
     public function getSharedApiKeyOperators(int $operatorId): array {
-        $model = new \Models\ApiKeyCoOwner();
+        $model = new \Tirreno\Models\ApiKeyCoOwner();
 
         return $model->getSharedApiKeyOperators($operatorId);
     }
@@ -42,15 +42,15 @@ class Data extends \Controllers\Admin\Base\Data {
     protected function changePassword(): array {
         $pageParams = [];
         $params = $this->extractRequestParams(['token', 'current-password', 'new-password', 'password-confirmation']);
-        $errorCode = \Utils\Validators::validateChangePassword($params);
+        $errorCode = \Tirreno\Utils\Validators::validateChangePassword($params);
 
         if ($errorCode) {
             $pageParams['ERROR_CODE'] = $errorCode;
         } else {
-            $password = \Utils\Conversion::getStringRequestParam('new-password');
-            $operatorId = \Utils\Routes::getCurrentRequestOperator()->id;
+            $password = \Tirreno\Utils\Conversion::getStringRequestParam('new-password');
+            $operatorId = \Tirreno\Utils\Routes::getCurrentRequestOperator()->id;
 
-            $model = new \Models\Operator();
+            $model = new \Tirreno\Models\Operator();
             $model->updatePassword($password, $operatorId);
 
             $pageParams['SUCCESS_MESSAGE'] = $this->f3->get('AdminSettings_changePassword_success_message');
@@ -62,18 +62,18 @@ class Data extends \Controllers\Admin\Base\Data {
     protected function changeEmail(): array {
         $pageParams = [];
         $params = $this->extractRequestParams(['token', 'email']);
-        $errorCode = \Utils\Validators::validateChangeEmail($params);
+        $errorCode = \Tirreno\Utils\Validators::validateChangeEmail($params);
 
         if ($errorCode) {
             $pageParams['EMAIL_VALUES'] = $params;
             $pageParams['ERROR_CODE'] = $errorCode;
         } else {
-            $currentOperator = \Utils\Routes::getCurrentRequestOperator();
-            $email = \Utils\Conversion::getStringRequestParam('email');
+            $currentOperator = \Tirreno\Utils\Routes::getCurrentRequestOperator();
+            $email = \Tirreno\Utils\Conversion::getStringRequestParam('email');
             $operatorId = $currentOperator->id;
 
             // Create change email record
-            $changeEmailModel = new \Models\ChangeEmail();
+            $changeEmailModel = new \Tirreno\Models\ChangeEmail();
             $changeEmailModel->add($operatorId, $email);
 
             // Send forgot password email
@@ -85,25 +85,25 @@ class Data extends \Controllers\Admin\Base\Data {
         return $pageParams;
     }
 
-    protected function changeTimeZone(): array {
+    protected function changeTimezone(): array {
         $pageParams = [];
         $params = $this->extractRequestParams(['token', 'timezone']);
-        $errorCode = \Utils\Validators::validateChangeTimeZone($params);
+        $errorCode = \Tirreno\Utils\Validators::validateChangeTimezone($params);
 
         if ($errorCode) {
             $pageParams['TIME_ZONE_VALUES'] = $params;
             $pageParams['ERROR_CODE'] = $errorCode;
         } else {
-            $timezone = \Utils\Conversion::getStringRequestParam('timezone');
-            $operatorId = \Utils\Routes::getCurrentRequestOperator()->id;
+            $timezone = \Tirreno\Utils\Conversion::getStringRequestParam('timezone');
+            $operatorId = \Tirreno\Utils\Routes::getCurrentRequestOperator()->id;
 
-            $model = new \Models\Operator();
-            $model->updateTimeZone($timezone, $operatorId);
+            $model = new \Tirreno\Models\Operator();
+            $model->updateTimezone($timezone, $operatorId);
 
             // update operator in f3 hive for clock
-            \Utils\Routes::setCurrentRequestOperator();
+            \Tirreno\Utils\Routes::setCurrentRequestOperator();
 
-            $pageParams['SUCCESS_MESSAGE'] = $this->f3->get('AdminTimeZone_changeTimeZone_success_message');
+            $pageParams['SUCCESS_MESSAGE'] = $this->f3->get('AdminTimezone_changeTimezone_success_message');
         }
 
         return $pageParams;
@@ -112,17 +112,21 @@ class Data extends \Controllers\Admin\Base\Data {
     protected function closeAccount(): array {
         $pageParams = [];
         $params = $this->extractRequestParams(['token']);
-        $errorCode = \Utils\Validators::validateCloseAccount($params);
+        $errorCode = \Tirreno\Utils\Validators::validateCloseAccount($params);
 
         if ($errorCode) {
             $pageParams['ERROR_CODE'] = $errorCode;
         } else {
-            $currentOperator = \Utils\Routes::getCurrentRequestOperator();
+            $currentOperator = \Tirreno\Utils\Routes::getCurrentRequestOperator();
             $currentOperator->closeAccount();
             $currentOperator->removeData();
 
             $this->f3->clear('SESSION');
-            session_commit();
+            if (session_status() === PHP_SESSION_ACTIVE) {
+                session_destroy();
+            } else {
+                session_commit();
+            }
 
             $pageParams['SUCCESS_MESSAGE'] = $this->f3->get('AdminSettings_closeAccount_success_message');
         }
@@ -133,14 +137,14 @@ class Data extends \Controllers\Admin\Base\Data {
     protected function checkUpdates(): array {
         $pageParams = [];
         $params = $this->extractRequestParams(['token']);
-        $errorCode = \Utils\Validators::validateCheckUpdates($params);
+        $errorCode = \Tirreno\Utils\Validators::validateCheckUpdates($params);
 
         if ($errorCode) {
             $pageParams['ERROR_CODE'] = $errorCode;
         } else {
-            $currentVersion = \Utils\VersionControl::versionString();
+            $currentVersion = \Tirreno\Utils\VersionControl::versionString();
 
-            $response = \Utils\Network::sendApiRequest(null, '/version', 'GET', null);
+            $response = \Tirreno\Utils\Network::sendApiRequest(null, '/version', 'GET', null);
             $code = $response['code'];
             $result = $response['data'];
 
@@ -150,7 +154,7 @@ class Data extends \Controllers\Admin\Base\Data {
             $errorMessage = $response['error'] ?? '';
 
             if (strlen($errorMessage) > 0 || $statusCode !== 200 || !is_array($jsonResponse)) {
-                $pageParams['ERROR_CODE'] = \Utils\ErrorCodes::ENRICHMENT_API_IS_NOT_AVAILABLE;
+                $pageParams['ERROR_CODE'] = \Tirreno\Utils\ErrorCodes::ENRICHMENT_API_IS_NOT_AVAILABLE;
             } else {
                 if (version_compare($currentVersion, $jsonResponse['version'], '<')) {
                     $pageParams['SUCCESS_MESSAGE'] = sprintf('An update is available. Released date: %s.', $jsonResponse['release_date']);
@@ -166,14 +170,14 @@ class Data extends \Controllers\Admin\Base\Data {
     protected function updateNotificationPreferences(): array {
         $pageParams = [];
         $params = $this->extractRequestParams(['token', 'review-reminder-frequency']);
-        $errorCode = \Utils\Validators::validateUpdateNotificationPreferences($params);
+        $errorCode = \Tirreno\Utils\Validators::validateUpdateNotificationPreferences($params);
 
         if ($errorCode) {
             $pageParams['PROFILE_VALUES'] = $params;
             $pageParams['ERROR_CODE'] = $errorCode;
         } else {
-            $reminder = \Utils\Conversion::getStringRequestParam('review-reminder-frequency');
-            $currentOperator = \Utils\Routes::getCurrentRequestOperator();
+            $reminder = \Tirreno\Utils\Conversion::getStringRequestParam('review-reminder-frequency');
+            $currentOperator = \Tirreno\Utils\Routes::getCurrentRequestOperator();
 
             $currentOperator->updateNotificationPreferences($reminder);
 
@@ -186,19 +190,19 @@ class Data extends \Controllers\Admin\Base\Data {
     protected function changeRetentionPolicy(): array {
         $pageParams = [];
         $params = $this->extractRequestParams(['token', 'keyId', 'retention-policy']);
-        $errorCode = \Utils\Validators::validateRetentionPolicy($params);
+        $errorCode = \Tirreno\Utils\Validators::validateRetentionPolicy($params);
 
         if ($errorCode) {
             $pageParams['RETENTION_POLICY_VALUES'] = $params;
             $pageParams['ERROR_CODE'] = $errorCode;
         } else {
-            $keyId = \Utils\Conversion::getIntRequestParam('keyId');
-            $retentionPolicy = \Utils\Conversion::getIntRequestParam('retention-policy');
+            $keyId = \Tirreno\Utils\Conversion::getIntRequestParam('keyId');
+            $retentionPolicy = \Tirreno\Utils\Conversion::getIntRequestParam('retention-policy');
 
-            $model = new \Models\ApiKeys();
+            $model = new \Tirreno\Models\ApiKeys();
             $model->getKeyById($keyId);
             $model->updateRetentionPolicy($retentionPolicy);
-            $pageParams['SUCCESS_MESSAGE'] = $this->f3->get('AdminRetentionPolicy_changeTimeZone_success_message');
+            $pageParams['SUCCESS_MESSAGE'] = $this->f3->get('AdminRetentionPolicy_changeTimezone_success_message');
         }
 
         return $pageParams;
@@ -207,22 +211,22 @@ class Data extends \Controllers\Admin\Base\Data {
     protected function inviteCoOwner(): array {
         $pageParams = [];
         $params = $this->extractRequestParams(['token', 'email']);
-        $errorCode = \Utils\Validators::validateInvitingCoOwner($params);
+        $errorCode = \Tirreno\Utils\Validators::validateInvitingCoOwner($params);
 
         if ($errorCode) {
             $pageParams['ERROR_CODE'] = $errorCode;
         } else {
-            $currentOperator = \Utils\Routes::getCurrentRequestOperator();
+            $currentOperator = \Tirreno\Utils\Routes::getCurrentRequestOperator();
             $operatorId = $currentOperator->id;
 
-            $apiKeyModel = new \Models\ApiKeys();
+            $apiKeyModel = new \Tirreno\Models\ApiKeys();
             $key = $apiKeyModel->getKey($operatorId);
 
             $params['timezone'] = 'UTC';
-            $operator = new \Models\Operator();
+            $operator = new \Tirreno\Models\Operator();
             $operator->add($params);
 
-            $passwordReset = new \Models\ForgotPassword();
+            $passwordReset = new \Tirreno\Models\ForgotPassword();
             $passwordReset->add($operator->id);
 
             $this->makeOperatorCoOwner($operator, $key);
@@ -237,22 +241,22 @@ class Data extends \Controllers\Admin\Base\Data {
     protected function removeCoOwner(): array {
         $pageParams = [];
         $params = $this->extractRequestParams(['token', 'operatorId']);
-        $errorCode = \Utils\Validators::validateRemovingCoOwner($params);
+        $errorCode = \Tirreno\Utils\Validators::validateRemovingCoOwner($params);
 
         if ($errorCode) {
             $pageParams['ERROR_CODE'] = $errorCode;
         } else {
-            $operatorId = \Utils\Conversion::getIntRequestParam('operatorId');
+            $operatorId = \Tirreno\Utils\Conversion::getIntRequestParam('operatorId');
 
-            $coOwnerModel = new \Models\ApiKeyCoOwner();
+            $coOwnerModel = new \Tirreno\Models\ApiKeyCoOwner();
             $coOwnerModel->getCoOwnership($operatorId);
 
-            $apiKeyObj = \Utils\ApiKeys::getCurrentOperatorApiKeyObject();
+            $apiKeyObj = \Tirreno\Utils\ApiKeys::getCurrentOperatorApiKeyObject();
 
-            if ($apiKeyObj->id === $coOwnerModel->api && \Utils\Routes::getCurrentRequestOperator()->id === $apiKeyObj->creator) {
+            if ($apiKeyObj->id === $coOwnerModel->api && \Tirreno\Utils\Routes::getCurrentRequestOperator()->id === $apiKeyObj->creator) {
                 $coOwnerModel->deleteCoOwnership();
 
-                $operatorModel = new \Models\Operator();
+                $operatorModel = new \Tirreno\Models\Operator();
                 $operatorModel->getOperatorById($operatorId);
                 $operatorModel->deleteAccount();
 
@@ -265,13 +269,13 @@ class Data extends \Controllers\Admin\Base\Data {
         return $pageParams;
     }
 
-    protected function makeOperatorCoOwner(\Models\Operator $operator, \Models\ApiKeys $key): void {
-        $model = new \Models\ApiKeyCoOwner();
+    protected function makeOperatorCoOwner(\Tirreno\Models\Operator $operator, \Tirreno\Models\ApiKeys $key): void {
+        $model = new \Tirreno\Models\ApiKeyCoOwner();
         $model->create($operator->id, $key->id);
     }
 
-    protected function sendInvitationEmail(\Models\Operator $inviter, \Models\Operator $operator, \Models\ForgotPassword $forgotPassword): void {
-        $site = \Utils\Variables::getHostWithProtocolAndBase();
+    protected function sendInvitationEmail(\Tirreno\Models\Operator $inviter, \Tirreno\Models\Operator $operator, \Tirreno\Models\ForgotPassword $forgotPassword): void {
+        $site = \Tirreno\Utils\Variables::getHostWithProtocolAndBase();
 
         $inviterDisplayName = $inviter->email;
         if ($inviter->firstname && $inviter->lastname) {
@@ -288,11 +292,11 @@ class Data extends \Controllers\Admin\Base\Data {
         $renewUrl = sprintf('%s/password-recovering/%s', $site, $renewKey);
         $message = sprintf($message, $inviterDisplayName, $renewUrl);
 
-        \Utils\Mailer::send($toName, $toAddress, $subject, $message);
+        \Tirreno\Utils\Mailer::send($toName, $toAddress, $subject, $message);
     }
 
-    protected function sendChangeEmailEmail(\Models\Operator $currentOperator, \Models\ChangeEmail $changeEmailModel): void {
-        $url = \Utils\Variables::getHostWithProtocolAndBase();
+    protected function sendChangeEmailEmail(\Tirreno\Models\Operator $currentOperator, \Tirreno\Models\ChangeEmail $changeEmailModel): void {
+        $url = \Tirreno\Utils\Variables::getHostWithProtocolAndBase();
 
         $toName = $currentOperator->firstname;
         $toAddress = $changeEmailModel->email;
@@ -304,6 +308,6 @@ class Data extends \Controllers\Admin\Base\Data {
         $renewUrl = sprintf('%s/change-email/%s', $url, $renewKey);
         $message = sprintf($message, $renewUrl);
 
-        \Utils\Mailer::send($toName, $toAddress, $subject, $message);
+        \Tirreno\Utils\Mailer::send($toName, $toAddress, $subject, $message);
     }
 }

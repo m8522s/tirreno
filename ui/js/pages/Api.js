@@ -1,9 +1,8 @@
-import {BasePage} from './Base.js';
+import {BasePage} from './Base.js?v=2';
 import {UsageStatsGrid} from '../parts/grid/UsageStats.js?v=2';
-import {EnrichAllPopUp} from '../parts/EnrichAllPopUp.js?v=2';
+import {EnrichAllPopUp} from '../parts/popup/EnrichAllPopUp.js?v=2';
 
 export class ApiPage extends BasePage {
-
     constructor() {
         super('api');
 
@@ -13,9 +12,6 @@ export class ApiPage extends BasePage {
     initUi() {
         const onSelectChange = this.onSelectChange.bind(this);
         this.versionSelect.addEventListener('change', onSelectChange, false);
-
-        const onTextAreaClick = this.onTextAreaClick.bind(this);
-        this.snippetTextareas.forEach(txt => txt.addEventListener('click', onTextAreaClick, false));
 
         const gridParams = {
             url:        `${window.app_base}/admin/loadUsageStats`,
@@ -33,17 +29,10 @@ export class ApiPage extends BasePage {
         new EnrichAllPopUp();
     }
 
-    onTextAreaClick(e) {
-        const txt = e.target;
-        const value = txt.value;
-
-        txt.setSelectionRange(0, value.length);
-    }
-
     onSelectChange(e) {
         const value = event.target.value;
 
-        this.snippetTextareas.forEach(txt => {
+        this.snippets.forEach(txt => {
             const container = txt.closest('div');
             const isHidden = container.classList.contains('is-hidden');
             if (!isHidden) {
@@ -51,15 +40,15 @@ export class ApiPage extends BasePage {
             }
         });
 
-        const textarea = document.getElementById(value);
-        textarea.closest('div').classList.remove('is-hidden');
+        const pre = document.getElementById(value);
+        pre.closest('div').classList.remove('is-hidden');
     }
 
     get versionSelect() {
         return document.querySelector('select[name=version]');
     }
 
-    get snippetTextareas() {
-        return document.querySelectorAll('.code-snippet');
+    get snippets() {
+        return document.querySelectorAll('.tirreno');
     }
 }

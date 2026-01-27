@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Models\Grid\Devices;
+namespace Tirreno\Models\Grid\Devices;
 
-class Query extends \Models\Grid\Base\Query {
+class Query extends \Tirreno\Models\Grid\Base\Query {
     protected $defaultOrder = 'event_device.created DESC';
     protected $dateRangeField = 'event_device.lastseen';
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace CoreRules;
+namespace Tirreno\Rules\Core;
 
-class D09 extends \Assets\Rule {
+class D09 extends \Tirreno\Assets\Rule {
     public const NAME = 'Old browser';
     public const DESCRIPTION = 'User accesses the account using an old versioned browser.';
     public const ATTRIBUTES = [];
@@ -14,7 +14,7 @@ class D09 extends \Assets\Rule {
         $iters = count($params['eup_browser_name']);
 
         for ($i = 0; $i < $iters; ++$i) {
-            $minVersion = \Utils\Constants::get('RULE_REGULAR_BROWSER_NAMES')[$params['eup_browser_name'][$i]] ?? null;
+            $minVersion = \Tirreno\Utils\Constants::get('RULE_REGULAR_BROWSER_NAMES')[$params['eup_browser_name'][$i]] ?? null;
             if ($minVersion !== null) {
                 $browserVersion = explode('.', $params['eup_browser_version'][$i] ?? '')[0];
                 if (ctype_digit($browserVersion) && intval($browserVersion) < $minVersion) {

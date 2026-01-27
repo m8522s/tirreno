@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Models\Enrichment;
+namespace Tirreno\Models\Enrichment;
 
-class Email extends \Models\Enrichment\Base {
+class Email extends \Tirreno\Models\Enrichment\Base {
     protected string $email;
     protected bool $blockemails;
     protected bool $data_breach;
@@ -80,7 +80,7 @@ class Email extends \Models\Enrichment\Base {
                 event_email.key = :key
         ");
 
-        $model = new \Models\Device();
+        $model = new \Tirreno\Models\Device();
         $model->execQuery($query, $params);
     }
 }

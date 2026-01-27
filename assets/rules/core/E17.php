@@ -1,8 +1,8 @@
 <?php
 
-namespace CoreRules;
+namespace Tirreno\Rules\Core;
 
-class E17 extends \Assets\Rule {
+class E17 extends \Tirreno\Assets\Rule {
     public const NAME = 'Free email and spam';
     public const DESCRIPTION = 'Email appears in spam lists and registered by free provider. Increased risk of spamming.';
     public const ATTRIBUTES = ['email', 'domain'];

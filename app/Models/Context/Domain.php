@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,34 +15,17 @@
 
 declare(strict_types=1);
 
-namespace Models\Context;
+namespace Tirreno\Models\Context;
 
 class Domain extends Base {
-    public function getContext(array $accountIds, int $apiKey): array {
-        $records = $this->getDetails($accountIds, $apiKey);
-        $recordsByAccount = $this->groupRecordsByAccount($records);
-
-        foreach ($recordsByAccount as $key => $value) {
-            $recordsByAccount[$key] = [
-                'ed_domain'                 => $this->getUniqueArray(array_column($value, 'ed_domain')),
-                'ed_blockdomains'           => $this->getUniqueArray(array_column($value, 'ed_blockdomains')),
-                'ed_disposable_domains'     => $this->getUniqueArray(array_column($value, 'ed_disposable_domains')),
-                'ed_free_email_provider'    => $this->getUniqueArray(array_column($value, 'ed_free_email_provider')),
-                'ed_creation_date'          => $this->getUniqueArray(array_column($value, 'ed_creation_date')),
-                'ed_disabled'               => $this->getUniqueArray(array_column($value, 'ed_disabled')),
-                'ed_mx_record'              => $this->getUniqueArray(array_column($value, 'ed_mx_record')),
-            ];
-        }
-
-        return $recordsByAccount;
-    }
+    protected $uniqueValues = true;
 
     protected function getDetails(array $accountIds, int $apiKey): array {
         [$params, $placeHolders] = $this->getRequestParams($accountIds, $apiKey);
 
         $query = (
             "SELECT
-                event_email.account_id             AS accountid,
+                event_email.account_id             AS id,
                 event_domain.domain                AS ed_domain,
                 event_domain.blockdomains          AS ed_blockdomains,
                 event_domain.disposable_domains    AS ed_disposable_domains,

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -50,6 +50,7 @@ return [
     'Base_table_column_total_users_tooltip_resources' => 'The number of users that requested a resource over the specified and preceding period.',
     'Base_table_column_total_users_tooltip_phones' => 'The total number of users associated with a phone number.',
     'Base_table_column_total_users_tooltip_field_audit' => 'The total number of users performed change of a field.',
+    'Base_table_column_total_users_tooltip_user_agent' => 'The total number of users used a device.',
     'Base_table_column_total_countries' => 'Countries',
     'Base_table_column_total_countries_tooltip_resources' => 'The number of countries from which a resource was requested over the specified and preceding period.',
     'Base_table_column_total_edits_tooltip_resources' => 'The number of edits made on a resource was requested over the specified and preceding period.',
@@ -90,6 +91,18 @@ return [
     'Base_table_column_ip_datacenter' => 'Datacenter',
     'Base_table_column_ip_datacenter_tooltip' => 'IP addresses belong to ISP datacenter, which highly suggests the use of a VPN, script, or privacy software.',
     'Base_table_column_ip_country_tooltip' => 'Country identified by IP address.',
+
+    'Base_table_column_total_ips_tooltip' => 'Total IP addresses associated with user.',
+    'Base_table_column_total_isps' => 'ISPs',
+    'Base_table_column_total_isps_tooltip' => 'Total ISPs associated with user.',
+    'Base_table_column_total_countries_tooltip' => 'Total countries associated with user IP addresses.',
+    'Base_table_column_total_user_agents' => 'User agents',
+    'Base_table_column_total_user_agents_tooltip' => 'Total user agents associated with user.',
+    'Base_table_column_total_edits_tooltip' => 'Total edits performed by user.',
+    'Base_table_column_total_events' => 'Events',
+    'Base_table_column_total_events_tooltip' => 'Total events performed by user.',
+    'Base_table_column_total_sessions' => 'Sessions',
+    'Base_table_column_total_sessions_tooltip' => 'Total sessions performed by user.',
 
     'Base_table_column_country' => 'Country',
     'Base_table_column_country_tooltip' => 'An originating country of user request, geolocated by IP address.',

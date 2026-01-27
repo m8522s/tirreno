@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Models\Chart;
+namespace Tirreno\Models\Chart;
 
-abstract class Base extends \Models\BaseSql {
+abstract class Base extends \Tirreno\Models\BaseSql {
     protected function concatDataLines(array $data1, string $field1, array $data2, string $field2, array $data3 = [], ?string $field3 = null): array {
         $data0 = [];
         $iters = count($data1);
@@ -77,7 +77,7 @@ abstract class Base extends \Models\BaseSql {
         }
 
         // TODO: tmp order troubles fix
-        usort($data0, [\Utils\Sort::class, 'cmpTimestamp']);
+        usort($data0, [\Tirreno\Utils\Sort::class, 'cmpTimestamp']);
 
         return $data0;
     }
@@ -86,14 +86,14 @@ abstract class Base extends \Models\BaseSql {
         $cnt = count($params);
         $data = array_fill(0, $cnt, []);
 
-        $step = \Utils\Constants::get('CHART_RESOLUTION')[\Utils\DateRange::getResolutionFromRequest()];
+        $step = \Tirreno\Utils\Constants::get('CHART_RESOLUTION')[\Tirreno\Utils\DateRange::getResolutionFromRequest()];
         // use offset shift because $startTs/$endTs compared with shifted ['ts']
-        $offset = \Utils\TimeZones::getCurrentOperatorOffset();
-        $dateRange = \Utils\DateRange::getDatesRangeFromRequest($offset);
+        $offset = \Tirreno\Utils\Timezones::getCurrentOperatorOffset();
+        $dateRange = \Tirreno\Utils\DateRange::getDatesRangeFromRequest($offset);
 
         if (!$dateRange) {
             $now = time() + $offset;
-            $week = \Utils\Constants::get('SECONDS_IN_WEEK');
+            $week = \Tirreno\Utils\Constants::get('SECONDS_IN_WEEK');
             if (count($params[0]) === 0) {
                 $dateRange = [
                     'endDate' => date('Y-m-d H:i:s', $now),
@@ -133,7 +133,7 @@ abstract class Base extends \Models\BaseSql {
 
     protected function execute(string $query, int $apiKey): array {
         // do not use offset because :start_time/:end_time compared with UTC db timestamps
-        $dateRange = \Utils\DateRange::getDatesRangeFromRequest();
+        $dateRange = \Tirreno\Utils\DateRange::getDatesRangeFromRequest();
 
         // Search request does not contain daterange param
         if (!$dateRange) {
@@ -143,13 +143,13 @@ abstract class Base extends \Models\BaseSql {
             ];
         }
 
-        $offset = \Utils\TimeZones::getCurrentOperatorOffset();
+        $offset = \Tirreno\Utils\Timezones::getCurrentOperatorOffset();
 
         $params = [
             ':api_key'      => $apiKey,
             ':end_time'     => $dateRange['endDate'],
             ':start_time'   => $dateRange['startDate'],
-            ':resolution'   => \Utils\DateRange::getResolutionFromRequest(),
+            ':resolution'   => \Tirreno\Utils\DateRange::getResolutionFromRequest(),
             ':offset'       => strval($offset),     // str for postgres
         ];
 

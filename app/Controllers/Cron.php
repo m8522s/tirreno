@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,7 +15,7 @@
 
 declare(strict_types=1);
 
-namespace Controllers;
+namespace Tirreno\Controllers;
 
 // can accept time params as `* * * * 0,1,2`, `0-15 * * 1 3`, but
 // not step values like `23/4 10/2 * * *`
@@ -72,10 +72,10 @@ class Cron extends \Prefab {
                     $start = self::RANGES[$i]['min'];
                     $end = self::RANGES[$i]['max'];
                 } else {
-                    $start = \Utils\Conversion::intValCheckEmpty($start, 0);
-                    $end = \Utils\Conversion::intValCheckEmpty($end, $start);
+                    $start = \Tirreno\Utils\Conversion::intValCheckEmpty($start, 0);
+                    $end = \Tirreno\Utils\Conversion::intValCheckEmpty($end, $start);
                 }
-                $step = \Utils\Conversion::intValCheckEmpty($step, 0);
+                $step = \Tirreno\Utils\Conversion::intValCheckEmpty($step, 0);
 
                 if ($start > $end || $start < self::RANGES[$i]['min'] || $end > self::RANGES[$i]['max'] || $step < 1) {
                     return false;
@@ -94,11 +94,11 @@ class Cron extends \Prefab {
 
     public static function parseTimestamp(\DateTime $time): array {
         return [
-            \Utils\Conversion::intValCheckEmpty($time->format('i'), 0), // minute
-            \Utils\Conversion::intValCheckEmpty($time->format('H'), 0), // hour
-            \Utils\Conversion::intValCheckEmpty($time->format('d'), 1), // day of month
-            \Utils\Conversion::intValCheckEmpty($time->format('m'), 1), // month
-            \Utils\Conversion::intValCheckEmpty($time->format('w'), 0), // day of week
+            \Tirreno\Utils\Conversion::intValCheckEmpty($time->format('i'), 0), // minute
+            \Tirreno\Utils\Conversion::intValCheckEmpty($time->format('H'), 0), // hour
+            \Tirreno\Utils\Conversion::intValCheckEmpty($time->format('d'), 1), // day of month
+            \Tirreno\Utils\Conversion::intValCheckEmpty($time->format('m'), 1), // month
+            \Tirreno\Utils\Conversion::intValCheckEmpty($time->format('w'), 0), // day of week
         ];
     }
 
@@ -133,15 +133,15 @@ class Cron extends \Prefab {
             return;
         }
 
-        $this->f3->set('ONERROR', \Utils\ErrorHandler::getCronErrorHandler());
-        \Utils\Database::initConnect(false);
+        $this->f3->set('ONERROR', \Tirreno\Utils\ErrorHandler::getCronErrorHandler());
+        \Tirreno\Utils\Database::initConnect(false);
 
         while (ob_get_level()) {
             ob_end_flush();
         }
         ob_implicit_flush(true);
 
-        \Utils\Updates::syncUpdates();
+        \Tirreno\Utils\Updates::syncUpdates();
 
         $this->readArguments();
         $this->loadCrons();
@@ -201,7 +201,7 @@ class Cron extends \Prefab {
         }
 
         $instance->$method();
-        \Utils\Cron::printLogs($instance->getLog());
+        \Tirreno\Utils\Cron::printLogs($instance->getLog());
     }
 
     private function isDue(\DateTime $time, string $expression): bool {

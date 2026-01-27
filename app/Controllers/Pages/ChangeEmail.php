@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,7 +15,7 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Pages;
+namespace Tirreno\Controllers\Pages;
 
 class ChangeEmail extends Base {
     public $page = 'ChangeEmail';
@@ -25,7 +25,7 @@ class ChangeEmail extends Base {
             'HTML_FILE' => 'changeEmail.html',
         ];
 
-        $errorCode = \Utils\Validators::validateChangeEmailPage($this->f3->get('PARAMS'));
+        $errorCode = \Tirreno\Utils\Validators::validateChangeEmailPage($this->f3->get('PARAMS'));
         $pageParams['SUCCESS_CODE'] = $errorCode;
 
         if (!$errorCode) {
@@ -34,7 +34,7 @@ class ChangeEmail extends Base {
             session_commit();
 
             //change email
-            $changeEmailModel = new \Models\ChangeEmail();
+            $changeEmailModel = new \Tirreno\Models\ChangeEmail();
             $changeEmailModel->getByRenewKey($this->f3->get('PARAMS.renewKey'));
 
             $newEmail = $changeEmailModel->email;
@@ -46,11 +46,11 @@ class ChangeEmail extends Base {
                 'id' => $operatorId,
                 'email' => $newEmail,
             ];
-            $operatorModel = new \Models\Operator();
+            $operatorModel = new \Tirreno\Models\Operator();
             $operatorModel->updateEmail($params);
 
             //update success message
-            $pageParams['SUCCESS_CODE'] = \Utils\ErrorCodes::EMAIL_CHANGED;
+            $pageParams['SUCCESS_CODE'] = \Tirreno\Utils\ErrorCodes::EMAIL_CHANGED;
         }
 
         return parent::applyPageParams($pageParams);

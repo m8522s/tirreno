@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Models\Grid\Base;
+namespace Tirreno\Models\Grid\Base;
 
-class Grid extends \Models\BaseSql {
+class Grid extends \Tirreno\Models\BaseSql {
     protected $DB_TABLE_NAME = 'event';
 
     protected $idsModel = null;
@@ -31,7 +31,7 @@ class Grid extends \Models\BaseSql {
         $data = $this->getData();
         $total = $this->getTotal();
 
-        $dateRange = \Utils\DateRange::getDatesRangeFromRequest();
+        $dateRange = \Tirreno\Utils\DateRange::getDatesRangeFromRequest();
 
         return [
             'data' => $data,
@@ -66,7 +66,7 @@ class Grid extends \Models\BaseSql {
     }
 
     protected function convertTimeToUserTimezone(array &$result): void {
-        \Utils\TimeZones::translateTimeZones($result);
+        \Tirreno\Utils\Timezones::translateTimezones($result);
     }
 
     protected function calculateCustomParams(array &$result): void {

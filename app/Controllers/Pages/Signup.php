@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,27 +15,27 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Pages;
+namespace Tirreno\Controllers\Pages;
 
 class Signup extends Base {
     public $page = 'Signup';
 
-    public function getPageParams() {
-        $model = new \Models\Operator();
+    public function getPageParams(): array {
+        $model = new \Tirreno\Models\Operator();
         if (count($model->getAll())) {
             $this->f3->error(404);
         }
 
         $pageParams = [
             'HTML_FILE'     => 'signup.html',
-            'TIMEZONES'     => \Utils\TimeZones::timeZonesList(),
+            'TIMEZONES'     => \Tirreno\Utils\Timezones::timezonesList(),
         ];
 
         if ($this->isPostRequest()) {
-            \Utils\Updates::syncUpdates();
+            \Tirreno\Utils\Updates::syncUpdates();
 
             $params = $this->extractRequestParams(['token', 'email', 'password', 'timezone']);
-            $errorCode = \Utils\Validators::validateSignup($params);
+            $errorCode = \Tirreno\Utils\Validators::validateSignup($params);
 
             $pageParams['ERROR_CODE'] = $errorCode;
 
@@ -46,10 +46,10 @@ class Signup extends Base {
 
                 $operatorId = $operatorModel->id;
                 $apiKey = $this->addDefaultApiKey($operatorId);
-                $this->addDefaultRules($apiKey);
+                (new \Tirreno\Controllers\Admin\Rules\Data())->applyRulesPresetById('base', $apiKey);
 
                 //$this->sendActivationEmail($operatorModel);
-                $pageParams['SUCCESS_CODE'] = \Utils\ErrorCodes::ACCOUNT_CREATED;
+                $pageParams['SUCCESS_CODE'] = \Tirreno\Utils\ErrorCodes::ACCOUNT_CREATED;
             }
         }
 
@@ -60,37 +60,24 @@ class Signup extends Base {
         $data = [
             'quote' => $this->f3->get('DEFAULT_API_KEY_QUOTE'),
             'operator_id' => $operatorId,
-            'skip_enriching_attributes' => \json_encode(array_keys(\Utils\Constants::get('ENRICHING_ATTRIBUTES'))),
+            'skip_enriching_attributes' => json_encode(array_keys(\Tirreno\Utils\Constants::get('ENRICHING_ATTRIBUTES'))),
             'skip_blacklist_sync' => true,
         ];
 
-        $model = new \Models\ApiKeys();
+        $model = new \Tirreno\Models\ApiKeys();
 
         return $model->add($data);
     }
 
-    protected function addDefaultRules(int $apiKey): void {
-        $model = new \Models\OperatorsRules();
-        $defaultRules = \Utils\Constants::get('DEFAULT_RULES');
-
-        if (\Utils\Variables::getEmailPhoneAllowed()) {
-            $defaultRules = array_merge($defaultRules, \Utils\Constants::get('DEFAULT_RULES_EXTENSION'));
-        }
-
-        foreach ($defaultRules as $key => $value) {
-            $model->updateRule($key, $value, $apiKey);
-        }
-    }
-
-    private function addUser(array $data): \Models\Operator {
-        $model = new \Models\Operator();
+    protected function addUser(array $data): \Tirreno\Models\Operator {
+        $model = new \Tirreno\Models\Operator();
         $model->add($data);
 
         return $model;
     }
 
-    private function sendActivationEmail(\Models\Operator $operatorModel): void {
-        $url = \Utils\Variables::getHostWithProtocolAndBase();
+    private function sendActivationEmail(\Tirreno\Models\Operator $operatorModel): void {
+        $url = \Tirreno\Utils\Variables::getHostWithProtocolAndBase();
 
         $toName = $operatorModel->firstname;
         $toAddress = $operatorModel->email;
@@ -102,6 +89,6 @@ class Signup extends Base {
         $activationUrl = sprintf('%s/account-activation/%s', $url, $activationKey);
         $message = sprintf($message, $activationUrl);
 
-        \Utils\Mailer::send($toName, $toAddress, $subject, $message);
+        \Tirreno\Utils\Mailer::send($toName, $toAddress, $subject, $message);
     }
 }

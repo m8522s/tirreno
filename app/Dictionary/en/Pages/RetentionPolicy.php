@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -22,5 +22,5 @@ return [
 
     'AdminRetentionPolicy_form_field_policy_label' => 'Retention period',
     'AdminRetentionPolicy_form_field_policy_warning' => 'Caution! Reducing the data retention period will result in the removal of all data belonging to users who haven’t logged in beyond the updated retention period.',
-    'AdminRetentionPolicy_changeTimeZone_success_message' => 'Data retention period has been changed successfully.',
+    'AdminRetentionPolicy_changeTimezone_success_message' => 'Data retention period has been changed successfully.',
 ];

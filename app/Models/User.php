@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Models;
+namespace Tirreno\Models;
 
-class User extends \Models\BaseSql implements \Interfaces\ApiKeyAccessAuthorizationInterface, \Interfaces\ApiKeyAccountAccessAuthorizationInterface {
+class User extends \Tirreno\Models\BaseSql implements \Tirreno\Interfaces\ApiKeyAccessAuthorizationInterface, \Tirreno\Interfaces\ApiKeyAccountAccessAuthorizationInterface {
     protected $DB_TABLE_NAME = 'event_account';
 
     public function checkAccess(int $userId, int $apiKey): bool {
@@ -149,29 +149,29 @@ class User extends \Models\BaseSql implements \Interfaces\ApiKeyAccessAuthorizat
         ];
 
         try {
-            $model = new \Models\Events();
-            $entities = $model->uniqueEntitesByUserId($userId, $apiKey);
+            $model = new \Tirreno\Models\Events();
+            $entities = $model->uniqueEntitiesByUserId($userId, $apiKey);
 
             $this->db->begin();
             $this->db->exec($queries, array_fill(0, 6, $params));
 
             // force update totals for ips before isps and countries!
-            $model = new \Models\Ip();
+            $model = new \Tirreno\Models\Ip();
             $model->updateTotalsByEntityIds($entities['ip_ids'], $apiKey, true);
 
-            $model = new \Models\Isp();
+            $model = new \Tirreno\Models\Isp();
             $model->updateTotalsByEntityIds($entities['isp_ids'], $apiKey, true);
 
-            $model = new \Models\Country();
+            $model = new \Tirreno\Models\Country();
             $model->updateTotalsByEntityIds($entities['country_ids'], $apiKey, true);
 
-            $model = new \Models\Resource();
+            $model = new \Tirreno\Models\Resource();
             $model->updateTotalsByEntityIds($entities['url_ids'], $apiKey, true);
 
-            $model = new \Models\Domain();
+            $model = new \Tirreno\Models\Domain();
             $model->updateTotalsByEntityIds($entities['domain_ids'], $apiKey, true);
 
-            $model = new \Models\Phone();
+            $model = new \Tirreno\Models\Phone();
             $model->updateTotalsByValues($entities['phone_numbers'], $apiKey, true);
 
             $this->db->commit();
@@ -261,11 +261,7 @@ class User extends \Models\BaseSql implements \Interfaces\ApiKeyAccessAuthorizat
 
         $results = $this->execQuery($query, $params);
 
-        usort($results, static function ($left, $right): int {
-            return $right['score'] <=> $left['score'];
-        });
-        usort($results, [\Utils\Sort::class, 'cmpScore']);
-
+        usort($results, [\Tirreno\Utils\Sort::class, 'cmpScore']);
 
         return $results;
     }
@@ -276,7 +272,7 @@ class User extends \Models\BaseSql implements \Interfaces\ApiKeyAccessAuthorizat
         );
 
         if ($this->loaded()) {
-            $timestamp = (new \DateTime('now', \Utils\TimeZones::getUtcTimezone()))->format(\Utils\TimeZones::FORMAT);
+            $timestamp = (new \DateTime('now', \Tirreno\Utils\Timezones::getUtcTimezone()))->format(\Tirreno\Utils\Timezones::FORMAT);
             $this->score = $data['score'];
             $this->score_details = $data['details'];
             $this->score_updated_at = $timestamp;

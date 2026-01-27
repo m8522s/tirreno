@@ -1,8 +1,8 @@
 <?php
 
-namespace CoreRules;
+namespace Tirreno\Rules\Core;
 
-class B21 extends \Assets\Rule {
+class B21 extends \Tirreno\Assets\Rule {
     public const NAME = 'Multiple devices in one session';
     public const DESCRIPTION = 'User\'s device was changed in less than 30 minutes.';
     public const ATTRIBUTES = [];

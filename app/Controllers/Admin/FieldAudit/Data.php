@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,23 +15,23 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\FieldAudit;
+namespace Tirreno\Controllers\Admin\FieldAudit;
 
-class Data extends \Controllers\Admin\Base\Data {
+class Data extends \Tirreno\Controllers\Admin\Base\Data {
     public function checkIfOperatorHasAccess(int $fieldId): bool {
-        $apiKey = \Utils\ApiKeys::getCurrentOperatorApiKeyId();
-        $model = new \Models\FieldAudit();
+        $apiKey = \Tirreno\Utils\ApiKeys::getCurrentOperatorApiKeyId();
+        $model = new \Tirreno\Models\FieldAudit();
 
         return $model->checkAccess($fieldId, $apiKey);
     }
 
     public function getFieldById(int $fieldId): array {
-        $apiKey = \Utils\ApiKeys::getCurrentOperatorApiKeyId();
+        $apiKey = \Tirreno\Utils\ApiKeys::getCurrentOperatorApiKeyId();
 
-        $model = new \Models\FieldAudit();
+        $model = new \Tirreno\Models\FieldAudit();
         $result = $model->getFieldById($fieldId, $apiKey);
-        $result['lastseen'] = \Utils\ElapsedDate::short($result['lastseen']);
-        $result['created'] = \Utils\ElapsedDate::short($result['created']);
+        $result['lastseen'] = \Tirreno\Utils\ElapsedDate::short($result['lastseen']);
+        $result['created'] = \Tirreno\Utils\ElapsedDate::short($result['created']);
 
         return $result;
     }

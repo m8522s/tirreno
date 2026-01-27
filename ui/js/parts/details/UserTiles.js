@@ -8,6 +8,7 @@ import {
     renderUserFirstname,
     renderUserLastname,
     renderUserReviewedStatus,
+    renderTotalFrameCmp,
 } from '../DataRenderers.js?v=2';
 
 const URL   = `${window.app_base}/admin/loadUserDetails`;
@@ -15,9 +16,9 @@ const URL   = `${window.app_base}/admin/loadUserDetails`;
 export class UserTiles extends BaseTiles {
     updateTiles(data) {
         this.updateIdDetails(data);
+        this.updateTotalsDetails(data);
         this.updateIpDetails(data);
-        this.updateDayDetails(data);
-        this.updateWeekDetails(data);
+        this.updateAverageDetails(data);
     }
 
     updateIdDetails(data) {
@@ -39,6 +40,63 @@ export class UserTiles extends BaseTiles {
         tile.querySelector('#userid').replaceChildren(renderUserId(record.userid));
     }
 
+    updateTotalsDetails(data) {
+        const tile = document.querySelector('#user-total-tile');
+
+        if (!tile) {
+            return;
+        }
+
+        const record = data.totalDetails;
+        const limits = record.limits
+        this.removeLoaderBackground(tile);
+
+        const map = [
+            ['#ips',            'ips'],
+            ['#isps',           'isps'],
+            ['#countries',      'countries'],
+            ['#user-agents',    'user_agents'],
+            ['#edits',          'edits'],
+            ['#events',         'events'],
+            ['#sessions',       'sessions'],
+        ];
+
+        for (const [id, el] of map) {
+            tile.querySelector(id).replaceChildren(renderUserCounter(record[el], limits[el], false, true));
+        }
+    }
+
+    updateAverageDetails(data) {
+        const na_tile = false;
+        const tile = document.querySelector('#user-behaviour-tile');
+
+        const record = data.dayDetails;
+        const week = data.weekDetails;
+
+        if (!tile) {
+            return;
+        }
+
+        this.removeLoaderBackground(tile);
+
+        const useHyphenOld = !week.session_cnt;
+        const useHyphenNew = !record.session_cnt;
+
+        const map = [
+            ['#failed-login-count',     'failed_login_cnt'],
+            ['#password-reset-count',   'password_reset_cnt'],
+            ['#auth-error-count',       'auth_error_cnt'],
+            ['#off-hours-login-count',  'off_hours_login_cnt'],
+            ['#avg-event-count',        'avg_event_cnt'],
+            ['#login-count',            'login_cnt'],
+            ['#session-count',          'session_cnt'],
+        ];
+
+        for (const [id, el] of map) {
+            tile.querySelector(id).replaceChildren(renderTotalFrameCmp(week[el], record[el], useHyphenOld, useHyphenNew));
+        }
+    }
+
     updateIpDetails(data) {
         const tile = document.querySelector('#user-ip-tile');
 
@@ -58,53 +116,6 @@ export class UserTiles extends BaseTiles {
         tile.querySelector('#blacklisted').replaceChildren(renderBoolean(record.fraud_detected));
     }
 
-    updateDayDetails(data) {
-        this.updateDateRangeDetails(data.dayDetails, '#day-behaviour-tile', false);
-    }
-
-    updateWeekDetails(data) {
-        this.updateDateRangeDetails(data.weekDetails, '#week-behaviour-tile', false);
-    }
-
-    updateDateRangeDetails(record, tileId, na_tile = true) {
-        const tile = document.querySelector(tileId);
-
-        if (!tile) {
-            return;
-        }
-
-        const limits = record.limits;
-
-        const span = document.createElement('span');
-        span.className = 'nolight';
-        span.textContent = na_tile ? 'N/A' : '0';
-
-        this.removeLoaderBackground(tile);
-
-        if (record.session_cnt === 0) {
-            tile.querySelector('#failed-login-count').replaceChildren(span.cloneNode(true));
-            tile.querySelector('#password-reset-count').replaceChildren(span.cloneNode(true));
-            tile.querySelector('#auth-error-count').replaceChildren(span.cloneNode(true));
-            tile.querySelector('#off-hours-login-count').replaceChildren(span.cloneNode(true));
-            tile.querySelector('#avg-event-count').replaceChildren(span.cloneNode(true));
-            tile.querySelector('#login-count').replaceChildren(span.cloneNode(true));
-            tile.querySelector('#session-count').replaceChildren(span.cloneNode(true));
-        } else {
-            const map = [
-                ['#failed-login-count',     'failed_login_cnt'],
-                ['#password-reset-count',   'password_reset_cnt'],
-                ['#auth-error-count',       'auth_error_cnt'],
-                ['#off-hours-login-count',  'off_hours_login_cnt'],
-                ['#avg-event-count',        'avg_event_cnt'],
-                ['#login-count',            'login_cnt'],
-                ['#session-count',          'session_cnt'],
-            ];
-
-            for (const [id, el] of map) {
-                tile.querySelector(id).replaceChildren(renderUserCounter(record[el], limits[el] || 1));
-            }
-        }
-    }
 
     removeLoaderBackground(tile) {
         const backgrounds = tile.querySelectorAll('.loading-background');

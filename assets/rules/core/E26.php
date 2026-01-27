@@ -1,8 +1,8 @@
 <?php
 
-namespace CoreRules;
+namespace Tirreno\Rules\Core;
 
-class E26 extends \Assets\Rule {
+class E26 extends \Tirreno\Assets\Rule {
     public const NAME = 'iCloud mailbox';
     public const DESCRIPTION = 'Email belongs to Apple domains icloud.com, me.com or mac.com.';
     public const ATTRIBUTES = [];

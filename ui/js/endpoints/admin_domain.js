@@ -1,3 +1,3 @@
-import {DomainPage} from '../pages/Domain.js';
+import {DomainPage} from '../pages/Domain.js?v=2';
 
 new DomainPage();

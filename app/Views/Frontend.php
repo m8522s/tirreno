@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,7 +15,7 @@
 
 declare(strict_types=1);
 
-namespace Views;
+namespace Tirreno\Views;
 
 class Frontend extends Base {
     public function render(): string|false|null {
@@ -25,7 +25,7 @@ class Frontend extends Base {
             $this->f3->mset($this->data);
         }
 
-        \Utils\Routes::callExtra('FRONTEND_VIEW');
+        \Tirreno\Utils\Routes::callExtra('FRONTEND_VIEW');
 
         // Use anti-CSRF token in templates.
         $this->f3->CSRF = $this->f3->get('SESSION.csrf');

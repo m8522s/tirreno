@@ -2,7 +2,6 @@ import {EventPanel} from './EventPanel.js?v=2';
 import {renderJsonTextarea} from '../DataRenderers.js?v=2';
 
 export class FieldPanel extends EventPanel {
-
     constructor() {
         let eventParams = {
             enrichment: false,

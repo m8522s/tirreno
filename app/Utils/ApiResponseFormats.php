@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,7 +15,7 @@
 
 declare(strict_types=1);
 
-namespace Utils;
+namespace Tirreno\Utils;
 
 class ApiResponseFormats {
     // email and two phone responses??
@@ -98,14 +98,12 @@ class ApiResponseFormats {
     }
 
     public static function matchResponse(array $arr, array $format): bool {
-        $allKeysPresent = true;
         foreach ($format as $key) {
-            if (!isset($arr[$key])) {
-                $allKeysPresent = false;
-                break;
+            if (!array_key_exists($key, $arr)) {
+                return false;
             }
         }
 
-        return $allKeysPresent;
+        return true;
     }
 }

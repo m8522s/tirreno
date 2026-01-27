@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,20 +15,20 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\Resource;
+namespace Tirreno\Controllers\Admin\Resource;
 
-class Data extends \Controllers\Admin\Base\Data {
+class Data extends \Tirreno\Controllers\Admin\Base\Data {
     public function checkIfOperatorHasAccess(int $resourceId): bool {
-        $apiKey = \Utils\ApiKeys::getCurrentOperatorApiKeyId();
-        $model = new \Models\Resource();
+        $apiKey = \Tirreno\Utils\ApiKeys::getCurrentOperatorApiKeyId();
+        $model = new \Tirreno\Models\Resource();
 
         return $model->checkAccess($resourceId, $apiKey);
     }
 
     public function getResourceById(int $resourceId): array {
-        $model = new \Models\Resource();
+        $model = new \Tirreno\Models\Resource();
         $result = $model->getResourceById($resourceId);
-        $result['lastseen'] = \Utils\ElapsedDate::short($result['lastseen']);
+        $result['lastseen'] = \Tirreno\Utils\ElapsedDate::short($result['lastseen']);
 
         return $result;
     }

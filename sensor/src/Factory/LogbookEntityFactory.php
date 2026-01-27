@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -89,7 +89,7 @@ class LogbookEntityFactory {
             $body = getopt('', $long) ?: [];
         }
 
-        return json_encode(array_intersect_key($body, array_flip(Request::ACCEPTABLE_FIELDS))) ?: json_encode($body);
+        return json_encode(array_intersect_key($body, array_flip(Request::ACCEPTABLE_FIELDS))) ?: json_encode($body) ?: 'Unable to encode request body';
     }
 
     private function formatStarted(\DateTime $startedTime): string {

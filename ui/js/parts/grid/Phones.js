@@ -1,6 +1,5 @@
 import {BaseGridWithPanel} from './BaseWithPanel.js?v=2';
 import {
-    renderClickableBotId,
     renderDevice,
     renderOs,
     renderBoolean,

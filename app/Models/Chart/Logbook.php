@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,7 +15,7 @@
 
 declare(strict_types=1);
 
-namespace Models\Chart;
+namespace Tirreno\Models\Chart;
 
 class Logbook extends Base {
     protected $DB_TABLE_NAME = 'event_logbook';
@@ -33,8 +33,8 @@ class Logbook extends Base {
 
     private function getFirstLine(int $apiKey): array {
         // apply server offset to utc requested date range because dateRangeField is in server time zone
-        $serverOffset = \Utils\TimeZones::getServerOffset();
-        $dateRange = \Utils\DateRange::getDatesRangeFromRequest($serverOffset);
+        $serverOffset = \Tirreno\Utils\Timezones::getServerOffset();
+        $dateRange = \Tirreno\Utils\DateRange::getDatesRangeFromRequest($serverOffset);
 
         if (!$dateRange) {
             $dateRange = [
@@ -43,20 +43,20 @@ class Logbook extends Base {
             ];
         }
 
-        //$dateRange['endDate']   = \Utils\TimeZones::localizeForActiveOperator($dateRange['endDate']);
-        //$dateRange['startDate'] = \Utils\TimeZones::localizeForActiveOperator($dateRange['startDate']);
+        //$dateRange['endDate']   = \Tirreno\Utils\Timezones::localizeForActiveOperator($dateRange['endDate']);
+        //$dateRange['startDate'] = \Tirreno\Utils\Timezones::localizeForActiveOperator($dateRange['startDate']);
 
         $params = [
             ':api_key'      => $apiKey,
             ':end_time'     => $dateRange['endDate'],
             ':start_time'   => $dateRange['startDate'],
-            ':resolution'   => \Utils\DateRange::getResolutionFromRequest(),
-            ':comb_offset'  => strval(\Utils\TimeZones::getCurrentOperatorOffset() - $serverOffset),
+            ':resolution'   => \Tirreno\Utils\DateRange::getResolutionFromRequest(),
+            ':comb_offset'  => strval(\Tirreno\Utils\Timezones::getCurrentOperatorOffset() - $serverOffset),
         ];
 
-        [$failedTypesParams, $failedFlatIds]    = $this->getArrayPlaceholders(\Utils\Constants::get('FAILED_LOGBOOK_EVENT_TYPES'), 'failed');
-        [$issuedTypesParams, $issuedFlatIds]    = $this->getArrayPlaceholders(\Utils\Constants::get('ISSUED_LOGBOOK_EVENT_TYPES'), 'issued');
-        [$normalTypesParams, $normalFlatIds]    = $this->getArrayPlaceholders(\Utils\Constants::get('NORMAL_LOGBOOK_EVENT_TYPES'), 'normal');
+        [$failedTypesParams, $failedFlatIds]    = $this->getArrayPlaceholders(\Tirreno\Utils\Constants::get('FAILED_LOGBOOK_EVENT_TYPES'), 'failed');
+        [$issuedTypesParams, $issuedFlatIds]    = $this->getArrayPlaceholders(\Tirreno\Utils\Constants::get('ISSUED_LOGBOOK_EVENT_TYPES'), 'issued');
+        [$normalTypesParams, $normalFlatIds]    = $this->getArrayPlaceholders(\Tirreno\Utils\Constants::get('NORMAL_LOGBOOK_EVENT_TYPES'), 'normal');
 
         $params = array_merge($params, $failedTypesParams);
         $params = array_merge($params, $issuedTypesParams);

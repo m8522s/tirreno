@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,7 +15,7 @@
 
 declare(strict_types=1);
 
-namespace Models\TopTen;
+namespace Tirreno\Models\TopTen;
 
 class UsersByLoginFail extends Base {
     protected $DB_TABLE_NAME = 'event';
@@ -27,7 +27,7 @@ class UsersByLoginFail extends Base {
         $queryConditions[] = 'event.type = :event_type';
         $queryConditions = join(' AND ', $queryConditions);
 
-        $params[':event_type'] = \Utils\Constants::get('ACCOUNT_LOGIN_FAIL_EVENT_TYPE_ID');
+        $params[':event_type'] = \Tirreno\Utils\Constants::get('ACCOUNT_LOGIN_FAIL_EVENT_TYPE_ID');
 
         $query = (
             "SELECT
@@ -66,7 +66,7 @@ class UsersByLoginFail extends Base {
 
         foreach ($results as $row) {
             $tsColumns = ['score_updated_at'];
-            \Utils\TimeZones::localizeTimestampsForActiveOperator($tsColumns, $row);
+            \Tirreno\Utils\Timezones::localizeTimestampsForActiveOperator($tsColumns, $row);
         }
 
         return $results;

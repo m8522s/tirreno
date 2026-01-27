@@ -1,8 +1,8 @@
 <?php
 
-namespace CoreRules;
+namespace Tirreno\Rules\Core;
 
-class B13 extends \Assets\Rule {
+class B13 extends \Tirreno\Assets\Rule {
     public const NAME = 'New account (1 month)';
     public const DESCRIPTION = 'The account has been created this month.';
     public const ATTRIBUTES = [];

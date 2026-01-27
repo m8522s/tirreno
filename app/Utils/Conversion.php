@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,7 +15,7 @@
 
 declare(strict_types=1);
 
-namespace Utils;
+namespace Tirreno\Utils;
 
 class Conversion {
     public static function intVal(mixed $value, ?int $default = null): ?int {
@@ -57,13 +57,35 @@ class Conversion {
 
     public static function formatKiloValue(int $value): string {
         if ($value >= 1000000) {
-            return strval(ceil($value / 1000000)) . 'M';
+            return strval(floor($value / 1000000)) . 'M';
         }
 
         if ($value >= 1000) {
-            return strval(ceil($value / 1000)) . 'k';
+            return strval(floor($value / 1000)) . 'k';
         }
 
         return strval($value);
+    }
+
+    public static function filterIp(mixed $var): string|false {
+        return filter_var($var, FILTER_VALIDATE_IP);
+    }
+
+    public static function filterIpGetType(mixed $var): int|false {
+        if (filter_var($var, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+            return 4;
+        } elseif (filter_var($var, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+            return 6;
+        }
+
+        return false;
+    }
+
+    public static function filterEmail(mixed $var): string|false {
+        return filter_var($var, FILTER_VALIDATE_EMAIL);
+    }
+
+    public static function filterBool(mixed $var): ?bool {
+        return filter_var($var, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
     }
 }

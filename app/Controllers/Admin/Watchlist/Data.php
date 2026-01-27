@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,17 +15,17 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\Watchlist;
+namespace Tirreno\Controllers\Admin\Watchlist;
 
-class Data extends \Controllers\Admin\Base\Data {
+class Data extends \Tirreno\Controllers\Admin\Base\Data {
     public function getImportantUsers(int $apiKey): array {
-        $model = new \Models\Watchlist();
+        $model = new \Tirreno\Models\Watchlist();
 
         return $model->getUsersByKey($apiKey);
     }
 
     public function removeFromWatchlist(int $accountId, int $apiKey): void {
-        $watchListModel = new \Models\Watchlist();
+        $watchListModel = new \Tirreno\Models\Watchlist();
         $watchListModel->remove($accountId, $apiKey);
     }
 }

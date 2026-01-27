@@ -3,7 +3,6 @@ import {handleAjaxError} from './utils/ErrorHandler.js?v=2';
 import {replaceAll} from './utils/String.js?v=2';
 
 export class WatchlistBlock {
-
     constructor(userId) {
         this.userId = userId;
 

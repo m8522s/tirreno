@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -23,5 +23,9 @@ class FraudDetected {
         public bool $ip,
         public bool $phone,
     ) {
+    }
+
+    public function isBlacklisted(): bool {
+        return $this->email || $this->ip || $this->phone;
     }
 }

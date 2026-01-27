@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,17 +15,17 @@
 
 declare(strict_types=1);
 
-namespace Crons;
+namespace Tirreno\Crons;
 
 class EnrichmentQueueHandler extends BaseQueue {
-    private \Controllers\Admin\Enrichment\Data $controller;
+    private \Tirreno\Controllers\Admin\Enrichment\Data $controller;
 
     public function __construct() {
-        $this->controller = new \Controllers\Admin\Enrichment\Data();
+        $this->controller = new \Tirreno\Controllers\Admin\Enrichment\Data();
     }
 
     public function process(): void {
-        parent::baseProcess(\Utils\Constants::get('ENRICHMENT_QUEUE_ACTION_TYPE'));
+        parent::baseProcess(\Tirreno\Utils\Constants::get('ENRICHMENT_QUEUE_ACTION_TYPE'));
     }
 
     protected function processItem(array $item): void {
@@ -35,7 +35,7 @@ class EnrichmentQueueHandler extends BaseQueue {
 
         $entities = $this->controller->getNotCheckedEntitiesByUserId($userId, $apiKey);
 
-        $subscriptionKey = (new \Models\ApiKeys())->getKeyById($apiKey)->token;
+        $subscriptionKey = (new \Tirreno\Models\ApiKeys())->getKeyById($apiKey)->token;
 
         // TODO: check key ?
         $this->addLog(sprintf('Items to enrich for account %s: %s.', $userId, json_encode($entities)));

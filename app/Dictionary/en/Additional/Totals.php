@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -16,5 +16,5 @@
 declare(strict_types=1);
 
 return [
-    'AdminTotals_success_message' => 'Totals calculated succesfully.',
+    'AdminTotals_success_message' => 'Totals calculated successfully.',
 ];

@@ -1,8 +1,8 @@
 <?php
 
-namespace CoreRules;
+namespace Tirreno\Rules\Core;
 
-class E16 extends \Assets\Rule {
+class E16 extends \Tirreno\Assets\Rule {
     public const NAME = 'Domain appears in spam lists';
     public const DESCRIPTION = 'Email appears in spam lists, so the user may have spammed before.';
     public const ATTRIBUTES = ['domain'];

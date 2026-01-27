@@ -1,8 +1,8 @@
 <?php
 
-namespace CoreRules;
+namespace Tirreno\Rules\Core;
 
-class E15 extends \Assets\Rule {
+class E15 extends \Tirreno\Assets\Rule {
     public const NAME = 'No breaches for email';
     public const DESCRIPTION = 'The email was not involved in any data breaches, which could suggest it\'s a newly created or less frequently used mailbox.';
     public const ATTRIBUTES = ['email'];

@@ -1,8 +1,8 @@
 <?php
 
-namespace CoreRules;
+namespace Tirreno\Rules\Core;
 
-class B17 extends \Assets\Rule {
+class B17 extends \Tirreno\Assets\Rule {
     public const NAME = 'Single country';
     public const DESCRIPTION = 'IP addresses are located in a single country.';
     public const ATTRIBUTES = ['ip'];

@@ -3,7 +3,6 @@ import {handleAjaxError} from './utils/ErrorHandler.js?v=2';
 import {Button} from './Button.js?v=2';
 
 export class UserGridActionButtons extends Button {
-
     constructor(tableId) {
         super();
         this.tableId = tableId;
@@ -100,7 +99,6 @@ export class UserGridActionButtons extends Button {
                 const dataTable = $(`#${me.tableId}`).DataTable();
                 dataTable.row(tableRow).remove().draw(false);
                 me.setMenuCount();
-                me.setBlacklistMenuCount();
             }
         }
 

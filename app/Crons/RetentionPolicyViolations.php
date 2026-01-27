@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,15 +15,15 @@
 
 declare(strict_types=1);
 
-namespace Crons;
+namespace Tirreno\Crons;
 
 class RetentionPolicyViolations extends Base {
     public function process(): void {
         $this->addLog('Start retention policy violations.');
 
-        $eventsModel = new \Models\Events();
-        $retentionModel = new \Models\RetentionPolicies();
-        $fieldAuditModel = new \Models\FieldAuditTrail();
+        $eventsModel = new \Tirreno\Models\Events();
+        $retentionModel = new \Tirreno\Models\RetentionPolicies();
+        $fieldAuditModel = new \Tirreno\Models\FieldAuditTrail();
 
         $retentionKeys = $retentionModel->getRetentionKeys();
         $cnt = 0;

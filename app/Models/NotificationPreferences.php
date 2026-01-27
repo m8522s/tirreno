@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,16 +15,16 @@
 
 declare(strict_types=1);
 
-namespace Models;
+namespace Tirreno\Models;
 
-class NotificationPreferences extends \Models\BaseSql {
+class NotificationPreferences extends \Tirreno\Models\BaseSql {
     protected $DB_TABLE_NAME = 'dshb_operators';
 
     public function operatorsToNotify(): array {
         $params = [
-            ':daily'    => \Utils\Constants::get('DAILY_NOTIFICATION_REMINDER'),
-            ':weekly'   => \Utils\Constants::get('WEEKLY_NOTIFICATION_REMINDER'),
-            ':off'      => \Utils\Constants::get('NO_NOTIFICATION_REMINDER'),
+            ':daily'    => \Tirreno\Utils\Constants::get('DAILY_NOTIFICATION_REMINDER'),
+            ':weekly'   => \Tirreno\Utils\Constants::get('WEEKLY_NOTIFICATION_REMINDER'),
+            ':off'      => \Tirreno\Utils\Constants::get('NO_NOTIFICATION_REMINDER'),
         ];
 
         $query = (

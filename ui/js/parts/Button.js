@@ -1,9 +1,10 @@
 import {handleAjaxError} from './utils/ErrorHandler.js?v=2';
+import {formatKiloValue} from './utils/String.js?v=2';
 
 export class Button {
     onSuccessCount(data) {
         const span = document.querySelector('span.reviewed-users-tile');
-        span.textContent = data.total;
+        span.textContent = formatKiloValue(data.total);
     }
 
     setMenuCount() {
@@ -19,7 +20,7 @@ export class Button {
 
     onSuccessBlacklistCount(data) {
         const span = document.querySelector('span.blacklist-users-tile');
-        span.textContent = data.total;
+        span.textContent = formatKiloValue(data.total);
     }
 
     setBlacklistMenuCount() {

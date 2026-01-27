@@ -19,7 +19,7 @@ const MAX_TOOLTIP_URL_LENGTH = 50;
 const MAX_TOOLTIP_LENGTH = 121;
 
 const COLOR_RED    = '#FB6E88';
-const COLOR_GREEN  = '#01EE99';
+const COLOR_GREEN  = '#25EAB5';
 const COLOR_YELLOW = '#F5B944';
 const COLOR_PURPLE = '#BE95EB';
 

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,13 +15,13 @@
 
 declare(strict_types=1);
 
-namespace Updates;
+namespace Tirreno\Updates;
 
 class Update003 extends Base {
     public static $version = 'v0.9.7';
 
-    public static function apply($database) {
-        $data = [':type' => \Utils\Constants::get('PAGE_ERROR_EVENT_TYPE_ID')];
+    public static function apply($database): void {
+        $data = [':type' => \Tirreno\Utils\Constants::get('PAGE_ERROR_EVENT_TYPE_ID')];
 
         $queries = [
             'ALTER TABLE event_logbook DROP COLUMN raw_time',

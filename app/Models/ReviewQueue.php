@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,33 +15,27 @@
 
 declare(strict_types=1);
 
-namespace Models;
+namespace Tirreno\Models;
 
-class ReviewQueue extends \Models\BaseSql {
+class ReviewQueue extends \Tirreno\Models\BaseSql {
     protected $DB_TABLE_NAME = 'event_account';
 
-    public function getCountShort(int $apiKey): int {
+    public function getCount(int $apiKey): int {
         $params = [
             ':api_key'  => $apiKey,
-            ':limit'    => \Utils\Constants::get('REVIEW_QUEUE_TILE_LIMIT'),
         ];
 
         $query = (
             'SELECT
                 COUNT(*) AS count
-            FROM (
-                SELECT
-                    event_account.id
 
-                FROM
-                    event_account
+            FROM
+                event_account
 
-                WHERE
-                    event_account.key = :api_key AND
-                    event_account.fraud IS NULL AND
-                    event_account.added_to_review IS NOT NULL
-                LIMIT :limit
-            ) as t'
+            WHERE
+                event_account.key = :api_key AND
+                event_account.fraud IS NULL AND
+                event_account.added_to_review IS NOT NULL'
         );
 
         return $this->execQuery($query, $params)[0]['count'] ?? 0;

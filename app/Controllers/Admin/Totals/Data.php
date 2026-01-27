@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,13 +15,13 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\Totals;
+namespace Tirreno\Controllers\Admin\Totals;
 
-class Data extends \Controllers\Admin\Base\Data {
+class Data extends \Tirreno\Controllers\Admin\Base\Data {
     public function getTimeFrameTotal(array $ids, string $type, string $startDate, string $endDate, int $apiKey): array {
-        $processErrorMessage = ['ERROR_CODE' => \Utils\ErrorCodes::TOTALS_INVALID_TYPE];
+        $processErrorMessage = ['ERROR_CODE' => \Tirreno\Utils\ErrorCodes::TOTALS_INVALID_TYPE];
 
-        if (!in_array($type, ['ip', 'isp', 'domain', 'country', 'resource', 'field'])) {
+        if (!in_array($type, ['ip', 'isp', 'domain', 'country', 'resource', 'field', 'userAgent'])) {
             return $processErrorMessage;
         }
 
@@ -29,22 +29,25 @@ class Data extends \Controllers\Admin\Base\Data {
 
         switch ($type) {
             case 'ip':
-                $model = new \Models\Ip();
+                $model = new \Tirreno\Models\Ip();
                 break;
             case 'isp':
-                $model = new \Models\Isp();
+                $model = new \Tirreno\Models\Isp();
                 break;
             case 'domain':
-                $model = new \Models\Domain();
+                $model = new \Tirreno\Models\Domain();
                 break;
             case 'country':
-                $model = new \Models\Country();
+                $model = new \Tirreno\Models\Country();
                 break;
             case 'resource':
-                $model = new \Models\Resource();
+                $model = new \Tirreno\Models\Resource();
                 break;
             case 'field':
-                $model = new \Models\FieldAudit();
+                $model = new \Tirreno\Models\FieldAudit();
+                break;
+            case 'userAgent':
+                $model = new \Tirreno\Models\UserAgent();
                 break;
         }
 

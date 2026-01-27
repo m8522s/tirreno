@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,25 +15,25 @@
 
 declare(strict_types=1);
 
-namespace Crons;
+namespace Tirreno\Crons;
 
 class RiskScoreQueueHandler extends BaseQueue {
-    private \Controllers\Admin\Rules\Data $rulesController;
+    private \Tirreno\Controllers\Admin\Rules\Data $rulesController;
 
     public function __construct() {
-        $this->rulesController = new \Controllers\Admin\Rules\Data();
+        $this->rulesController = new \Tirreno\Controllers\Admin\Rules\Data();
         $this->rulesController->buildEvaluationModels();
     }
 
     public function process(): void {
-        $batchSize = \Utils\Variables::getAccountOperationQueueBatchSize();
-        $queueModel = new \Models\Queue();
-        $keys = $queueModel->getNextBatchKeys(\Utils\Constants::get('RISK_SCORE_QUEUE_ACTION_TYPE'), $batchSize);
+        $batchSize = \Tirreno\Utils\Variables::getAccountOperationQueueBatchSize();
+        $queueModel = new \Tirreno\Models\Queue();
+        $keys = $queueModel->getNextBatchKeys(\Tirreno\Utils\Constants::get('RISK_SCORE_QUEUE_ACTION_TYPE'), $batchSize);
 
-        parent::baseProcess(\Utils\Constants::get('RISK_SCORE_QUEUE_ACTION_TYPE'));
+        parent::baseProcess(\Tirreno\Utils\Constants::get('RISK_SCORE_QUEUE_ACTION_TYPE'));
 
-        $blacklist = new \Controllers\Admin\Blacklist\Data();
-        $reviewQueue = new \Controllers\Admin\ReviewQueue\Data();
+        $blacklist = new \Tirreno\Controllers\Admin\Blacklist\Data();
+        $reviewQueue = new \Tirreno\Controllers\Admin\ReviewQueue\Data();
 
         foreach ($keys as $key) {
             $blacklist->setBlacklistUsersCount(false, $key);

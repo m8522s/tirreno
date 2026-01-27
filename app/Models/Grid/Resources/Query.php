@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Models\Grid\Resources;
+namespace Tirreno\Models\Grid\Resources;
 
-class Query extends \Models\Grid\Base\Query {
+class Query extends \Tirreno\Models\Grid\Base\Query {
     protected $defaultOrder = 'event_url.id DESC';
     protected $dateRangeField = 'event_url.lastseen';
 
@@ -110,7 +110,7 @@ class Query extends \Models\Grid\Base\Query {
     private function applySearch(string &$query, array &$queryParams): void {
         $this->applyDateRange($query, $queryParams);
 
-        $search = \Utils\Conversion::getArrayRequestParam('search');
+        $search = \Tirreno\Utils\Conversion::getArrayRequestParam('search');
         $searchConditions = $this->injectIdQuery('event_url.id', $queryParams);
 
         if (is_array($search) && isset($search['value']) && is_string($search['value']) && $search['value'] !== '') {
@@ -129,13 +129,13 @@ class Query extends \Models\Grid\Base\Query {
     }
 
     private function applyFileExtensions(string &$query, array &$queryParams): void {
-        $fileTypeIds = \Utils\Conversion::getArrayRequestParam('fileTypeIds');
+        $fileTypeIds = \Tirreno\Utils\Conversion::getArrayRequestParam('fileTypeIds');
         if (!$fileTypeIds) {
             return;
         }
 
-        $list = \Utils\WordsLists\FileExtensions::getWords();
-        $keys = \Utils\WordsLists\FileExtensions::getKeys();
+        $list = \Tirreno\Utils\Assets\Lists\FileExtensions::getList();
+        $keys = \Tirreno\Utils\Assets\Lists\FileExtensions::getKeys();
 
         $extensions = [];
 

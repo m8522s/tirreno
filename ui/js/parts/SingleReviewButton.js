@@ -7,7 +7,6 @@ import {replaceAll} from './utils/String.js?v=2';
 import {Button} from './Button.js?v=2';
 
 export class SingleReviewButton extends Button {
-
     constructor(userId) {
         super();
         this.userId = userId;

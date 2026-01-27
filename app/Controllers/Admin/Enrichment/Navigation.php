@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\Enrichment;
+namespace Tirreno\Controllers\Admin\Enrichment;
 
-class Navigation extends \Controllers\Admin\Base\Navigation {
+class Navigation extends \Tirreno\Controllers\Admin\Base\Navigation {
     public function __construct() {
         parent::__construct();
 
@@ -26,11 +26,11 @@ class Navigation extends \Controllers\Admin\Base\Navigation {
     }
 
     public function enrichEntity(): array {
-        $enrichmentKey = \Utils\ApiKeys::getCurrentOperatorEnrichmentKeyString();
+        $enrichmentKey = \Tirreno\Utils\ApiKeys::getCurrentOperatorEnrichmentKeyString();
 
-        $type       = \Utils\Conversion::getStringRequestParam('type');
-        $search     = \Utils\Conversion::getStringRequestParam('search', true);
-        $entityId   = \Utils\Conversion::getIntRequestParam('entityId', true);
+        $type       = \Tirreno\Utils\Conversion::getStringRequestParam('type');
+        $search     = \Tirreno\Utils\Conversion::getStringRequestParam('search', true);
+        $entityId   = \Tirreno\Utils\Conversion::getIntRequestParam('entityId', true);
 
         return $this->controller->enrichEntity($type, $search, $entityId, $this->apiKey, $enrichmentKey);
     }

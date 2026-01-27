@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,12 +15,12 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\FieldAuditTrail;
+namespace Tirreno\Controllers\Admin\FieldAuditTrail;
 
-class Data extends \Controllers\Admin\Base\Data {
+class Data extends \Tirreno\Controllers\Admin\Base\Data {
     public function getList(int $apiKey): array {
         $result = [];
-        $model = new \Models\Grid\FieldAuditTrail\Grid($apiKey);
+        $model = new \Tirreno\Models\Grid\FieldAuditTrail\Grid($apiKey);
 
         $map = [
             'userId'        => 'getDataByUserId',
@@ -28,11 +28,11 @@ class Data extends \Controllers\Admin\Base\Data {
             'fieldId'       => 'getDataByFieldId',
         ];
 
-        $result = $this->idMapIterate($map, $model, 'getAllData');
+        $result = $this->idMapIterate($map, $model);
 
         $ids = array_column($result['data'], 'field_audit_id');
         if ($ids) {
-            $model = new \Models\FieldAudit();
+            $model = new \Tirreno\Models\FieldAudit();
             $model->updateTotalsByEntityIds($ids, $apiKey);
             $result['data'] = $model->refreshTotals($result['data'], $apiKey);
         }
@@ -42,12 +42,12 @@ class Data extends \Controllers\Admin\Base\Data {
 
     public function getFieldEventDetails(int $id, int $apiKey): array {
         $result = [];
-        $model = new \Models\FieldAuditTrail();
+        $model = new \Tirreno\Models\FieldAuditTrail();
         $trailResult = $model->getById($id, $apiKey);
 
         if ($trailResult) {
             $eventId = $trailResult['event_id'];
-            $controller = new \Controllers\Admin\Events\Data();
+            $controller = new \Tirreno\Controllers\Admin\Events\Data();
             $result = $controller->getEventDetails($eventId, $apiKey);
 
             if ($result) {

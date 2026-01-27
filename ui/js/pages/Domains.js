@@ -1,4 +1,4 @@
-import {BasePage} from './Base.js';
+import {BasePage} from './Base.js?v=2';
 
 import {DatesFilter} from '../parts/DatesFilter.js?v=2';
 import {SearchFilter} from '../parts/SearchFilter.js?v=2';
@@ -6,7 +6,6 @@ import {DomainsChart} from '../parts/chart/Domains.js?v=2';
 import {DomainsGrid} from '../parts/grid/Domains.js?v=2';
 
 export class DomainsPage extends BasePage {
-
     constructor() {
         super('domains');
 

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\ManualCheck;
+namespace Tirreno\Controllers\Admin\ManualCheck;
 
-class Data extends \Controllers\Admin\Base\Data {
+class Data extends \Tirreno\Controllers\Admin\Base\Data {
     public function proceedPostRequest(): array {
         return $this->performSearch();
     }
@@ -29,9 +29,9 @@ class Data extends \Controllers\Admin\Base\Data {
             'SEARCH_VALUES' => $params,
         ];
 
-        $apiKey = \Utils\ApiKeys::getCurrentOperatorApiKeyId();
-        $enrichmentKey = \Utils\ApiKeys::getCurrentOperatorEnrichmentKeyString();
-        $errorCode = \Utils\Validators::validateSearch($params, $enrichmentKey);
+        $apiKey = \Tirreno\Utils\ApiKeys::getCurrentOperatorApiKeyId();
+        $enrichmentKey = \Tirreno\Utils\ApiKeys::getCurrentOperatorEnrichmentKeyString();
+        $errorCode = \Tirreno\Utils\Validators::validateSearch($params, $enrichmentKey);
 
         if ($errorCode) {
             $pageParams['ERROR_CODE'] = $errorCode;
@@ -39,10 +39,10 @@ class Data extends \Controllers\Admin\Base\Data {
             return $pageParams;
         }
 
-        $type   = \Utils\Conversion::getStringRequestParam('type');
-        $search = \Utils\Conversion::getStringRequestParam('search');
+        $type   = \Tirreno\Utils\Conversion::getStringRequestParam('type');
+        $search = \Tirreno\Utils\Conversion::getStringRequestParam('search');
 
-        $controller = new \Controllers\Admin\Enrichment\Data();
+        $controller = new \Tirreno\Controllers\Admin\Enrichment\Data();
         $result = $controller->enrichEntity($type, $search, null, $apiKey, $enrichmentKey);
 
         if (isset($result['ERROR_CODE'])) {
@@ -52,7 +52,7 @@ class Data extends \Controllers\Admin\Base\Data {
         }
 
         $save = [
-            'operator'  => \Utils\Routes::getCurrentRequestOperator()->id,
+            'operator'  => \Tirreno\Utils\Routes::getCurrentRequestOperator()->id,
             'type'      => $type,
             'search'    => $search,
         ];
@@ -79,12 +79,12 @@ class Data extends \Controllers\Admin\Base\Data {
     }
 
     private function saveSearch(array $params): void {
-        $history = new \Models\ManualCheckHistoryQuery();
+        $history = new \Tirreno\Models\ManualCheckHistoryQuery();
         $history->add($params);
     }
 
     public function getSearchHistory(int $operatorId): ?array {
-        $model = new \Models\ManualCheckHistory();
+        $model = new \Tirreno\Models\ManualCheckHistory();
 
         return $model->getRecentByOperator($operatorId);
     }

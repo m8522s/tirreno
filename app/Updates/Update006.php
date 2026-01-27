@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,12 +15,12 @@
 
 declare(strict_types=1);
 
-namespace Updates;
+namespace Tirreno\Updates;
 
 class Update006 extends Base {
     public static $version = 'v0.9.10';
 
-    public static function apply($database) {
+    public static function apply($database): void {
         $queries = [
             ('CREATE SEQUENCE event_field_audit_id_seq
                 AS BIGINT
@@ -133,7 +133,7 @@ class Update006 extends Base {
             $database->exec($sql);
         }
 
-        $params = [':field_edit' => \Utils\Constants::FIELD_EDIT_EVENT_TYPE_ID];
+        $params = [':field_edit' => \Tirreno\Utils\Constants::FIELD_EDIT_EVENT_TYPE_ID];
         $sql = (
             'UPDATE event_url
             SET

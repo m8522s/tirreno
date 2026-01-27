@@ -1,5 +1,4 @@
 export class Tooltip {
-
     static init() {
         this.addTooltipToSpans();
         this.addTooltipToParagraphs();

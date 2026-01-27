@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,45 +15,18 @@
 
 declare(strict_types=1);
 
-namespace Utils;
+namespace Tirreno\Utils;
 
 class Access {
-    public static function cleanHost() {
+    public static function cleanHost(): void {
         $f3 = \Base::instance();
 
-        if (PHP_SAPI === 'cli') {
-            $f3->set('HOST', \Utils\Variables::getHost());
+        $host = \Tirreno\Utils\Variables::getHostWithProtocol();
+        $host = strtolower(parse_url($host, PHP_URL_HOST));
 
-            return;
-        }
+        $f3->set('HOST', $host);
 
-        $httpHosts = \Utils\Variables::getHosts();
-
-        $port = \Utils\Conversion::intValCheckEmpty($_SERVER['SERVER_PORT'] ?? 80, 80);
-        $port = ($port === 80 || $port === 443 ? '' : ":$port");
-        $key = false;
-
-        if (isset($_SERVER['SERVER_NAME'])) {
-            $key = array_search(strtolower($_SERVER['SERVER_NAME']) . $port, $httpHosts, true);
-        }
-        if ($key === false && isset($_SERVER['HTTP_HOST'])) {
-            $key = array_search(strtolower($_SERVER['HTTP_HOST']), $httpHosts, true);
-        }
-
-        // store HOST without port for f3
-        if ($key !== false) {
-            $parts = explode(':', $httpHosts[$key]);
-            $cnt = count($parts);
-            if ($cnt > 1 && ctype_digit($parts[$cnt - 1])) {
-                array_pop($parts);
-            }
-            $f3->set('HOST', implode(':', $parts));
-        } else {
-            //$f3->set('HOST', explode(':', $httpHosts[0])[0]);
-            if (count($httpHosts) > 1 || $httpHosts[0] !== 'localhost') {
-                $f3->error(400);
-            }
-        }
+        return;
     }
 
     public static function CSRFTokenValid(array $params, \Base $f3): int|false {
@@ -61,18 +34,18 @@ class Access {
         $csrf = $f3->get('SESSION.csrf');
 
         if (!isset($token) || $token === '' || !isset($csrf) || $csrf === '' || $token !== $csrf) {
-            return \Utils\ErrorCodes::CSRF_ATTACK_DETECTED;
+            return \Tirreno\Utils\ErrorCodes::CSRF_ATTACK_DETECTED;
         }
 
         return false;
     }
 
     public static function checkApiKeyAccess(int $keyId, int $operatorId): bool {
-        $model = new \Models\ApiKeys();
+        $model = new \Tirreno\Models\ApiKeys();
         $model->getByKeyAndOperatorId($keyId, $operatorId);
 
         if (!$model->loaded()) {
-            $coOwnerModel = new \Models\ApiKeyCoOwner();
+            $coOwnerModel = new \Tirreno\Models\ApiKeyCoOwner();
             $coOwnerModel->getCoOwnership($operatorId);
 
             if (!$coOwnerModel->loaded()) {
@@ -90,7 +63,7 @@ class Access {
     }
 
     public static function getCurrentOperatorId(): ?int {
-        return \Utils\Routes::getCurrentRequestOperator()?->id;
+        return \Tirreno\Utils\Routes::getCurrentRequestOperator()?->id;
     }
 
     public static function getCurrentOperatorApiKeyId(): ?int {
@@ -100,11 +73,11 @@ class Access {
             return null;
         }
 
-        $model = new \Models\ApiKeys();
+        $model = new \Tirreno\Models\ApiKeys();
         $key = $model->getKey($operatorId);
 
         if (!$key) { // Check if operator is co-owner of another API key when it has no own API key.
-            $coOwnerModel = new \Models\ApiKeyCoOwner();
+            $coOwnerModel = new \Tirreno\Models\ApiKeyCoOwner();
             $coOwnerModel->getCoOwnership($operatorId);
 
             if ($coOwnerModel->loaded()) {

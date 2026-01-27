@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,7 +15,7 @@
 
 declare(strict_types=1);
 
-namespace Models\Grid\Base;
+namespace Tirreno\Models\Grid\Base;
 
 class Query {
     protected $f3 = null;
@@ -45,8 +45,8 @@ class Query {
     }
 
     protected function applyOrder(string &$query): void {
-        $order = \Utils\Conversion::getArrayRequestParam('order');
-        $columns = \Utils\Conversion::getArrayRequestParam('columns');
+        $order = \Tirreno\Utils\Conversion::getArrayRequestParam('order');
+        $columns = \Tirreno\Utils\Conversion::getArrayRequestParam('columns');
 
         $orderCondition = $this->defaultOrder;
 
@@ -72,7 +72,7 @@ class Query {
     }
 
     protected function applyDateRange(string &$query, array &$queryParams): void {
-        $dateRange = \Utils\DateRange::getDatesRangeFromRequest();
+        $dateRange = \Tirreno\Utils\DateRange::getDatesRangeFromRequest();
 
         if ($dateRange) {
             $searchConditions = (
@@ -88,8 +88,8 @@ class Query {
     }
 
     protected function applyLimit(string &$query, array &$queryParams): void {
-        $start = \Utils\Conversion::getIntRequestParam('start');
-        $length = \Utils\Conversion::getIntRequestParam('length');
+        $start = \Tirreno\Utils\Conversion::getIntRequestParam('start');
+        $length = \Tirreno\Utils\Conversion::getIntRequestParam('length');
 
         if (isset($start) && isset($length)) {
             $query .= ' LIMIT :length OFFSET :start';

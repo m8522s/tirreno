@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -44,18 +44,18 @@ class UserAgentRepository {
         return $stmt->fetchColumn() !== false;
     }
 
-    public function insertSwitch(UserAgentEnrichedEntity|UserAgentEntity $ua): InsertUserAgentDto {
-        return $ua instanceof UserAgentEntity ? $this->insert($ua) : $this->insertEnriched($ua);
+    public function insertSwitch(UserAgentEnrichedEntity|UserAgentEntity $userAgent): InsertUserAgentDto {
+        return $userAgent instanceof UserAgentEntity ? $this->insert($userAgent) : $this->insertEnriched($userAgent);
     }
 
-    public function insert(UserAgentEntity $ua): InsertUserAgentDto {
+    public function insert(UserAgentEntity $userAgent): InsertUserAgentDto {
         // if `checked` === null -> enrichment was not performed; `checked` === false -> enrichment failed;
         $stmt = null;
         // check manually for ua == null case
-        if ($ua->userAgent === null) {
+        if ($userAgent->userAgent === null) {
             $sql = 'SELECT id FROM event_ua_parsed WHERE ua IS NULL AND key = :key LIMIT 1';
             $stmt = $this->pdo->prepare($sql);
-            $stmt->bindValue(':key', $ua->apiKeyId);
+            $stmt->bindValue(':key', $userAgent->apiKeyId);
             $stmt->execute();
             /** @var array{id: int} $result */
             $result = $stmt->fetch();
@@ -66,18 +66,18 @@ class UserAgentRepository {
                     WHERE key = :key AND id = :id
                     RETURNING id, os_name, os_version, browser_name, browser_version, device';
                 $stmt = $this->pdo->prepare($sql);
-                $stmt->bindValue(':key', $ua->apiKeyId);
+                $stmt->bindValue(':key', $userAgent->apiKeyId);
                 $stmt->bindValue(':id', $result['id']);
-                $stmt->bindValue(':checked', $ua->checked, $ua->checked === null ? \PDO::PARAM_NULL : \PDO::PARAM_BOOL);
+                $stmt->bindValue(':checked', $userAgent->checked, $userAgent->checked === null ? \PDO::PARAM_NULL : \PDO::PARAM_BOOL);
             } else {
                 $sql = 'INSERT INTO event_ua_parsed (key, ua, checked, created)
                     VALUES (:key, :ua, COALESCE(:checked, false), :created)
                     RETURNING id, os_name, os_version, browser_name, browser_version, device';
                 $stmt = $this->pdo->prepare($sql);
-                $stmt->bindValue(':key', $ua->apiKeyId);
-                $stmt->bindValue(':ua', $ua->userAgent);
-                $stmt->bindValue(':checked', $ua->checked, $ua->checked === null ? \PDO::PARAM_NULL : \PDO::PARAM_BOOL);
-                $stmt->bindValue(':created', $ua->lastSeen->format(Timestamp::EVENTFORMAT));
+                $stmt->bindValue(':key', $userAgent->apiKeyId);
+                $stmt->bindValue(':ua', $userAgent->userAgent);
+                $stmt->bindValue(':checked', $userAgent->checked, $userAgent->checked === null ? \PDO::PARAM_NULL : \PDO::PARAM_BOOL);
+                $stmt->bindValue(':created', $userAgent->lastSeen->format(Timestamp::EVENTFORMAT));
             }
         } else {
             $sql = 'INSERT INTO event_ua_parsed
@@ -89,10 +89,10 @@ class UserAgentRepository {
                     checked = COALESCE(:checked, event_ua_parsed.checked)
                 RETURNING id, os_name, os_version, browser_name, browser_version, device';
             $stmt = $this->pdo->prepare($sql);
-            $stmt->bindValue(':key', $ua->apiKeyId);
-            $stmt->bindValue(':ua', $ua->userAgent);
-            $stmt->bindValue(':checked', $ua->checked, $ua->checked === null ? \PDO::PARAM_NULL : \PDO::PARAM_BOOL);
-            $stmt->bindValue(':created', $ua->lastSeen->format(Timestamp::EVENTFORMAT));
+            $stmt->bindValue(':key', $userAgent->apiKeyId);
+            $stmt->bindValue(':ua', $userAgent->userAgent);
+            $stmt->bindValue(':checked', $userAgent->checked, $userAgent->checked === null ? \PDO::PARAM_NULL : \PDO::PARAM_BOOL);
+            $stmt->bindValue(':created', $userAgent->lastSeen->format(Timestamp::EVENTFORMAT));
         }
 
         $stmt->execute();
@@ -103,7 +103,7 @@ class UserAgentRepository {
         return new InsertUserAgentDto($result['id'], $result['os_name'], $result['os_version'], $result['browser_name'], $result['browser_version'], $result['device']);
     }
 
-    public function insertEnriched(UserAgentEnrichedEntity $ua): InsertUserAgentDto {
+    public function insertEnriched(UserAgentEnrichedEntity $userAgent): InsertUserAgentDto {
         $sql = 'INSERT INTO event_ua_parsed
                 (key, ua, device, browser_name, browser_version, os_name, os_version, modified, checked, created)
             VALUES
@@ -115,16 +115,16 @@ class UserAgentRepository {
             RETURNING id, os_name, os_version, browser_name, browser_version, device';
 
         $stmt = $this->pdo->prepare($sql);
-        $stmt->bindValue(':key', $ua->apiKeyId);
-        $stmt->bindValue(':ua', $ua->userAgent);
-        $stmt->bindValue(':device', $ua->device);
-        $stmt->bindValue(':browser_name', $ua->browserName);
-        $stmt->bindValue(':browser_version', $ua->browserVersion);
-        $stmt->bindValue(':os_name', $ua->osName);
-        $stmt->bindValue(':os_version', $ua->osVersion);
-        $stmt->bindValue(':modified', $ua->modified, \PDO::PARAM_BOOL);
+        $stmt->bindValue(':key', $userAgent->apiKeyId);
+        $stmt->bindValue(':ua', $userAgent->userAgent);
+        $stmt->bindValue(':device', $userAgent->device);
+        $stmt->bindValue(':browser_name', $userAgent->browserName);
+        $stmt->bindValue(':browser_version', $userAgent->browserVersion);
+        $stmt->bindValue(':os_name', $userAgent->osName);
+        $stmt->bindValue(':os_version', $userAgent->osVersion);
+        $stmt->bindValue(':modified', $userAgent->modified, \PDO::PARAM_BOOL);
         $stmt->bindValue(':checked', true, \PDO::PARAM_BOOL);
-        $stmt->bindValue(':created', $ua->lastSeen->format(Timestamp::EVENTFORMAT));
+        $stmt->bindValue(':created', $userAgent->lastSeen->format(Timestamp::EVENTFORMAT));
         $stmt->execute();
 
         /** @var array{id: int, os_name: string, os_version: string, browser_name: string, browser_version: string, device: string} $result */

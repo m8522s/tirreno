@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Models\Grid\Logbook;
+namespace Tirreno\Models\Grid\Logbook;
 
-class Query extends \Models\Grid\Base\Query {
+class Query extends \Tirreno\Models\Grid\Base\Query {
     protected $defaultOrder = 'event_logbook.error_type DESC, event_logbook.id DESC';
     protected $dateRangeField = 'event_logbook.started';
 
@@ -84,13 +84,12 @@ class Query extends \Models\Grid\Base\Query {
         //Add dates into request
         $this->applyDateRange($query, $queryParams);
 
-        $search = \Utils\Conversion::getArrayRequestParam('search');
+        $search = \Tirreno\Utils\Conversion::getArrayRequestParam('search');
         $searchConditions = '';
 
         if (is_array($search) && isset($search['value']) && is_string($search['value']) && $search['value'] !== '') {
             $extra = '';
-            //TODO: use isIp function here
-            if (filter_var($search['value'], FILTER_VALIDATE_IP) !== false) {
+            if (\Tirreno\Utils\Conversion::filterIp($search['value'])) {
                 $extra = ' event_logbook.ip = :search_ip_value OR ';
                 $queryParams[':search_ip_value'] = $search['value'];
             }
@@ -115,8 +114,8 @@ class Query extends \Models\Grid\Base\Query {
 
     protected function applyDateRange(string &$query, array &$queryParams): void {
         // apply server offset to utc requested date range because dateRangeField is in server time zone
-        $serverOffset = \Utils\TimeZones::getServerOffset();
-        $dateRange = \Utils\DateRange::getDatesRangeFromRequest($serverOffset);
+        $serverOffset = \Tirreno\Utils\Timezones::getServerOffset();
+        $dateRange = \Tirreno\Utils\DateRange::getDatesRangeFromRequest($serverOffset);
 
         if ($dateRange) {
             $searchConditions = (

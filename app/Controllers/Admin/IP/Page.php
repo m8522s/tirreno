@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,23 +15,23 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\IP;
+namespace Tirreno\Controllers\Admin\IP;
 
-class Page extends \Controllers\Admin\Base\Page {
+class Page extends \Tirreno\Controllers\Admin\Base\Page {
     public $page = 'AdminIp';
 
     public function getPageParams(): array {
         $dataController = new Data();
-        $apiKey = \Utils\ApiKeys::getCurrentOperatorApiKeyId();
-        $ipId = \Utils\Conversion::getIntUrlParam('ipId');
+        $apiKey = \Tirreno\Utils\ApiKeys::getCurrentOperatorApiKeyId();
+        $ipId = \Tirreno\Utils\Conversion::getIntUrlParam('ipId');
         $hasAccess = $dataController->checkIfOperatorHasAccess($ipId, $apiKey);
 
         if (!$hasAccess) {
             $this->f3->error(404);
         }
 
-        $ip = $dataController->getFullIpInfoById($ipId, $apiKey);
-        $pageTitle = $this->getInternalPageTitleWithPostfix($ip['ip']);
+        $ipAddr = $dataController->getFullIpInfoById($ipId, $apiKey);
+        $pageTitle = $this->getInternalPageTitleWithPostfix($ipAddr['ip']);
         $isEnrichable = $dataController->isEnrichable($apiKey);
 
         $pageParams = [
@@ -39,7 +39,7 @@ class Page extends \Controllers\Admin\Base\Page {
             'LOAD_AUTOCOMPLETE'             => true,
             'HTML_FILE'                     => 'admin/ip.html',
             'PAGE_TITLE'                    => $pageTitle,
-            'IP'                            => $ip,
+            'IP'                            => $ipAddr,
             'LOAD_UPLOT'                    => true,
             'LOAD_ACCEPT_LANGUAGE_PARSER'   => true,
             'JS'                            => 'admin_ip.js',

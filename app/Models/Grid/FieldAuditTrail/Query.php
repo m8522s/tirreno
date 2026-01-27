@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Models\Grid\FieldAuditTrail;
+namespace Tirreno\Models\Grid\FieldAuditTrail;
 
-class Query extends \Models\Grid\Base\Query {
+class Query extends \Tirreno\Models\Grid\Base\Query {
     protected $defaultOrder = 'event_field_audit_trail.id DESC';
     protected $dateRangeField = 'event_field_audit_trail.created';
 
@@ -46,13 +46,18 @@ class Query extends \Models\Grid\Base\Query {
                 event_account.userid AS accounttitle,
                 event_account.score_updated_at,
                 event_account.score,
-                event_account.fraud
+                event_account.fraud,
+
+                event_email.email
 
             FROM
                 event_field_audit_trail
 
             LEFT JOIN event_account
             ON (event_field_audit_trail.account_id = event_account.id)
+
+            LEFT JOIN event_email
+            ON (event_account.lastemail = event_email.id)
 
             LEFT JOIN event_field_audit
             ON (event_field_audit_trail.field_id = event_field_audit.id)
@@ -93,7 +98,7 @@ class Query extends \Models\Grid\Base\Query {
         $this->applyDateRange($query, $queryParams);
 
         $searchConditions = $this->injectIdQuery('event_field_audit_trail.id', $queryParams);
-        $search = \Utils\Conversion::getArrayRequestParam('search');
+        $search = \Tirreno\Utils\Conversion::getArrayRequestParam('search');
 
         if (is_array($search) && isset($search['value']) && is_string($search['value']) && $search['value'] !== '') {
             $searchConditions .= (

@@ -1,4 +1,4 @@
-import {BasePage} from './Base.js';
+import {BasePage} from './Base.js?v=2';
 
 import {DatesFilter} from '../parts/DatesFilter.js?v=2';
 import {SearchFilter} from '../parts/SearchFilter.js?v=2';
@@ -7,7 +7,6 @@ import {WatchlistTags} from '../parts/WatchlistTags.js?v=2';
 import {EventsGrid} from '../parts/grid/Events.js?v=2';
 
 export class WatchlistPage extends BasePage {
-
     constructor() {
         super('watchlist');
 

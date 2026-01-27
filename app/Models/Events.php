@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Models;
+namespace Tirreno\Models;
 
-class Events extends \Models\BaseSql {
+class Events extends \Tirreno\Models\BaseSql {
     protected $DB_TABLE_NAME = 'event';
 
     public function getDistinctAccounts(int $after, int $until): array {
@@ -128,7 +128,7 @@ class Events extends \Models\BaseSql {
         $this->applyLimit($query, $params);
 
         $results = $this->execQuery($query, $params);
-        \Utils\Enrichment::calculateIpType($results);
+        \Tirreno\Utils\Enrichment::calculateIpType($results);
 
         return $results;
     }
@@ -185,8 +185,8 @@ class Events extends \Models\BaseSql {
     }
 
     protected function applyLimit(string &$query, array &$queryParams): void {
-        $start = \Utils\Conversion::getIntRequestParam('start');
-        $length = \Utils\Conversion::getIntRequestParam('length');
+        $start = \Tirreno\Utils\Conversion::getIntRequestParam('start');
+        $length = \Tirreno\Utils\Conversion::getIntRequestParam('length');
 
         if (isset($start) && isset($length)) {
             $query .= ' LIMIT :length OFFSET :start';
@@ -196,7 +196,7 @@ class Events extends \Models\BaseSql {
         }
     }
 
-    public function uniqueEntitesByUserId(int $userId, int $apiKey): array {
+    public function uniqueEntitiesByUserId(int $userId, int $apiKey): array {
         $params = [
             ':api_key' => $apiKey,
             ':user_id' => $userId,
@@ -246,7 +246,7 @@ class Events extends \Models\BaseSql {
         $params = [
             ':api_key'  => $apiKey,
             ':weeks'    => $weeks,
-            ':week_sec' => \Utils\Constants::get('SECONDS_IN_WEEK'),
+            ':week_sec' => \Tirreno\Utils\Constants::get('SECONDS_IN_WEEK'),
         ];
 
         $query = (

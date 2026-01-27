@@ -1,8 +1,8 @@
 <?php
 
-namespace CoreRules;
+namespace Tirreno\Rules\Core;
 
-class E23 extends \Assets\Rule {
+class E23 extends \Tirreno\Assets\Rule {
     public const NAME = 'Educational domain (.edu)';
     public const DESCRIPTION = 'Email belongs to educational domain.';
     public const ATTRIBUTES = [];

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Models\TopTen;
+namespace Tirreno\Models\TopTen;
 
-class Base extends \Models\BaseSql {
+class Base extends \Tirreno\Models\BaseSql {
     public function getQueryParams(int $apiKey, ?array $dateRange): array {
         $queryParams = [':api_key' => $apiKey];
 

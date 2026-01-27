@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Models;
+namespace Tirreno\Models;
 
-class Operator extends \Models\BaseSql {
+class Operator extends \Tirreno\Models\BaseSql {
     protected $DB_TABLE_NAME = 'dshb_operators';
 
     public function add(array $data): void {
@@ -54,7 +54,7 @@ class Operator extends \Models\BaseSql {
         }
     }
 
-    public function updateTimeZone(string $timezone, int $operatorId): void {
+    public function updateTimezone(string $timezone, int $operatorId): void {
         $this->getOperatorById($operatorId);
 
         if ($this->loaded()) {
@@ -192,10 +192,10 @@ class Operator extends \Models\BaseSql {
             return false;
         }
 
-        $pepper = \Utils\Variables::getPepper();
-        $pepperedPassword = \hash_hmac('sha256', $password, $pepper);
+        $pepper = \Tirreno\Utils\Variables::getPepper();
+        $pepperedPassword = hash_hmac('sha256', $password, $pepper);
 
-        return \password_verify($pepperedPassword, $this->password);
+        return password_verify($pepperedPassword, $this->password);
     }
 
     public function getAll(): array {
@@ -203,9 +203,9 @@ class Operator extends \Models\BaseSql {
     }
 
     public static function hashPassword(string $password): string {
-        $pepper = \Utils\Variables::getPepper();
-        $pepperedPassword = \hash_hmac('sha256', $password, $pepper);
+        $pepper = \Tirreno\Utils\Variables::getPepper();
+        $pepperedPassword = hash_hmac('sha256', $password, $pepper);
 
-        return \password_hash($pepperedPassword, PASSWORD_DEFAULT);
+        return password_hash($pepperedPassword, PASSWORD_DEFAULT);
     }
 }

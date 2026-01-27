@@ -1,8 +1,8 @@
 <?php
 
-namespace CoreRules;
+namespace Tirreno\Rules\Core;
 
-class D03 extends \Assets\Rule {
+class D03 extends \Tirreno\Assets\Rule {
     public const NAME = 'Device is bot';
     public const DESCRIPTION = 'The user may be using a device with a user agent that is identified as a bot.';
     public const ATTRIBUTES = [];

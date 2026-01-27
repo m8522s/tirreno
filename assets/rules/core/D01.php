@@ -1,8 +1,8 @@
 <?php
 
-namespace CoreRules;
+namespace Tirreno\Rules\Core;
 
-class D01 extends \Assets\Rule {
+class D01 extends \Tirreno\Assets\Rule {
     public const NAME = 'Device is unknown';
     public const DESCRIPTION = 'User has manipulated the device information, so it is not recognized.';
     public const ATTRIBUTES = [];

@@ -1,5 +1,15 @@
 # tirreno changelog
 
+## tirreno v0.9.11
+
+* github workflow
+* UI constants in `/assets/dashboard/constants.php`
+* additional rule context in `/assets/rules/custom/context.php`
+* installation process update
+* clock update
+* user details view update
+* rules presets
+
 ## tirreno v0.9.10
 
 * only strict_types

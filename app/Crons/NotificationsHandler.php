@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,11 +15,11 @@
 
 declare(strict_types=1);
 
-namespace Crons;
+namespace Tirreno\Crons;
 
 class NotificationsHandler extends Base {
     public function process(): void {
-        $model = new \Models\NotificationPreferences();
+        $model = new \Tirreno\Models\NotificationPreferences();
 
         $operators = $model->operatorsToNotify();
 
@@ -27,12 +27,12 @@ class NotificationsHandler extends Base {
         $failed = 0;
 
         foreach ($operators as $operator) {
-            if (\Utils\Cron::checkTimezone($operator['timezone'] ?? '')) {
+            if (\Tirreno\Utils\Cron::checkTimezone($operator['timezone'] ?? '')) {
                 try {
                     $name   = $operator['firstname'] ?? '';
                     $email  = $operator['email'] ?? '';
                     $review = $operator['review_queue_cnt'] ?? 0;
-                    if (!\Utils\Cron::sendUnreviewedItemsReminderEmail($name, $email, $review)) {
+                    if (!\Tirreno\Utils\Cron::sendUnreviewedItemsReminderEmail($name, $email, $review)) {
                         $this->addLog(sprintf('Username `%s` is not email; review count is %s', $email, $review));
                     }
                     $model->updateUnreviewedReminder($operator['id']);

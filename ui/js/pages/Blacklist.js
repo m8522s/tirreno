@@ -1,4 +1,4 @@
-import {BasePage} from './Base.js';
+import {BasePage} from './Base.js?v=2';
 
 import {DatesFilter} from '../parts/DatesFilter.js?v=2';
 import {SearchFilter} from '../parts/SearchFilter.js?v=2';
@@ -8,7 +8,6 @@ import {BlacklistChart} from '../parts/chart/Blacklist.js?v=2';
 import {BlacklistGrid} from '../parts/grid/Blacklist.js?v=2';
 
 export class BlacklistPage extends BasePage {
-
     constructor() {
         super('blacklist');
         this.tableId = 'blacklist-table';

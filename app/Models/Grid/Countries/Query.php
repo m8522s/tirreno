@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Models\Grid\Countries;
+namespace Tirreno\Models\Grid\Countries;
 
-class Query extends \Models\Grid\Base\Query {
+class Query extends \Tirreno\Models\Grid\Base\Query {
     protected $defaultOrder = null;
     protected $dateRangeField = 'event_country.lastseen';
 
@@ -82,7 +82,7 @@ class Query extends \Models\Grid\Base\Query {
         //Add dates into request
         $this->applyDateRange($query, $queryParams);
 
-        $search = \Utils\Conversion::getArrayRequestParam('search');
+        $search = \Tirreno\Utils\Conversion::getArrayRequestParam('search');
         $searchConditions = '';
 
         if (is_array($search) && isset($search['value']) && is_string($search['value']) && $search['value'] !== '') {

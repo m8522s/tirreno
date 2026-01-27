@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,7 +15,7 @@
 
 declare(strict_types=1);
 
-namespace Utils;
+namespace Tirreno\Utils;
 
 class Rules {
     public static function checkPhoneCountryMatchIp(array $params): ?bool {
@@ -30,20 +30,34 @@ class Rules {
         $deviceCreated = new \DateTime($params['event_device_created'][$idx]);
         $deviceLastseen = new \DateTime($params['event_device_lastseen'][$idx]);
 
-        return abs($deviceLastseen->getTimestamp() - $deviceCreated->getTimestamp()) < \Utils\Constants::get('RULE_NEW_DEVICE_MAX_AGE_IN_SECONDS');
+        return abs($deviceLastseen->getTimestamp() - $deviceCreated->getTimestamp()) < \Tirreno\Utils\Constants::get('RULE_NEW_DEVICE_MAX_AGE_IN_SECONDS');
     }
 
     public static function countryIsNewByIpId(array $params, int $ipId): bool {
-        $countryId = array_key_exists($ipId, $params['eip_ip_id']) ? $params['eip_ip_id'][$ipId]['country'] : null;
-        $count = $countryId !== null ? $params['eip_country_count'][$countryId] : null;
+        $countryId = null;
+        if (array_key_exists($ipId, $params['eip_ip_id'])) {
+            $countryId = $params['eip_ip_id'][$ipId]['country'] ?? null;
+        }
 
-        return $count === 1;
+        $count = null;
+        if ($countryId !== null && array_key_exists($countryId, $params['eip_country_count'])) {
+            $count = $params['eip_country_count'][$countryId];
+        }
+
+        return ($count === 1);
     }
 
     public static function cidrIsNewByIpId(array $params, int $ipId): bool {
-        $cidr = array_key_exists($ipId, $params['eip_ip_id']) ? $params['eip_ip_id'][$ipId]['cidr'] : null;
-        $count = $cidr !== null ? $params['eip_cidr_count'][$cidr] : null;
+        $cidr = null;
+        if (array_key_exists($ipId, $params['eip_ip_id'])) {
+            $cidr = $params['eip_ip_id'][$ipId]['cidr'] ?? null;
+        }
 
-        return $count === 1;
+        $count = null;
+        if ($cidr !== null && array_key_exists($cidr, $params['eip_cidr_count'])) {
+            $count = $params['eip_cidr_count'][$cidr];
+        }
+
+        return ($count === 1);
     }
 }

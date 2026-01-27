@@ -1,8 +1,8 @@
 <?php
 
-namespace CoreRules;
+namespace Tirreno\Rules\Core;
 
-class B22 extends \Assets\Rule {
+class B22 extends \Tirreno\Assets\Rule {
     public const NAME = 'Multiple IP addresses in one session';
     public const DESCRIPTION = 'User\'s IP address was changed in less than 30 minutes.';
     public const ATTRIBUTES = [];

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,23 +15,23 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\ReviewQueue;
+namespace Tirreno\Controllers\Admin\ReviewQueue;
 
-class Data extends \Controllers\Admin\Base\Data {
+class Data extends \Tirreno\Controllers\Admin\Base\Data {
     public function getList(int $apiKey): array {
-        $model = new \Models\Grid\ReviewQueue\Grid($apiKey);
+        $model = new \Tirreno\Models\Grid\ReviewQueue\Grid($apiKey);
 
-        return $model->getAllUnderReviewUsers() ?? [];
+        return $model->getAll() ?? [];
     }
 
     public function setNotReviewedCount(bool $cache, int $apiKey): array {
-        $currentOperator = \Utils\Routes::getCurrentRequestOperator();
+        $currentOperator = \Tirreno\Utils\Routes::getCurrentRequestOperator();
 
         if (!$currentOperator) {
-            $model = new \Models\ApiKeys();
+            $model = new \Tirreno\Models\ApiKeys();
             $model = $model->getKeyById($apiKey);
             $creator = $model->creator;
-            $model = new \Models\Operator();
+            $model = new \Tirreno\Models\Operator();
             $currentOperator = $model->getOperatorById($creator);
         }
 
@@ -39,23 +39,23 @@ class Data extends \Controllers\Admin\Base\Data {
 
         $total = $currentOperator->review_queue_cnt;
         if (!$cache || !$takeFromCache) {
-            $total = (new \Models\ReviewQueue())->getCountShort($apiKey);
+            $total = (new \Tirreno\Models\ReviewQueue())->getCount($apiKey);
 
             $data = [
                 'id' => $currentOperator->id,
                 'review_queue_cnt' => $total,
             ];
 
-            $model = new \Models\Operator();
+            $model = new \Tirreno\Models\Operator();
             $model->updateReviewedQueueCnt($data);
         }
 
         return ['total' => $total];
     }
 
-    private function canTakeNumberOfNotReviewedUsersFromCache(\Models\Operator $currentOperator): bool {
+    private function canTakeNumberOfNotReviewedUsersFromCache(\Tirreno\Models\Operator $currentOperator): bool {
         $interval = \Base::instance()->get('REVIEWED_QUEUE_CNT_CACHE_TIME');
 
-        return !!\Utils\DateRange::inIntervalTillNow($currentOperator->review_queue_updated_at, $interval);
+        return !!\Tirreno\Utils\DateRange::inIntervalTillNow($currentOperator->review_queue_updated_at, $interval);
     }
 }

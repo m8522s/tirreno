@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Models;
+namespace Tirreno\Models;
 
-class Updates extends \Models\BaseSql {
+class Updates extends \Tirreno\Models\BaseSql {
     protected $DB_TABLE_NAME = 'dshb_updates';
 
     protected $db;
@@ -25,8 +25,8 @@ class Updates extends \Models\BaseSql {
     public function __construct($f3) {
         $this->f3 = $f3;
 
-        \Utils\Database::initConnect(false);
-        $this->db = \Utils\Database::getDb();
+        \Tirreno\Utils\Database::initConnect(false);
+        $this->db = \Tirreno\Utils\Database::getDb();
 
         \DB\SQL\Mapper::__construct($this->db, $this->DB_TABLE_NAME, $this->DB_TABLE_FIELDS, $this->DB_TABLE_TTL);
 
@@ -36,16 +36,16 @@ class Updates extends \Models\BaseSql {
     public function checkDb(string $service, array $updatesList): bool {
         $applied = false;
         try {
-            $this->db->begin();
             foreach ($updatesList as $migration) {
                 if (!$migration::isApplied($this)) {
+                    $this->db->begin();
                     $this->addStub($migration::$version, $service);
                     $migration::apply($this->db);
                     $this->addCompleted($migration::$version, $service);
+                    $this->db->commit();
                     $applied = true;
                 }
             }
-            $this->db->commit();
         } catch (\Exception $e) {
             $this->db->rollback();
             error_log($e->getMessage());

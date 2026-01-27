@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,7 +15,7 @@
 
 declare(strict_types=1);
 
-namespace Utils;
+namespace Tirreno\Utils;
 
 class ErrorCodes {
     public const EVERYTHING_IS_FINE = 600;
@@ -99,6 +99,7 @@ class ErrorCodes {
     public const INVALID_BLACKLIST_THRESHOLD = 801;
     public const INVALID_REVIEW_QUEUE_THRESHOLD = 802;
     public const INVALID_THRESHOLDS_COMBINATION = 803;
+    public const INVALID_RULES_PRESET_ID = 804;
 
     // REST API
     public const REST_API_KEY_DOES_NOT_EXIST = 900;
@@ -133,4 +134,9 @@ class ErrorCodes {
 
     // Crons
     public const CRON_JOB_MAY_BE_OFF = 1300;
+
+    // Web
+    public const INVALID_HOSTNAME   = 'TN8001';
+    public const FAILED_DB_CONNECT  = 'TN8002';
+    public const INCOMPLETE_CONFIG  = 'TN8003';
 }

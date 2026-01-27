@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Models\Enrichment;
+namespace Tirreno\Models\Enrichment;
 
-class DomainFound extends \Models\Enrichment\Base {
+class DomainFound extends \Tirreno\Models\Enrichment\Base {
     protected string $domain;
     protected bool $blockdomains;
     protected bool $disposable_domains;
@@ -62,7 +62,7 @@ class DomainFound extends \Models\Enrichment\Base {
 
         $dates = [$this->creation_date, $this->expiration_date, $this->closest_snapshot, $this->discovery_date];
 
-        if (($this->ip && !$this->validateIP($this->ip)) || !$this->validateDates($dates)) {
+        if (($this->ip && !\Tirreno\Utils\Conversion::filterIp($this->ip)) || !$this->validateDates($dates)) {
             throw new \Exception('Validation failed');
         }
     }
@@ -92,7 +92,7 @@ class DomainFound extends \Models\Enrichment\Base {
                 event_domain.key = :key
         ");
 
-        $model = new \Models\Domain();
+        $model = new \Tirreno\Models\Domain();
         $model->execQuery($query, $params);
     }
 }

@@ -1,8 +1,8 @@
 <?php
 
-namespace CoreRules;
+namespace Tirreno\Rules\Core;
 
-class E07 extends \Assets\Rule {
+class E07 extends \Tirreno\Assets\Rule {
     public const NAME = 'Long email username';
     public const DESCRIPTION = 'The email\'s username exceeds the average length, which could suggest it\'s a temporary email address.';
     public const ATTRIBUTES = [];

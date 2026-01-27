@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,18 +15,18 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\FieldAudits;
+namespace Tirreno\Controllers\Admin\FieldAudits;
 
-class Data extends \Controllers\Admin\Base\Data {
+class Data extends \Tirreno\Controllers\Admin\Base\Data {
     public function getList(int $apiKey): array {
         $result = [];
-        $model = new \Models\Grid\FieldAudits\Grid($apiKey);
+        $model = new \Tirreno\Models\Grid\FieldAudits\Grid($apiKey);
 
-        $result = $model->getAllData();
+        $result = $model->getAll();
 
         $ids = array_column($result['data'], 'field_audit_id');
         if ($ids) {
-            $model = new \Models\FieldAudit();
+            $model = new \Tirreno\Models\FieldAudit();
             $model->updateTotalsByEntityIds($ids, $apiKey);
             $result['data'] = $model->refreshTotals($result['data'], $apiKey);
         }

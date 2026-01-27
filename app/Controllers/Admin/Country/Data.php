@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,19 +15,19 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\Country;
+namespace Tirreno\Controllers\Admin\Country;
 
-class Data extends \Controllers\Admin\Base\Data {
+class Data extends \Tirreno\Controllers\Admin\Base\Data {
     public function checkIfOperatorHasAccess(int $countryId): bool {
-        $apiKey = \Utils\ApiKeys::getCurrentOperatorApiKeyId();
-        $model = new \Models\Country();
+        $apiKey = \Tirreno\Utils\ApiKeys::getCurrentOperatorApiKeyId();
+        $model = new \Tirreno\Models\Country();
 
         return $model->checkAccess($countryId, $apiKey);
     }
 
     public function getCountryById(int $countryId): array {
-        $apiKey = \Utils\ApiKeys::getCurrentOperatorApiKeyId();
-        $model = new \Models\Country();
+        $apiKey = \Tirreno\Utils\ApiKeys::getCurrentOperatorApiKeyId();
+        $model = new \Tirreno\Models\Country();
 
         return $model->getCountryById($countryId, $apiKey);
     }

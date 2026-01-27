@@ -8,7 +8,6 @@ import {
 } from '../DataRenderers.js?v=2';
 
 export class LogbookGrid extends BaseGridWithPanel {
-
     get orderConfig() {
         return [[3, 'desc'], [1, 'desc']];
     }

@@ -1,6 +1,6 @@
 <check if="{{ isset(@showChart) && 1 === @showChart }}">
     <div class="main-graph separate-graph">
-        <include href="templates/parts/forms/filtersForm.html" />
+        <include href="templates/parts/forms/filtersForm.html" with="hidden=true"/>
         <div class="stat-chart"></div>
     </div>
 </check>

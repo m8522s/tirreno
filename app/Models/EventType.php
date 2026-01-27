@@ -1,8 +1,8 @@
 <?php
 
-namespace Models;
+namespace Tirreno\Models;
 
-class EventType extends \Models\BaseSql {
+class EventType extends \Tirreno\Models\BaseSql {
     protected $DB_TABLE_NAME = 'event_type';
 
     public function getAll(): array {

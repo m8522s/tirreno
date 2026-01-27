@@ -1,8 +1,8 @@
 <?php
 
-namespace CoreRules;
+namespace Tirreno\Rules\Core;
 
-class D05 extends \Assets\Rule {
+class D05 extends \Tirreno\Assets\Rule {
     public const NAME = 'Rare OS device';
     public const DESCRIPTION = 'User operates device with uncommon OS.';
     public const ATTRIBUTES = [];

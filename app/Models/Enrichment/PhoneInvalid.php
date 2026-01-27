@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Models\Enrichment;
+namespace Tirreno\Models\Enrichment;
 
-class PhoneInvalid extends \Models\Enrichment\Base {
+class PhoneInvalid extends \Tirreno\Models\Enrichment\Base {
     protected string $phone_number;
     protected bool $invalid;
     protected string $validation_errors;
@@ -66,7 +66,7 @@ class PhoneInvalid extends \Models\Enrichment\Base {
                 event_phone.key = :key
         ");
 
-        $model = new \Models\Phone();
+        $model = new \Tirreno\Models\Phone();
         $model->execQuery($query, $params);
     }
 }

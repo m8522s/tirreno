@@ -1,8 +1,8 @@
 <?php
 
-namespace CoreRules;
+namespace Tirreno\Rules\Core;
 
-class I09 extends \Assets\Rule {
+class I09 extends \Tirreno\Assets\Rule {
     public const NAME = 'Numerous IPs';
     public const DESCRIPTION = 'User accesses the account with numerous IP addresses. This behaviour occurs in less than one percent of desktop users.';
     public const ATTRIBUTES = [];

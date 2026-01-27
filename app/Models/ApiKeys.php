@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Models;
+namespace Tirreno\Models;
 
-class ApiKeys extends \Models\BaseSql {
+class ApiKeys extends \Tirreno\Models\BaseSql {
     protected $DB_TABLE_NAME = 'dshb_api';
 
     public function add(array $data): int {
@@ -38,7 +38,7 @@ class ApiKeys extends \Models\BaseSql {
 
         $this->save();
 
-        return \Utils\Conversion::intVal($this->id, 0);
+        return \Tirreno\Utils\Conversion::intVal($this->id, 0);
     }
 
     public function getKeys(int $operatorId): array {
@@ -132,7 +132,7 @@ class ApiKeys extends \Models\BaseSql {
 
         $results = json_decode($results[0]['skip_enriching_attributes']);
 
-        if (!\Utils\Variables::getEmailPhoneAllowed()) {
+        if (!\Tirreno\Utils\Variables::getEmailPhoneAllowed()) {
             if (!in_array('email', $results, true)) {
                 $results[] = 'email';
             }
@@ -149,7 +149,7 @@ class ApiKeys extends \Models\BaseSql {
 
     public function enrichableAttributes(int $keyId): array {
         $skipAttributes = $this->getSkipEnrichingAttributes($keyId);
-        $attributes = \Utils\Constants::get('ENRICHING_ATTRIBUTES');
+        $attributes = \Tirreno\Utils\Constants::get('ENRICHING_ATTRIBUTES');
         $attributes = array_diff_key($attributes, array_flip($skipAttributes));
 
         return $attributes;
@@ -166,8 +166,8 @@ class ApiKeys extends \Models\BaseSql {
 
     public function updateSkipEnrichingAttributes(array $attributes): void {
         if ($this->loaded()) {
-            $attributes = \array_values($attributes);
-            $this->skip_enriching_attributes = \json_encode($attributes);
+            $attributes = array_values($attributes);
+            $this->skip_enriching_attributes = json_encode($attributes);
             $this->save();
         }
     }

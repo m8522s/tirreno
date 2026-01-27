@@ -1,4 +1,4 @@
-import {BasePage} from './Base.js';
+import {BasePage} from './Base.js?v=2';
 import {SequentialLoad} from '../parts/SequentialLoad.js?v=2';
 import {Map} from '../parts/Map.js?v=2';
 import {IpsGrid} from '../parts/grid/Ips.js?v=2';
@@ -12,7 +12,6 @@ import {DomainTiles} from '../parts/details/DomainTiles.js?v=2';
 import {ReenrichmentButton} from '../parts/ReenrichmentButton.js?v=2';
 
 export class DomainPage extends BasePage {
-
     constructor() {
         super('domain', true);
 

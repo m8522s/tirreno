@@ -1,4 +1,4 @@
-import {BasePage} from './Base.js';
+import {BasePage} from './Base.js?v=2';
 import {SequentialLoad} from '../parts/SequentialLoad.js?v=2';
 import {IpsGrid} from '../parts/grid/Ips.js?v=2';
 import {IspsGrid} from '../parts/grid/Isps.js?v=2';
@@ -8,7 +8,6 @@ import {FieldPanel} from '../parts/panel/FieldPanel.js?v=2';
 import {FieldAuditTrailGrid} from '../parts/grid/FieldAuditTrail.js?v=2';
 
 export class FieldAuditPage extends BasePage {
-
     constructor() {
         super('field', true);
 

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,21 +15,23 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\Base;
+namespace Tirreno\Controllers\Admin\Base;
 
-abstract class Navigation extends \Controllers\Base {
+abstract class Navigation extends \Tirreno\Controllers\Base {
     protected $response;
 
     protected $page = null;
     protected $controller = null;
+    protected $operator = null;
     protected $apiKey = null;
     protected $id = null;
 
     public function __construct() {
         parent::__construct();
 
-        $this->apiKey = \Utils\ApiKeys::getCurrentOperatorApiKeyId();
-        $this->id = \Utils\Conversion::getIntRequestParam('id', true);
+        $this->operator = \Tirreno\Utils\Routes::getCurrentRequestOperator();
+        $this->apiKey = \Tirreno\Utils\ApiKeys::getCurrentOperatorApiKeyId();
+        $this->id = \Tirreno\Utils\Conversion::getIntRequestParam('id', true);
     }
 
     public function showIndexPage(): void {
@@ -37,20 +39,18 @@ abstract class Navigation extends \Controllers\Base {
             return;
         }
 
-        \Utils\Routes::redirectIfUnlogged();
+        \Tirreno\Utils\Routes::redirectIfUnlogged();
 
-        $this->response = new \Views\Frontend();
+        $this->response = new \Tirreno\Views\Frontend();
         $this->response->data = $this->page->getPageParams();
     }
 
 
     public function beforeroute(): void {
-        $currentOperator = \Utils\Routes::getCurrentRequestOperator();
+        if ($this->operator) {
+            \Tirreno\Utils\Updates::syncUpdates();
 
-        if ($currentOperator) {
-            \Utils\Updates::syncUpdates();
-
-            $messages = \Utils\SystemMessages::get($this->apiKey);
+            $messages = \Tirreno\Utils\SystemMessages::get($this->apiKey);
 
             $this->f3->set('SYSTEM_MESSAGES', $messages);
 
@@ -76,20 +76,12 @@ abstract class Navigation extends \Controllers\Base {
 
         $isPageAllowed = in_array($route, $allowedPages);
 
-        return !$isPageAllowed && ($message['id'] === \Utils\ErrorCodes::THERE_ARE_NO_EVENTS_YET);
+        return !$isPageAllowed && ($message['id'] === \Tirreno\Utils\ErrorCodes::THERE_ARE_NO_EVENTS_YET);
     }
 
     public function isPostRequest(): bool {
         return $this->f3->VERB === 'POST';
     }
-
-    /**
-     * set a new view.
-     */
-    /* TODO: make sure that setView() is not needed
-    public function setView(BaseView $view) {
-        $this->response = $view;
-    }*/
 
     /**
      * kick start the View, which creates the response
@@ -108,9 +100,9 @@ abstract class Navigation extends \Controllers\Base {
             $hive = $this->f3->hive();
             $path = $hive['PATH'];
 
-            $log = \Utils\Database::getDb()->log();
+            $log = \Tirreno\Utils\Database::getDb()->log();
             if ($log) {
-                \Utils\Logger::logSql($path, $log);
+                \Tirreno\Utils\Logger::logSql($path, $log);
             }
         }
 

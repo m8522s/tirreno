@@ -1,8 +1,8 @@
 <?php
 
-namespace CoreRules;
+namespace Tirreno\Rules\Core;
 
-class D08 extends \Assets\Rule {
+class D08 extends \Tirreno\Assets\Rule {
     public const NAME = 'Two or more phone devices';
     public const DESCRIPTION = 'User accesses the account using numerous phone devices, which is not standard behaviour for regular users. Account may be shared between different people.';
     public const ATTRIBUTES = [];

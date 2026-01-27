@@ -10,7 +10,6 @@ import {
 } from '../DataRenderers.js?v=2';
 
 export class LogbookPanel extends BasePanel {
-
     constructor() {
         let eventParams = {
             enrichment: false,

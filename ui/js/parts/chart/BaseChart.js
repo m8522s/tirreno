@@ -1,6 +1,7 @@
 import {Loader} from '../Loader.js?v=2';
 import {getQueryParams}  from '../utils/DataSource.js?v=2';
 import {handleAjaxError} from '../utils/ErrorHandler.js?v=2';
+import {formatKiloValue} from '../utils/String.js?v=2';
 import {formatIntTimeUtc} from '../utils/Date.js?v=2';
 import {fireEvent} from '../utils/Event.js?v=2';
 import {renderChartTooltipPart} from '../DataRenderers.js?v=2';
@@ -160,7 +161,7 @@ export class BaseChart {
         };
         const yAxis = {
             stroke: '#90a1b9',
-            values: (u, vals, space) => vals.map(v => this.formatKiloValue(u, v)),
+            values: (u, vals, space) => vals.map(v => formatKiloValue(v)),
             grid: {
                 width: 1 / devicePixelRatio,
                 stroke: '#2b2a39',
@@ -242,19 +243,6 @@ export class BaseChart {
         }
 
         return xAxis;
-    }
-
-    formatKiloValue(u, value) {
-        if (value === 0) {
-            return value;
-        }
-        if (value % 1000000 === 0) {
-            return Math.round(value / 1000000) + 'M';
-        }
-        if (value % 1000 === 0) {
-            return Math.round(value / 1000) + 'k';
-        }
-        return value;
     }
 
     get loaderBlock() {

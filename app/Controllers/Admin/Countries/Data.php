@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,19 +15,19 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\Countries;
+namespace Tirreno\Controllers\Admin\Countries;
 
-class Data extends \Controllers\Admin\Base\Data {
+class Data extends \Tirreno\Controllers\Admin\Base\Data {
     public function getList(int $apiKey): array {
         $result = [];
 
-        $model = new \Models\Grid\Countries\Grid($apiKey);
+        $model = new \Tirreno\Models\Grid\Countries\Grid($apiKey);
 
-        $result = $model->getAllCountries();
+        $result = $model->getAll();
 
         $ids = array_column($result['data'], 'id');
         if ($ids) {
-            $model = new \Models\Country();
+            $model = new \Tirreno\Models\Country();
             $model->updateTotalsByEntityIds($ids, $apiKey);
             $result['data'] = $model->refreshTotals($result['data'], $apiKey);
         }
@@ -38,12 +38,12 @@ class Data extends \Controllers\Admin\Base\Data {
     public function getMap(int $apiKey): array {
         $result = [];
 
-        $model = new \Models\Map();
+        $model = new \Tirreno\Models\Map();
 
         $map = [
             'userId'        => 'getCountriesByUserId',
             'ispId'         => 'getCountriesByIspId',
-            'botId'         => 'getCountriesByDeviceId',
+            'userAgentId'   => 'getCountriesByUserAgentId',
             'domainId'      => 'getCountriesByDomainId',
             'resourceId'    => 'getCountriesByResourceId',
         ];

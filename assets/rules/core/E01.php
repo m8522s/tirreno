@@ -1,8 +1,8 @@
 <?php
 
-namespace CoreRules;
+namespace Tirreno\Rules\Core;
 
-class E01 extends \Assets\Rule {
+class E01 extends \Tirreno\Assets\Rule {
     public const NAME = 'Invalid email format';
     public const DESCRIPTION = 'Invalid email format. Should be \'username@domain.com\'.';
     public const ATTRIBUTES = [];

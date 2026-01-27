@@ -9,7 +9,6 @@ import {
 
 
 export class UsageStatsGrid extends BaseGrid {
-
     // do not update counter tile
     updateTableTitle(value) {
     }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,9 +15,9 @@
 
 declare(strict_types=1);
 
-namespace Models\Grid\Users;
+namespace Tirreno\Models\Grid\Users;
 
-class Ids extends \Models\Grid\Base\Ids {
+class Ids extends \Tirreno\Models\Grid\Base\Ids {
     public function getUsersIdsByIpId(): string {
         return (
             'SELECT DISTINCT

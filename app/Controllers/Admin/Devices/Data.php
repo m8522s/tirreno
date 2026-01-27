@@ -1,7 +1,7 @@
 <?php
 
 /**
- * tirreno ~ open security analytics
+ * tirreno ~ open-source security framework
  * Copyright (c) Tirreno Technologies Sàrl (https://www.tirreno.com)
  *
  * Licensed under GNU Affero General Public License version 3 of the or any later version.
@@ -15,12 +15,12 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Admin\Devices;
+namespace Tirreno\Controllers\Admin\Devices;
 
-class Data extends \Controllers\Admin\Base\Data {
+class Data extends \Tirreno\Controllers\Admin\Base\Data {
     public function getList(int $apiKey): array {
         $result = [];
-        $model = new \Models\Grid\Devices\Grid($apiKey);
+        $model = new \Tirreno\Models\Grid\Devices\Grid($apiKey);
 
         $map = [
             'ipId'          => 'getDevicesByIpId',
@@ -28,22 +28,22 @@ class Data extends \Controllers\Admin\Base\Data {
             'resourceId'    => 'getDevicesByResourceId',
         ];
 
-        $result = $this->idMapIterate($map, $model, 'getAllDevices');
+        $result = $this->idMapIterate($map, $model);
 
         return $result;
     }
 
     public function getDeviceDetails(int $id, int $apiKey): array {
-        $details = (new \Models\Device())->getFullDeviceInfoById($id, $apiKey);
+        $details = (new \Tirreno\Models\Device())->getFullDeviceInfoById($id, $apiKey);
         $details['enrichable'] = $this->isEnrichable($apiKey);
 
         $tsColumns = ['created'];
-        \Utils\TimeZones::localizeTimestampsForActiveOperator($tsColumns, $details);
+        \Tirreno\Utils\Timezones::localizeTimestampsForActiveOperator($tsColumns, $details);
 
         return $details;
     }
 
     private function isEnrichable(int $apiKey): bool {
-        return (new \Models\ApiKeys())->attributeIsEnrichable('ua', $apiKey);
+        return (new \Tirreno\Models\ApiKeys())->attributeIsEnrichable('ua', $apiKey);
     }
 }
